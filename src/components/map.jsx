@@ -38,6 +38,9 @@ function UserLocationMarker(){
             setPosition(e.latlng);
             map.flyTo(e.latlng, map.getZoom());
           });
+          map.on("locationerror",function(e){
+            alert(e.message)
+          })
     },[map])
     return position ===null ? null : (
         <Marker position={position} icon={iconPerson}>
