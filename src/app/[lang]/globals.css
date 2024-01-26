@@ -9,10 +9,15 @@
 }
 
 body {
+  user-select: none;
+  -webkit-user-select: none;
+  scrollbar-width: none;
   color: rgb(var(--foreground-rgb));
-  background-image: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+  background-image: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
 }
-
+::-webkit-scrollbar {
+  display: none;
+}
 @layer utilities {
   .text-balance {
     text-wrap: balance;
