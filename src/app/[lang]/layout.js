@@ -1,4 +1,4 @@
-import { Inter } from "next/font/google";
+import { Hind_Siliguri } from "next/font/google";
 import "./globals.css";
 import { i18n } from "../../../locale-config";
 
@@ -6,7 +6,10 @@ export async function generateStaticParams() {
   return i18n.locales.map((locale) => ({ lang: locale }));
 }
 
-const inter = Inter({ subsets: ["latin"] });
+const hind_siliguri = Hind_Siliguri({ 
+  weight: ['300','400','500','600','700'],
+  subsets: ["latin"] 
+});
 
 export const metadata = {
   title: "EasyGoods",
@@ -24,7 +27,7 @@ export const viewport = {
 export default function RootLayout({ children,params }) {
   return (
     <html lang={params.lang}>
-      <body className={inter.className}>{children}</body>
+      <body className={hind_siliguri.className}>{children}</body>
     </html>
   );
 }
