@@ -5,7 +5,7 @@
 
 <div align="center">
 
-[![Hackathon](https://img.shields.io/badge/hackathon-PiCommerce-orange.svg)](http://hackathon.url.com)
+[![Hackathon](https://img.shields.io/badge/hackathon-PiCommerce-orange.svg)](https://github.com/pi-apps/PiOS/blob/main/pi-commerce.md)
 [![Status](https://img.shields.io/badge/status-active-success.svg)]()
 [![GitHub Issues](https://img.shields.io/github/issues/0205miss/EasyGoods.svg)](https://github.com/0205miss/EasyGoods/issues)
 [![GitHub Pull Requests](https://img.shields.io/github/issues-pr/0205miss/EasyGoods.svg)](https://github.com/0205miss/EasyGoods/pulls)
@@ -21,23 +21,15 @@
 
 ## 📝 Table of Contents
 
-- [Idea / Solution](#idea)
 - [Dependencies / Limitations](#limitations)
 - [Future Scope](#future_scope)
 - [Setting up a local environment](#getting_started)
 - [Usage](#usage)
 - [Technology Stack](#tech_stack)
-- [Contributing](../CONTRIBUTING.md)
+- [Contributing](/CONTRIBUTING.md)
 - [Authors](#authors)
 - [Acknowledgments](#acknowledgments)
 
-
-## 💡 Idea / Solution <a name = "idea"></a>
-
-This section is used to describe potential solutions.
-
-Once the ideal, reality, and consequences sections have been
-completed, and understood, it becomes easier to provide a solution for solving the problem.
 
 ## ⛓️ Dependencies / Limitations <a name = "limitations"></a>
 
