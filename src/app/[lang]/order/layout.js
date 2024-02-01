@@ -2,8 +2,8 @@ import Link from 'next/link'
 export default function UserLayout({ children,params }) {
   return (
     <div className="w-screen h-screen">
-      <div className="w-full h-full pb-14 z-0">{children}</div>
-        <div className="fixed w-full bg-gray-300 shadow-xl bottom-0 h-14 grid grid-flow-col gap-px">
+      <div className="w-full h-full pb-16 z-0">{children}</div>
+        <div className="fixed w-full bg-gray-300 shadow-xl bottom-0 h-16 grid grid-flow-col gap-px">
           
           <div className="flex justify-center bg-white items-center h-full">
             <svg
