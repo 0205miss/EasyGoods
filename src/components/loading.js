@@ -10,7 +10,7 @@ export default function LoadingPage() {
             dur="1.2s"
             repeatCount="indefinite"
             begin="0"
-            keytimes="0;.2;.5;1"
+            keyTimes="0;.2;.5;1"
             keySplines="0.2 0.2 0.4 0.8;0.2 0.6 0.4 0.8;0.2 0.8 0.4 0.8"
             calcMode="spline"
           />
@@ -22,7 +22,7 @@ export default function LoadingPage() {
             dur="1.2s"
             repeatCount="indefinite"
             begin="0.2"
-            keytimes="0;.2;.5;1"
+            keyTimes="0;.2;.5;1"
             keySplines="0.2 0.2 0.4 0.8;0.2 0.6 0.4 0.8;0.2 0.8 0.4 0.8"
             calcMode="spline"
           />
@@ -34,7 +34,7 @@ export default function LoadingPage() {
             dur="1.2s"
             repeatCount="indefinite"
             begin="0.4"
-            keytimes="0;.2;.5;1"
+            keyTimes="0;.2;.5;1"
             keySplines="0.2 0.2 0.4 0.8;0.2 0.6 0.4 0.8;0.2 0.8 0.4 0.8"
             calcMode="spline"
           />
@@ -46,7 +46,7 @@ export default function LoadingPage() {
             dur="1.2s"
             repeatCount="indefinite"
             begin="0.6"
-            keytimes="0;.2;.5;1"
+            keyTimes="0;.2;.5;1"
             keySplines="0.2 0.2 0.4 0.8;0.2 0.6 0.4 0.8;0.2 0.8 0.4 0.8"
             calcMode="spline"
           />
@@ -58,7 +58,7 @@ export default function LoadingPage() {
             dur="1.2s"
             repeatCount="indefinite"
             begin="0.8"
-            keytimes="0;.2;.5;1"
+            keyTimes="0;.2;.5;1"
             keySplines="0.2 0.2 0.4 0.8;0.2 0.6 0.4 0.8;0.2 0.8 0.4 0.8"
             calcMode="spline"
           />
