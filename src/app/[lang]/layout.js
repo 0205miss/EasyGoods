@@ -1,6 +1,7 @@
 import { Hind_Siliguri } from "next/font/google";
 import "./globals.css";
 import { i18n } from "../../../locale-config";
+import {Analytics} from '@vercel/analytics/react'
 
 export async function generateStaticParams() {
   return i18n.locales.map((locale) => ({ lang: locale }));
@@ -27,7 +28,10 @@ export const viewport = {
 export default function RootLayout({ children,params }) {
   return (
     <html lang={params.lang}>
-      <body className={hind_siliguri.className}>{children}</body>
+      <body className={hind_siliguri.className}>
+        {children}
+        <Analytics />
+      </body>
     </html>
   );
 }
