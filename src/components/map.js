@@ -61,10 +61,10 @@ export default function MapMenu() {
   console.log(position)
   return (
     <>
-      <div className="fixed w-full z-[1000] h-12 top-0 mt-5">
-          <div className="mx-5 h-full">
+      <div className="fixed w-full z-[1000] h-12 top-0 mt-5 ">
+          <div className="mx-5 h-full ">
           <input
-            className="w-full bg-white h-full rounded shadow-lg px-5 ring-offset-2 ring-2 ring-indigo-600"
+            className="w-full h-full rounded bg-[#C7CEE9] ring-offset-[#C7CEE9] placeholder:text-ui-accent shadow-lg px-5 ring-offset-2 ring-2 ring-ui-accent"
             placeholder="Search"
             autoComplete="on"
             onSubmit={searchshop}

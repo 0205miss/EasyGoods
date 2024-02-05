@@ -3,7 +3,7 @@ import { query, where,collection,getDocs } from "firebase/firestore";
 import { createContext, useContext, useEffect, useState } from "react";
 import { PiContext } from "./pi";
 import { db } from "@/components/firestore";
-import { Button, Dropdown, DropdownTrigger } from "@nextui-org/react";
+
 
 export const OwnerContext = createContext();
 
