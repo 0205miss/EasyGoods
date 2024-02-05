@@ -24,7 +24,7 @@ export default function InfoBusiness({ info }) {
           }}
           endContent={
             <div
-              className="flex items-center h-full stroke-accent-500 p-1 rounded"
+              className="flex items-center  h-11 w-11 stroke-accent-500 p-1 rounded"
               onClick={edit}
             >
               <div className="bg-secondary h-full rounded p-1">
@@ -50,7 +50,7 @@ export default function InfoBusiness({ info }) {
           }}
           endContent={
             <div
-              className="flex items-center h-full stroke-accent-500 p-1 rounded"
+              className="flex items-center h-11 w-11 stroke-accent-500 p-1 rounded"
               onClick={edit}
             >
               <div className="bg-secondary h-full rounded p-1">
@@ -62,7 +62,7 @@ export default function InfoBusiness({ info }) {
         <Select label="Select country">
           {countries.map(item=>{
             return <SelectItem key={item.cca2} startContent={<Avatar alt="Venezuela" className="w-6 h-6" src={item.flags.svg} />}>
-                {item.cca2}
+                {item.name.common}
             </SelectItem>
           })}
         </Select>
