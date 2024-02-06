@@ -1,7 +1,16 @@
-import EditIcon from "@/res/icon/edit";
-import { Select, SelectItem, Avatar, Input } from "@nextui-org/react";
-import countries from '@/res/country.json'
+import {
+  Autocomplete,
+  AutocompleteItem,
+  Avatar,
+  Input,
+  Select,
+  SelectItem,
+} from "@nextui-org/react";
+import countries from "@/res/country.json";
+import { useState } from "react";
 export default function InfoBusiness({ info }) {
+  const [value, setValue] = useState("TW");
+
   const edit = () => {
     console.log(countries);
   };
@@ -9,7 +18,6 @@ export default function InfoBusiness({ info }) {
     <div className="w-full h-full px-3">
       <div className="w-full h-full flex flex-col gap gap-4">
         <Input
-          isReadOnly
           labelPlacement="outside"
           color="secondary"
           type="text"
@@ -22,20 +30,38 @@ export default function InfoBusiness({ info }) {
             input: ["text-white"],
             label: "text-accent text-md font-semibold text-center w-full",
           }}
-          endContent={
-            <div
-              className="flex items-center  h-11 w-11 stroke-accent-500 p-1 rounded"
-              onClick={edit}
-            >
-              <div className="bg-secondary h-full rounded p-1">
-                <EditIcon />
-              </div>
-            </div>
-          }
         />
-        
+        <Select
+          labelPlacement="outside"
+          label="Category"
+          placeholder="Select an animal"
+          fullWidth
+          classNames={{
+            trigger: ["bg-primary", "h-12", "!text-white"],
+            value: "!text-white",
+            label: "!text-accent text-md font-semibold text-center w-full",
+          }}
+        >
+          <SelectItem key="coffee" value="Coffee Shop">
+            Coffee Shop
+          </SelectItem>
+          <SelectItem key="Restaurant" value="Restaurant">
+            Restaurant
+          </SelectItem>
+          <SelectItem key="Grocery" value="Grocery">
+            Grocery
+          </SelectItem>
+          <SelectItem key="BookStore" value="BookStore">
+            BookStore
+          </SelectItem>
+          <SelectItem key="Bakery" value="Bakery">
+            Bakery
+          </SelectItem>
+          <SelectItem key="Other" value="Other">
+            Other
+          </SelectItem>
+        </Select>
         <Input
-          isReadOnly
           labelPlacement="outside"
           color="secondary"
           type="text"
@@ -48,24 +74,44 @@ export default function InfoBusiness({ info }) {
             input: ["text-white"],
             label: "text-accent text-md font-semibold text-center w-full",
           }}
-          endContent={
-            <div
-              className="flex items-center h-11 w-11 stroke-accent-500 p-1 rounded"
-              onClick={edit}
-            >
-              <div className="bg-secondary h-full rounded p-1">
-                <EditIcon />
-              </div>
-            </div>
-          }
         />
-        <Select label="Select country">
-          {countries.map(item=>{
-            return <SelectItem key={item.cca2} startContent={<Avatar alt="Venezuela" className="w-6 h-6" src={item.flags.svg} />}>
+        <Autocomplete
+          label="Country"
+          labelPlacement="outside"
+          placeholder="Select country"
+          selectedKey={value}
+          classNames={{}}
+          inputProps={{
+            classNames: {
+              label: "!text-accent text-md font-semibold text-center w-full",
+              input: "!text-white focus:text-black",
+              inputWrapper: "!bg-primary ",
+            },
+          }}
+          selectorButtonProps={{
+            className: "!text-white",
+          }}
+          onSelectionChange={setValue}
+          isClearable={false}
+        >
+          {countries.map((item) => {
+            return (
+              <AutocompleteItem
+                key={item.cca2}
+                value={item.cca2}
+                startContent={
+                  <Avatar
+                    alt="Venezuela"
+                    className="w-6 h-6"
+                    src={item.flags.svg}
+                  />
+                }
+              >
                 {item.name.common}
-            </SelectItem>
+              </AutocompleteItem>
+            );
           })}
-        </Select>
+        </Autocomplete>
       </div>
     </div>
   );
