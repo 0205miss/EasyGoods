@@ -1,10 +1,13 @@
 import AddIcon from "@/res/icon/add";
 import { Button, Divider, Switch, cn } from "@nextui-org/react";
+import { useState } from "react";
 
-export default function MenuBusiness() {
+export default function MenuBusiness({data}) {
+  const[piaccept,setpiaccept]=useState(data.payment)
   return (
     <div className="w-full h-full px-4 py-2">
       <Switch
+      isSelected={piaccept} onValueChange={setpiaccept}
         classNames={{
           base: cn(
             "inline-flex flex-row-reverse w-full max-w-md bg-content1 hover:bg-content2 items-center",
