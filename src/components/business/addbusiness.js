@@ -9,11 +9,15 @@ import {
   Select,
   SelectItem,
   Checkbox,
+  Spinner
 } from "@nextui-org/react";
-import { useEffect, useState } from "react";
+import { useEffect, useState,useMemo } from "react";
 import {Wrong} from '@/res/icon/wrong'
+import { geocoding } from "@/action/geocoding";
+import { Correct } from "@/res/icon/check";
+import dynamic from "next/dynamic";
 
-export default function AddBusinessModal({ isOpen, onClose }) {
+export default function AddBusinessModal({ isOpen, onClose,lang }) {
   const [step, setstep] = useState(1);
   const [shoptype, settype] = useState(new Set([]));
   const [name, setname] = useState("");
@@ -21,14 +25,64 @@ export default function AddBusinessModal({ isOpen, onClose }) {
   const [pipay, setpipay] = useState(false);
   const [privacy, setprivacy] = useState(false);
   const [checkdata, setcheck] = useState(false);
+  const [address_valid,setaddress_valid] = useState(false)
+  const [geometric,setgeometric]=useState({})
+
+  const prepage = ()=>{
+    if(step==1){
+      onClose()
+    }else{
+      setstep(step-1)
+    }
+  }
+  const nextpage = () =>{
+    setstep(step+1)
+    setcheck(false);
+  }
+  const checkaddress = async () =>{
+    if(address==''){
+      alert('Please add your address before check')
+    }else{
+      const format_add = await address.replaceAll(' ','+')
+      const locationcheck = await geocoding(format_add,lang)
+      if(locationcheck === 0){
+        setaddress_valid(false)
+        alert('Something Wrong\nContact Developers')
+      }else{
+        setgeometric(locationcheck)
+        setaddress_valid(true)
+      }
+    }
+    
+  }
+
+  const address_change = (e) =>{
+    setaddress(e)
+    if(address_valid){
+      setaddress_valid(false)
+    }    
+  }
+
+  const MapCheck = useMemo(
+    () =>
+      dynamic(() => import("./checkmap"), {
+        loading: () => (
+          <div className="w-full h-full flex justify-center items-center">
+            <Spinner color="warning" size="lg"/>
+          </div>
+        ),
+        ssr: false,
+      }),
+    []
+  );
 
   useEffect(() => {
-    if (shoptype.size != 0 && name != "" && address != "") {
+    if (shoptype.size != 0 && name != "" && address_valid) {
       setcheck(true);
     } else {
       setcheck(false);
     }
-  }, [address, shoptype, name]);
+  }, [address_valid, shoptype, name]);
 
   return (
     <Modal size="full" isOpen={isOpen} onClose={onClose} hideCloseButton={true}>
@@ -329,7 +383,7 @@ export default function AddBusinessModal({ isOpen, onClose }) {
                 placeholder="Your Business Address"
                 variant="bordered"
                 value={address}
-                onValueChange={setaddress}
+                onValueChange={address_change}
                 className="w-full"
                 classNames={{
                   inputWrapper: ["bg-primary", "h-12"],
@@ -337,11 +391,14 @@ export default function AddBusinessModal({ isOpen, onClose }) {
                   label: "text-accent text-md font-semibold text-center w-full",
                 }}
                 endContent={
-                  <div className="fill-red-500">
-                  <Wrong/>
+                  <div className={address_valid?"fill-green-500":"fill-red-500"}>
+                  {address_valid?<Correct/>:<Wrong/>}
                   </div>
                 }
               />
+              <Button onClick={checkaddress}>
+                Check Address
+              </Button>
               <Checkbox
                 isSelected={pipay}
                 onValueChange={setpipay}
@@ -360,12 +417,26 @@ export default function AddBusinessModal({ isOpen, onClose }) {
               </Checkbox>
             </div>
           )}
+
+          {
+            step==2 && <div className="w-full h-full">
+              <div className="w-full !h-96">
+                <MapCheck lat={geometric.lat} long={geometric.lng}/>
+              </div>
+              <div className="w-full m-2">
+                {geometric.format}
+              </div>
+              <div className="w-full h-10 m-2">
+                <Button fullWidth={true}>Confirm</Button>
+              </div>
+            </div>
+          }
         </ModalBody>
         <ModalFooter>
-          <Button color="danger" variant="light" onPress={onClose}>
-            Close
+          <Button color="danger" variant="light" onPress={prepage}>
+            {step==1?'Close':'Previous'}
           </Button>
-          <Button color="primary" onPress={onClose} isDisabled={!checkdata}>
+          <Button color="primary" onPress={nextpage} isDisabled={!checkdata}>
             Next
           </Button>
         </ModalFooter>

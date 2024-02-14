@@ -30,6 +30,17 @@ export const viewport = {
 export default function RootLayout({ children,params }) {
   return (
     <html lang={params.lang}>
+      <head>
+      <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+      </head>
       <body className={hind_siliguri.className}>
         <NextUi>
         {children}

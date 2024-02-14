@@ -9,7 +9,7 @@ import OrderCard from "@/components/business/ordercard";
 import dynamic from "next/dynamic";
 import AddBusinessModal from "@/components/business/addbusiness";
 
-export default function BusinessPage() {
+export default function BusinessPage({params}) {
   const snap = useContext(OwnerContext)
   const {isOpen,onOpen,onClose} = useDisclosure()
   const [currentshop,setcurrentshop] = useState(null)
@@ -165,6 +165,6 @@ const handledropdown = (key) =>{
         </div>
         </div>
       </div>
-      <AddBusinessModal isOpen={isOpen} onClose={onClose}/>
+      <AddBusinessModal isOpen={isOpen} onClose={onClose} lang={params.lang}/>
     </div>;
 }
