@@ -9,9 +9,11 @@ export async function auth(token) {
       if (!res.ok) {
         // This will activate the closest `error.js` Error Boundary
         throw new Error('Failed to fetch data')
+      }else{
+        let auth = await res.json()
+        let uid = auth.username
+        let customtoken = await admin.auth().createCustomToken(uid)
+     return customtoken;
       }
-     let auth = await res.json()
-     let uid = auth.username
-     let customtoken = await admin.auth().createCustomToken(uid)
-  return customtoken;
+     
 }

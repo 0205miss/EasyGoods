@@ -1,7 +1,7 @@
 export default function LoadingPage() {
   return (
     <div className="w-screen h-screen flex justify-center items-center bg-transparent">
-      <div className="w-full mx-36 fill-[#FC7A1E]">
+      <div className=" w-32 fill-[#FC7A1E]">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
         <path transform="translate(2)" d="M0 12 V20 H4 V12z">
           <animate

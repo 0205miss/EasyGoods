@@ -7,8 +7,7 @@ export default function BusinessLayout({children}){
             <div className="w-screen h-screen">
             <BusinessSelector>
             {children}
-            </BusinessSelector>      
-                            
+            </BusinessSelector>  
             </div>      
         </PiUser>
     )

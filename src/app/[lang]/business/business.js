@@ -1,11 +1,14 @@
 'use client'
 import { query, where,collection,getDocs } from "firebase/firestore";  
-import { useContext, useEffect } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { PiContext } from "./pi";
 import { db } from "@/components/firestore";
 
-export default function BusinessSelector({children}){
 
+export const OwnerContext = createContext();
+
+export default function BusinessSelector({children}){
+    const [ownershops,setshops] = useState(null)
     let Pi = useContext(PiContext)
     useEffect(()=>{
         const scopes = ['payments','username','wallet_address','roles'];
@@ -14,14 +17,7 @@ export default function BusinessSelector({children}){
             const shopRef = collection(db, "shop");
             const q = query(shopRef, where("owner", "array-contains", auth.user.username));
             const querySnapshot = await getDocs(q);
-            if (querySnapshot.empty) {
-              console.log('No matching documents.');
-            }else{
-              querySnapshot.forEach(doc => {
-                let data = doc.data()
-                console.log(data)
-              });
-            }
+              setshops(querySnapshot)
           }).catch(function(error) {
             console.error(error);
             console.log("pi sdk failed")
@@ -29,9 +25,9 @@ export default function BusinessSelector({children}){
 
     },[])
     
-    return <select
-    className="bg-gray-50 border w-full border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block p-2.5 text-center"
-  >
-    
-  </select>
+    return (
+      <OwnerContext.Provider value={ownershops}>
+        {children}
+      </OwnerContext.Provider>
+    )
 }

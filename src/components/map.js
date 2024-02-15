@@ -12,6 +12,7 @@ import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility
 import L from "leaflet";
 import { iso1A2Code } from '@rapideditor/country-coder';
 import { db } from "./firestore";
+import AwesomeMarkers from "leaflet.awesome-markers";
 
 const iconPerson = new L.Icon({
   iconUrl: "https://svgshare.com/i/12NF.svg",
@@ -23,7 +24,13 @@ const iconPerson = new L.Icon({
   shadowAnchor: null,
   iconSize: new L.Point(60, 60),
 });
-
+const testicon = new L.AwesomeMarkers.icon({
+  icon: "fa-university",
+  prefix: "fa",
+  markerColor: "lightblue",
+  iconColor: "white",
+  extraClasses:'fill-[#8CA0D7]'
+})
 export default function MapMenu() {
   const [location,setLocation] = useState(null)
   const [position, setPosition] = useState([])
@@ -31,10 +38,17 @@ export default function MapMenu() {
   useEffect(()=>{
     if('geolocation' in navigator) {
       // Retrieve latitude & longitude coordinates from `navigator.geolocation` Web API
+      if (
+        window.location.ancestorOrigins[0] == "https://sandbox.minepi.com" ||
+        window.location.ancestorOrigins[0] == "https://app-cdn.minepi.com"
+      ) {
+        setLocation({ latitude:23.553118, longitude:121.0211024,countrycode:'TW' });
+      }else{
       navigator.geolocation.getCurrentPosition(({ coords }) => {
           const { latitude, longitude } = coords;
           setLocation({ latitude, longitude,countrycode:iso1A2Code([longitude,latitude]) });
         })
+      }
   }
   },[])
   const markers = async() =>{
@@ -61,10 +75,10 @@ export default function MapMenu() {
   console.log(position)
   return (
     <>
-      <div className="fixed w-full z-[1000] h-12 top-0 mt-5">
-          <div className="mx-5 h-full">
+      <div className="fixed w-full z-10 h-12 top-0 mt-5 ">
+          <div className="mx-5 h-full ">
           <input
-            className="w-full bg-white h-full rounded shadow-lg px-5 ring-offset-2 ring-2 ring-indigo-600"
+            className="w-full h-full rounded bg-[#C7CEE9] ring-offset-[#C7CEE9] placeholder:text-ui-accent shadow-lg px-5 ring-offset-2 ring-2 ring-ui-accent"
             placeholder="Search"
             autoComplete="on"
             onSubmit={searchshop}
@@ -74,14 +88,14 @@ export default function MapMenu() {
       <MapContainer
         zoomControl={false}
         attributionControl={false}
-        className="w-full h-full"
+        className="w-full h-full !z-0"
         center={[location.latitude, location.longitude]}
         zoom={16}
         scrollWheelZoom={false}
       >
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
         <Marker position={[location.latitude, location.longitude]} icon={iconPerson}></Marker>
-        {position.length==0 ? null :position.map((item)=><Marker key={item.name} position={[item.latitude,item.longitude]}></Marker>)}
+        {position.length==0 ? null :position.map((item)=><Marker key={item.name} icon={testicon} position={[item.latitude,item.longitude]}></Marker>)}
       </MapContainer>
     </>
   );
