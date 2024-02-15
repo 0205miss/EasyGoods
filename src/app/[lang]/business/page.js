@@ -7,7 +7,6 @@ import { collection, query, where, onSnapshot } from "firebase/firestore";
 import { db } from "@/components/firestore";
 import OrderCard from "@/components/business/ordercard";
 import dynamic from "next/dynamic";
-import AddBusinessModal from "@/components/business/addbusiness";
 
 export default function BusinessPage({params}) {
   const snap = useContext(OwnerContext)
