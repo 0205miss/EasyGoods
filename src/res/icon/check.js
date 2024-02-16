@@ -1,8 +1,8 @@
 import * as React from "react";
 const SVGComponent = (props) => (
   <svg
-    width="1.5rem"
-    height="1.5rem"
+    width="100%"
+    height="100%"
     viewBox="0 0 96 96"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
@@ -14,4 +14,4 @@ const SVGComponent = (props) => (
     </g>
   </svg>
 );
-export { SVGComponent as Correct }
+export { SVGComponent as Correct };

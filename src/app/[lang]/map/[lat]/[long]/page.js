@@ -1,7 +1,7 @@
 "use client";
 import dynamic from "next/dynamic";
 import { useMemo } from "react";
-export default function MapPage({params}) {
+export default function MapPage({ params }) {
   const MapMenu = useMemo(
     () =>
       dynamic(() => import("@/components/map"), {
@@ -35,7 +35,7 @@ export default function MapPage({params}) {
   );
   return (
     <div className="w-full h-full">
-      <MapMenu lang={params.lang} lat={params.lat} long={params.long}/>
+      <MapMenu lang={params.lang} lat={params.lat} long={params.long} />
     </div>
   );
 }

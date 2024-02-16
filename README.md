@@ -30,7 +30,6 @@
 - [Authors](#authors)
 - [Acknowledgments](#acknowledgments)
 
-
 ## ⛓️ Dependencies / Limitations <a name = "limitations"></a>
 
 ```
