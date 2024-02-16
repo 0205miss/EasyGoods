@@ -35,7 +35,7 @@ export default function MapPage({params}) {
   );
   return (
     <div className="w-full h-full">
-      <MapMenu lang={params.lang}/>
+      <MapMenu lang={params}/>
     </div>
   );
 }

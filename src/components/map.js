@@ -45,7 +45,9 @@ export default function MapMenu({lang,lat=null,long=null}) {
         if(lat==null || long==null){
           parent.window.location=process.env.NEXT_PUBLIC_USER_LOCATION_DOMAIN+lang+'/getuserlocation'
         }else{
-          setLocation({ lat, long,countrycode:iso1A2Code([long,lat]) });
+          const latitude = parseFloat(lat)
+          const longitude = parseFloat(long)
+          setLocation({ latitude,longitude ,countrycode:iso1A2Code([longitude,latitude]) });
         }
         
       }else{
