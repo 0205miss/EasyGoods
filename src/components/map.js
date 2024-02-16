@@ -58,21 +58,21 @@ export default function MapMenu() {
     const q = query(shopRef, where("country", "==", country));
     const querySnapshot = await getDocs(q);
     if (querySnapshot.empty) {
-      console.log('No matching documents.');
-    }else{
-      querySnapshot.forEach(doc => {
-        let data = doc.data()
-        setPosition([...position,data])
+      console.log("No matching documents.");
+    } else {
+      let temp = []
+      querySnapshot.forEach((doc) => {
+        let data = doc.data();
+        temp.push(data)
       });
+      setPosition(temp)
     }
     }
   useEffect(()=>{
     markers()
   },[location])
-
-    const searchshop = () =>{}
-  if(location==null) return //loading map
-  console.log(position)
+  const searchshop = () => {};
+  if (location == null) return; //loading map
   return (
     <>
       <div className="fixed w-full z-10 h-12 top-0 mt-5 ">
