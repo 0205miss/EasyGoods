@@ -36,7 +36,8 @@ export default function MapMenu({ lang, lat = null, long = null }) {
       // Retrieve latitude & longitude coordinates from `navigator.geolocation` Web API
       if (
         window.location.ancestorOrigins[0] == "https://sandbox.minepi.com" ||
-        window.location.ancestorOrigins[0] == "https://app-cdn.minepi.com"
+        window.location.ancestorOrigins[0] == "https://app-cdn.minepi.com" ||
+        window.location.ancestorOrigins[0] == "https://easygoods5604.pinet.com"
       ) {
         if (lat == null || long == null) {
           parent.window.location =
