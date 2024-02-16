@@ -31,7 +31,7 @@ const testicon = new L.AwesomeMarkers.icon({
   iconColor: "white",
   extraClasses:'fill-[#8CA0D7]'
 })
-export default function MapMenu() {
+export default function MapMenu({lang,lat=null,long=null}) {
   const [location,setLocation] = useState(null)
   const [position, setPosition] = useState([])
 
@@ -42,7 +42,12 @@ export default function MapMenu() {
         window.location.ancestorOrigins[0] == "https://sandbox.minepi.com" ||
         window.location.ancestorOrigins[0] == "https://app-cdn.minepi.com"
       ) {
-        parent.window.location='https://easy-goods.vercel.app/'
+        if(lat==null || long==null){
+          parent.window.location=process.env.NEXT_PUBLIC_USER_LOCATION_DOMAIN+lang+'/getuserlocation'
+        }else{
+          setLocation({ lat, long,countrycode:iso1A2Code([long,lat]) });
+        }
+        
       }else{
       navigator.geolocation.getCurrentPosition(({ coords }) => {
           const { latitude, longitude } = coords;
