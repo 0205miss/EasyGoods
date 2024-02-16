@@ -9,15 +9,20 @@ import {
   Select,
   SelectItem,
   Checkbox,
-  Spinner
+  Spinner,
 } from "@nextui-org/react";
-import { useEffect, useState,useMemo } from "react";
-import {Wrong} from '@/res/icon/wrong'
+import { useEffect, useState, useMemo } from "react";
+import { Wrong } from "@/res/icon/wrong";
 import { geocoding } from "@/action/geocoding";
 import { Correct } from "@/res/icon/check";
 import dynamic from "next/dynamic";
+import { Location } from "@/res/icon/location";
+import { collection, addDoc,query,where,getDocs } from "firebase/firestore";
+import { auth_firebase, db } from "../firestore";
+import { iso1A2Code } from "@rapideditor/country-coder";
+import { onAuthStateChanged } from "firebase/auth";
 
-export default function AddBusinessModal({ isOpen, onClose,lang }) {
+export default function AddBusinessModal({ isOpen, onClose, lang,reload }) {
   const [step, setstep] = useState(1);
   const [shoptype, settype] = useState(new Set([]));
   const [name, setname] = useState("");
@@ -25,50 +30,99 @@ export default function AddBusinessModal({ isOpen, onClose,lang }) {
   const [pipay, setpipay] = useState(false);
   const [privacy, setprivacy] = useState(false);
   const [checkdata, setcheck] = useState(false);
-  const [address_valid,setaddress_valid] = useState(false)
-  const [geometric,setgeometric]=useState({})
+  const [address_valid, setaddress_valid] = useState(false);
+  const [geometric, setgeometric] = useState({});
+  const [submitted, setsubmitted] = useState(false);
 
-  const prepage = ()=>{
-    if(step==1){
-      onClose()
-    }else{
-      setstep(step-1)
+  const prepage = () => {
+    if (step == 1) {
+      onClose();
+    } else {
+      setstep(step - 1);
     }
+  };
+  const getnewstatus = async()=>{
+    const shopRef = collection(db, "shop");
+        const q = query(
+          shopRef,
+          where("owner", "array-contains", auth.user.username)
+        );
+        const querySnapshot = await getDocs(q);
+        setshops(querySnapshot);
   }
-  const nextpage = () =>{
-    setstep(step+1)
-    setcheck(false);
-  }
-  const checkaddress = async () =>{
-    if(address==''){
-      alert('Please add your address before check')
-    }else{
-      const format_add = await address.replaceAll(' ','+')
-      const locationcheck = await geocoding(format_add,lang)
-      if(locationcheck === 0){
-        setaddress_valid(false)
-        alert('Something Wrong\nContact Developers')
-      }else{
-        setgeometric(locationcheck)
-        setaddress_valid(true)
+  const nextpage = () => {
+    if (step == 3) {
+      onClose();
+      onAuthStateChanged(auth_firebase,async (user)=>{
+        if(user){
+          const shopRef = collection(db, "shop");
+        const q = query(
+          shopRef,
+          where("owner", "array-contains", user.uid)
+        );
+        const querySnapshot = await getDocs(q);
+        reload(querySnapshot);
+        }else{
+          alert("Something Wrong\nContact Developers");
+        }
+      })
+      setstep(1);
+      setsubmitted(false)
+    } else if (step == 2) {
+      setstep(step + 1);
+      //submit
+      onAuthStateChanged(auth_firebase,async (user)=>{
+        if(user){
+          const docRef = await addDoc(collection(db, "shop"), {
+            address: address,
+            country: iso1A2Code([geometric.lng, geometric.lat]),
+            latitude: geometric.lat,
+            longitude: geometric.lng,
+            name: name,
+            owner: [user.uid],
+            payment: pipay,
+            privacyagree: privacy,
+            type: shoptype.currentKey,
+          });
+          setsubmitted(true)
+        }else{
+          alert("Something Wrong\nContact Developers");
+        }
+      })
+    } else {
+      setstep(step + 1);
+      setcheck(false);
+    }
+  };
+  const checkaddress = async () => {
+    if (address == "") {
+      alert("Please add your address before check");
+    } else {
+      const format_add = await address.replaceAll(" ", "+");
+      const locationcheck = await geocoding(format_add, lang);
+      if (locationcheck === 0) {
+        setaddress_valid(false);
+        alert("Something Wrong\nContact Developers");
+      } else {
+        setgeometric(locationcheck);
+        setaddress_valid(true);
       }
     }
-    
-  }
+  };
 
-  const address_change = (e) =>{
-    setaddress(e)
-    if(address_valid){
-      setaddress_valid(false)
-    }    
-  }
+  const address_change = (e) => {
+    setaddress(e);
+    if (address_valid) {
+      setaddress_valid(false);
+    }
+  };
 
   const MapCheck = useMemo(
     () =>
       dynamic(() => import("./checkmap"), {
         loading: () => (
           <div className="w-full h-full flex justify-center items-center">
-            <Spinner color="warning" size="lg"/>
+            <Spinner color="warning" size="lg" />
           </div>
         ),
         ssr: false,
@@ -92,13 +146,31 @@ export default function AddBusinessModal({ isOpen, onClose,lang }) {
             <div className="relative flex items-center justify-between w-full">
               <div className="absolute left-0 top-2/4 h-0.5 w-full -translate-y-2/4 bg-gray-300"></div>
               <div className="absolute left-0 top-2/4 h-0.5 w-full -translate-y-2/4 bg-gray-900 transition-all duration-500"></div>
-              <div className="relative z-10 grid w-10 h-10 font-bold text-white transition-all duration-300 bg-gray-900 rounded-full place-items-center">
+              <div
+                className={
+                  step == 1
+                    ? "relative z-10 grid w-10 h-10 font-bold text-white transition-all duration-300 bg-gray-900 rounded-full place-items-center"
+                    : "relative z-10 grid w-10 h-10 font-bold text-gray-900 transition-all duration-300 bg-gray-300 rounded-full place-items-center"
+                }
+              >
                 1
               </div>
-              <div className="relative z-10 grid w-10 h-10 font-bold text-gray-900 transition-all duration-300 bg-gray-300 rounded-full place-items-center">
+              <div
+                className={
+                  step == 2
+                    ? "relative z-10 grid w-10 h-10 font-bold text-white transition-all duration-300 bg-gray-900 rounded-full place-items-center"
+                    : "relative z-10 grid w-10 h-10 font-bold text-gray-900 transition-all duration-300 bg-gray-300 rounded-full place-items-center"
+                }
+              >
                 2
               </div>
-              <div className="relative z-10 grid w-10 h-10 font-bold text-gray-900 transition-all duration-300 bg-gray-300 rounded-full place-items-center">
+              <div
+                className={
+                  step == 3
+                    ? "relative z-10 grid w-10 h-10 font-bold text-white transition-all duration-300 bg-gray-900 rounded-full place-items-center"
+                    : "relative z-10 grid w-10 h-10 font-bold text-gray-900 transition-all duration-300 bg-gray-300 rounded-full place-items-center"
+                }
+              >
                 3
               </div>
             </div>
@@ -391,14 +463,22 @@ export default function AddBusinessModal({ isOpen, onClose,lang }) {
                   label: "text-accent text-md font-semibold text-center w-full",
                 }}
                 endContent={
-                  <div className={address_valid?"fill-green-500":"fill-red-500"}>
-                  {address_valid?<Correct/>:<Wrong/>}
+                  <div
+                    className={
+                      address_valid ? "fill-green-500" : "fill-red-500"
+                    }
+                  >
+                    {address_valid ? (
+                      <div className="w-6 h-6">
+                        <Correct />{" "}
+                      </div>
+                    ) : (
+                      <Wrong />
+                    )}
                   </div>
                 }
               />
-              <Button onClick={checkaddress}>
-                Check Address
-              </Button>
+              <Button onClick={checkaddress}>Check Address</Button>
               <Checkbox
                 isSelected={pipay}
                 onValueChange={setpipay}
@@ -418,26 +498,57 @@ export default function AddBusinessModal({ isOpen, onClose,lang }) {
             </div>
           )}
 
-          {
-            step==2 && <div className="w-full h-full">
+          {step == 2 && (
+            <div className="w-full h-full">
+              <h1 className="text-center text-3xl mb-5">
+                Address Confirmation
+              </h1>
               <div className="w-full !h-96">
-                <MapCheck lat={geometric.lat} long={geometric.lng}/>
+                <MapCheck lat={geometric.lat} long={geometric.lng} />
               </div>
-              <div className="w-full m-2">
+              <div className="w-full m-2 flex">
+                <Location />
                 {geometric.format}
               </div>
               <div className="w-full h-10 m-2">
-                <Button fullWidth={true}>Confirm</Button>
+                <Button
+                  fullWidth={true}
+                  onClick={() => {
+                    if (checkdata) {
+                      setcheck(false);
+                    } else {
+                      setcheck(true);
+                    }
+                  }}
+                  className={checkdata ? "bg-success-500" : "bg-warning-500"}
+                >
+                  Confirm
+                </Button>
               </div>
             </div>
-          }
+          )}
+          {step == 3 && (
+            <div className="w-full h-full">
+              <div className="w-full h-40 flex justify-center">
+
+                {submitted?<div className="fill-green-500 h-40 w-40" 
+                    >
+                  <Correct />
+                </div>:<div className="w-full h-full flex justify-center items-center">
+            <Spinner color="warning" size="lg" />
+          </div>}
+              </div>
+            </div>
+          )}
         </ModalBody>
         <ModalFooter>
-          <Button color="danger" variant="light" onPress={prepage}>
-            {step==1?'Close':'Previous'}
-          </Button>
+          {step == 3 ? null : (
+            <Button color="danger" variant="light" onPress={prepage}>
+              {step == 1 ? "Close" : "Previous"}
+            </Button>
+          )}
           <Button color="primary" onPress={nextpage} isDisabled={!checkdata}>
-            Next
+            {step == 1 ? "Next" : step == 2 ? "Submit" : "Finish"}
           </Button>
         </ModalFooter>
       </ModalContent>
