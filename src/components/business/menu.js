@@ -2,12 +2,13 @@ import AddIcon from "@/res/icon/add";
 import { Button, Divider, Switch, cn } from "@nextui-org/react";
 import { useState } from "react";
 
-export default function MenuBusiness({data}) {
-  const[piaccept,setpiaccept]=useState(data.payment)
+export default function MenuBusiness({ data }) {
+  const [piaccept, setpiaccept] = useState(data.payment);
   return (
     <div className="w-full h-full px-4 py-2">
       <Switch
-      isSelected={piaccept} onValueChange={setpiaccept}
+        isSelected={piaccept}
+        onValueChange={setpiaccept}
         classNames={{
           base: cn(
             "inline-flex flex-row-reverse w-full max-w-md bg-content1 hover:bg-content2 items-center",
@@ -33,16 +34,17 @@ export default function MenuBusiness({data}) {
           </p>
         </div>
       </Switch>
-      <Divider className="my-2"/>
-      
+      <Divider className="my-2" />
 
       <div className="w-full flex h-10 stroke-accent-500 justify-center">
-        <Button isIconOnly className="flex justify-center py-1 items-center bg-gradient-to-tr from-primary-500 to-secondary shadow-lg w-full h-full">
-            <div className="h-8 w-8">
-            <AddIcon/>
-            </div>        
+        <Button
+          isIconOnly
+          className="flex justify-center py-1 items-center bg-gradient-to-tr from-primary-500 to-secondary shadow-lg w-full h-full"
+        >
+          <div className="h-8 w-8">
+            <AddIcon />
+          </div>
         </Button>
-        
       </div>
     </div>
   );
