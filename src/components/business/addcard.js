@@ -10,7 +10,7 @@ export default function AddCard({ order }) {
             <div className="w-full">
               <div className="w-full flex justify-center">
                 <div className=" w-32 stroke-secondary">
-                  <AddIcon/>
+                  <AddIcon />
                 </div>
               </div>
               <h1 className="text-center text-secondary font-semibold text-4xl">
