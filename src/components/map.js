@@ -42,7 +42,7 @@ export default function MapMenu() {
         window.location.ancestorOrigins[0] == "https://sandbox.minepi.com" ||
         window.location.ancestorOrigins[0] == "https://app-cdn.minepi.com"
       ) {
-        setLocation({ latitude:23.553118, longitude:121.0211024,countrycode:'TW' });
+        parent.window.location='https://easy-goods.vercel.app/'
       }else{
       navigator.geolocation.getCurrentPosition(({ coords }) => {
           const { latitude, longitude } = coords;
