@@ -20,32 +20,28 @@ import OrderCard from "@/components/business/ordercard";
 import dynamic from "next/dynamic";
 
 export default function BusinessPage({ params }) {
-  const snap = useContext(OwnerContext);
+  const {ownershops,setshops} = useContext(OwnerContext);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [currentshop, setcurrentshop] = useState(null);
   const [shoplist, setshoplist] = useState([]);
   const [selected, setSelected] = useState("order");
   useEffect(() => {
-    if (snap == null) return;
-    if (snap.empty) {
+    if (ownershops == null) return;
+    if (ownershops.empty) {
       setcurrentshop(null);
       setshoplist([]);
     } else {
-      let count = 0;
-      if (shoplist.length != 0) {
-        setshoplist([]);
-      }
-      snap.forEach((doc) => {
+      setcurrentshop(0)
+      let temp = []
+      ownershops.forEach((doc) => {        
         let data = doc.data();
-        if (count == 0) {
-          setcurrentshop(0);
-          count++;
-        }
+        console.log(data)
         data.id = doc.id;
-        setshoplist([...shoplist, data]);
+        temp.push(data)
       });
+      setshoplist(temp);
     }
-  }, [snap]);
+  }, [ownershops]);
   const InfoBusiness = useMemo(
     () =>
       dynamic(() => import("@/components/business/info"), {
@@ -97,9 +93,7 @@ export default function BusinessPage({ params }) {
   );
 
   useEffect(() => {
-    console.log(currentshop);
     if (currentshop == null) return;
-    console.log(shoplist[currentshop].id);
     const q = query(
       collection(db, "offer"),
       where("shop", "==", shoplist[currentshop].id)
@@ -107,20 +101,20 @@ export default function BusinessPage({ params }) {
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const cities = [];
       querySnapshot.forEach((doc) => {
-        console.log(doc.data());
         cities.push(doc.data().buyer);
       });
-      console.log("Current cities in CA: ", cities.join(", "));
     });
   }, [currentshop]);
 
   const handledropdown = (key) => {
     if (key == "new") {
       onOpen();
+    }else{
+      setcurrentshop(key)
     }
   };
 
-  if (snap == null || shoplist == null) return <LoadingPage />;
+  if (ownershops == null || shoplist == null) return <LoadingPage />;
   return (
     <div className="w-full h-full">
       <div className="flex w-full px-5 py-3">
@@ -137,18 +131,18 @@ export default function BusinessPage({ params }) {
           </DropdownTrigger>
           <DropdownMenu
             variant="faded"
-            aria-label=""
+            aria-label="Dropdown menu for shop"
             className="w-80"
             onAction={handledropdown}
           >
             {shoplist.length == 0 ? null : (
-              <DropdownSection showDivider>
-                {shoplist.map((doc) => {
-                  return <DropdownItem key={doc.name}>{doc.name}</DropdownItem>;
+              <DropdownSection showDivider aria-label='shoplist'>
+                {shoplist.map((doc,index) => {
+                  return <DropdownItem key={index}>{doc.name}</DropdownItem>;
                 })}
               </DropdownSection>
             )}
-            <DropdownSection>
+            <DropdownSection aria-label='new shop creation'>
               <DropdownItem
                 key="new"
                 shortcut="+"
@@ -195,7 +189,7 @@ export default function BusinessPage({ params }) {
           </div>
         </div>
       </div>
-      <AddBusinessModal isOpen={isOpen} onClose={onClose} lang={params.lang} />
+      <AddBusinessModal isOpen={isOpen} onClose={onClose} lang={params.lang} reload={setshops} />
     </div>
   );
 }

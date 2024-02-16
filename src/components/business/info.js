@@ -1,5 +1,5 @@
 import { Input, Select, SelectItem } from "@nextui-org/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 export default function InfoBusiness({ info }) {
   const [shoptype, settype] = useState([info.type]);
   const [name, setname] = useState(info.name);
@@ -7,6 +7,11 @@ export default function InfoBusiness({ info }) {
   const edit = () => {
     console.log(countries);
   };
+  useEffect(()=>{
+    settype([info.type])
+    setname(info.name)
+    setaddress(info.address)
+  },[info])
   return (
     <div className="w-full h-full px-3">
       <div className="w-full h-full flex flex-col gap gap-4">
@@ -277,6 +282,7 @@ export default function InfoBusiness({ info }) {
           </SelectItem>
         </Select>
         <Input
+        isReadOnly
           labelPlacement="outside"
           color="secondary"
           type="text"
@@ -291,6 +297,12 @@ export default function InfoBusiness({ info }) {
             label: "text-accent text-md font-semibold text-center w-full",
           }}
         />
+        <div className="text-accent text-md font-semibold text-center w-full">
+          Photo
+        </div>
+        <div className="">
+          
+        </div>
       </div>
     </div>
   );

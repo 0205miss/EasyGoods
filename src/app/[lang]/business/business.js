@@ -1,5 +1,5 @@
 "use client";
-import { query, where, collection, onSnapshot } from "firebase/firestore";
+import { query, where, collection, getDocs } from "firebase/firestore";
 import { createContext, useContext, useEffect, useState } from "react";
 import { PiContext } from "./pi";
 import { db } from "@/components/firestore";
@@ -21,9 +21,8 @@ export default function BusinessSelector({ children }) {
           shopRef,
           where("owner", "array-contains", auth.user.username)
         );
-        const unsubscribe = onSnapshot(q, (querySnapshot) => {
-          setshops(querySnapshot);
-        });
+        const querySnapshot = await getDocs(q);
+        setshops(querySnapshot);
       })
       .catch(function (error) {
         console.error(error);
@@ -32,6 +31,8 @@ export default function BusinessSelector({ children }) {
   }, []);
 
   return (
-    <OwnerContext.Provider value={ownershops}>{children}</OwnerContext.Provider>
+    <OwnerContext.Provider value={{ ownershops, setshops }}>
+      {children}
+    </OwnerContext.Provider>
   );
 }
