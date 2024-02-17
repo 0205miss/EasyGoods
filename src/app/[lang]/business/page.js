@@ -165,7 +165,7 @@ export default function BusinessPage({ params }) {
         ) : selected == "menu" ? (
           <MenuBusiness data={shoplist[currentshop]} />
         ) : (
-          <InfoBusiness info={shoplist[currentshop]} />
+          <InfoBusiness info={shoplist[currentshop]} setinfo={setshoplist} index={currentshop} origin={shoplist} />
         )}
       </div>
 
