@@ -42,14 +42,25 @@ export default function MapMenu({ lang, lat = null, long = null }) {
       console.error(error);
       console.log("pi sdk failed");
     });
-    if (lat == null || long == null) {
-      window.pi.openUrlInSystemBrowser(
-        process.env.NEXT_PUBLIC_USER_LOCATION_DOMAIN +
-          lang +
-          "/getuserlocation"
-      );
+    const scopes = ["payments", "username", "wallet_address", "roles"];
+    function onIncompletePaymentFound(payment) {
+      /* ... */
     }
-    setpi(window.Pi);
+    window.Pi.authenticate(scopes, onIncompletePaymentFound)
+      .then(function (auth) {
+        setpi(window.Pi);
+        if (lat == null || long == null) {
+          window.pi.openUrlInSystemBrowser(
+            process.env.NEXT_PUBLIC_USER_LOCATION_DOMAIN +
+              lang +
+              "/getuserlocation"
+          );
+        }
+      })
+      .catch(function (error) {
+        console.error(error);
+        console.log("pi sdk failed");
+      });
   };
 
   useEffect(() => {
@@ -103,12 +114,13 @@ export default function MapMenu({ lang, lat = null, long = null }) {
     markers();
   }, [location]);
   const searchshop = () => {};
-  if (location == null) return (
-    <div className="w-full h-full flex justify-center items-center">
-      <Spinner color="warning" size="lg" />
-      <Script src="https://sdk.minepi.com/pi-sdk.js" onLoad={piload}></Script>
-    </div>
-  ); //loading map
+  if (location == null)
+    return (
+      <div className="w-full h-full flex justify-center items-center">
+        <Spinner color="warning" size="lg" />
+        <Script src="https://sdk.minepi.com/pi-sdk.js" onLoad={piload}></Script>
+      </div>
+    ); //loading map
 
   return (
     <>
