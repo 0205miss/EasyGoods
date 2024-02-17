@@ -43,11 +43,13 @@ export default function MapMenu({ lang, lat = null, long = null }) {
       console.log("pi sdk failed");
     });
     if (lat == null || long == null) {
-      window.Pi.openUrlInSystemBrowser(
-        process.env.NEXT_PUBLIC_USER_LOCATION_DOMAIN +
-          lang +
-          "/getuserlocation"
-      );
+      if(navigator.userAgent.indexOf('Android') > -1 || navigator.userAgent.indexOf('Adr') > -1){
+        window.Pi.openUrlInSystemBrowser(
+          process.env.NEXT_PUBLIC_USER_LOCATION_DOMAIN +
+            lang +
+            "/getuserlocation"
+        );
+      }      
     }
     setpi(window.Pi);
   };
@@ -61,6 +63,13 @@ export default function MapMenu({ lang, lat = null, long = null }) {
         window.location.ancestorOrigins[0] == "https://easygoods5604.pinet.com"
       ) {
         if (lat == null || long == null) {
+          if(navigator.userAgent.indexOf('Android') > -1 || navigator.userAgent.indexOf('Adr') > -1){
+
+          }else{
+            parent.window.location = process.env.NEXT_PUBLIC_USER_LOCATION_DOMAIN +
+            lang +
+            "/getuserlocation"
+          }
         } else {
           const latitude = parseFloat(lat);
           const longitude = parseFloat(long);

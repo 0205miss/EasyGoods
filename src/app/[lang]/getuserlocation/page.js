@@ -10,9 +10,11 @@ export default function GetUserPage({ params }) {
 
       navigator.geolocation.getCurrentPosition(({ coords }) => {
         const { latitude, longitude } = coords;
-        window.open("https://easygoods5604.pinet.com/" +
-        params.lang +
-        `/map/${latitude}/${longitude}`)
+        location.assign(
+          process.env.NEXT_PUBLIC_APP_DOMAIN +
+            params.lang +
+            `/map/${latitude}/${longitude}`
+        );
       });
     }
   }, []);
