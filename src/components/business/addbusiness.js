@@ -21,6 +21,7 @@ import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
 import { auth_firebase, db } from "../firestore";
 import { iso1A2Code } from "@rapideditor/country-coder";
 import { onAuthStateChanged } from "firebase/auth";
+import { Bed } from "@/res/icon/bed";
 
 export default function AddBusinessModal({ isOpen, onClose, lang, reload }) {
   const [step, setstep] = useState(1);
@@ -387,6 +388,17 @@ export default function AddBusinessModal({ isOpen, onClose, lang, reload }) {
                   }
                 >
                   Bakery
+                </SelectItem>
+                <SelectItem
+                  key="Hotel"
+                  value="Hotel"
+                  startContent={
+                    <div className=" w-6 h-6 fill-black">
+                      <Bed/>
+                    </div>
+                  }
+                >
+                  Hotel
                 </SelectItem>
                 <SelectItem
                   key="Other"
