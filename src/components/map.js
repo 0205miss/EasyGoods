@@ -41,6 +41,13 @@ export default function MapMenu({ lang, lat = null, long = null }) {
       console.error(error);
       console.log("pi sdk failed");
     });
+    if (lat == null || long == null) {
+      window.pi.openUrlInSystemBrowser(
+        process.env.NEXT_PUBLIC_USER_LOCATION_DOMAIN +
+          lang +
+          "/getuserlocation"
+      );
+    }
     setpi(window.Pi);
   };
 
@@ -53,11 +60,6 @@ export default function MapMenu({ lang, lat = null, long = null }) {
         window.location.ancestorOrigins[0] == "https://easygoods5604.pinet.com"
       ) {
         if (lat == null || long == null) {
-          pi.openUrlInSystemBrowser(
-            process.env.NEXT_PUBLIC_USER_LOCATION_DOMAIN +
-              lang +
-              "/getuserlocation"
-          );
         } else {
           const latitude = parseFloat(lat);
           const longitude = parseFloat(long);
