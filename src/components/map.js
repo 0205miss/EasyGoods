@@ -9,6 +9,7 @@ import L from "leaflet";
 import { iso1A2Code } from "@rapideditor/country-coder";
 import { db } from "./firestore";
 import AwesomeMarkers from "leaflet.awesome-markers";
+import Script from "next/script";
 
 const iconPerson = new L.Icon({
   iconUrl: "https://svgshare.com/i/12NF.svg",
@@ -30,6 +31,18 @@ const testicon = new L.AwesomeMarkers.icon({
 export default function MapMenu({ lang, lat = null, long = null }) {
   const [location, setLocation] = useState(null);
   const [position, setPosition] = useState([]);
+  const [pi, setpi] = useState(null);
+
+  const piload = () => {
+    window.Pi.init({
+      version: "2.0",
+      sandbox: process.env.NEXT_PUBLIC_APP_SANDBOX == "true" ? true : false,
+    }).catch(function (error) {
+      console.error(error);
+      console.log("pi sdk failed");
+    });
+    setpi(window.Pi);
+  };
 
   useEffect(() => {
     if ("geolocation" in navigator) {
@@ -40,10 +53,11 @@ export default function MapMenu({ lang, lat = null, long = null }) {
         window.location.ancestorOrigins[0] == "https://easygoods5604.pinet.com"
       ) {
         if (lat == null || long == null) {
-          parent.window.location =
+          pi.openUrlInSystemBrowser(
             process.env.NEXT_PUBLIC_USER_LOCATION_DOMAIN +
-            lang +
-            "/getuserlocation";
+              lang +
+              "/getuserlocation"
+          );
         } else {
           const latitude = parseFloat(lat);
           const longitude = parseFloat(long);
@@ -74,24 +88,24 @@ export default function MapMenu({ lang, lat = null, long = null }) {
     if (querySnapshot.empty) {
       console.log("No matching documents.");
     } else {
-      let temp = []
+      let temp = [];
       querySnapshot.forEach((doc) => {
         let data = doc.data();
-        temp.push(data)
-
+        temp.push(data);
       });
-      setPosition(temp)
+      setPosition(temp);
     }
-    }
-  useEffect(()=>{
-    markers()
-  },[location])
+  };
+  useEffect(() => {
+    markers();
+  }, [location]);
   const searchshop = () => {};
   if (location == null) return; //loading map
 
   return (
     <>
       <div className="fixed w-full z-10 h-12 top-0 mt-5 ">
+        <Script src="https://sdk.minepi.com/pi-sdk.js" onLoad={piload}></Script>
         <div className="mx-5 h-full ">
           <input
             className="w-full h-full rounded bg-[#C7CEE9] ring-offset-[#C7CEE9] placeholder:text-ui-accent shadow-lg px-5 ring-offset-2 ring-2 ring-ui-accent"
