@@ -17,12 +17,12 @@ import { geocoding } from "@/action/geocoding";
 import { Correct } from "@/res/icon/check";
 import dynamic from "next/dynamic";
 import { Location } from "@/res/icon/location";
-import { collection, addDoc,query,where,getDocs } from "firebase/firestore";
+import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
 import { auth_firebase, db } from "../firestore";
 import { iso1A2Code } from "@rapideditor/country-coder";
 import { onAuthStateChanged } from "firebase/auth";
 
-export default function AddBusinessModal({ isOpen, onClose, lang,reload }) {
+export default function AddBusinessModal({ isOpen, onClose, lang, reload }) {
   const [step, setstep] = useState(1);
   const [shoptype, settype] = useState(new Set([]));
   const [name, setname] = useState("");
@@ -41,38 +41,26 @@ export default function AddBusinessModal({ isOpen, onClose, lang,reload }) {
       setstep(step - 1);
     }
   };
-  const getnewstatus = async()=>{
-    const shopRef = collection(db, "shop");
-        const q = query(
-          shopRef,
-          where("owner", "array-contains", auth.user.username)
-        );
-        const querySnapshot = await getDocs(q);
-        setshops(querySnapshot);
-  }
   const nextpage = () => {
     if (step == 3) {
       onClose();
-      onAuthStateChanged(auth_firebase,async (user)=>{
-        if(user){
+      onAuthStateChanged(auth_firebase, async (user) => {
+        if (user) {
           const shopRef = collection(db, "shop");
-        const q = query(
-          shopRef,
-          where("owner", "array-contains", user.uid)
-        );
-        const querySnapshot = await getDocs(q);
-        reload(querySnapshot);
-        }else{
+          const q = query(shopRef, where("owner", "array-contains", user.uid));
+          const querySnapshot = await getDocs(q);
+          reload(querySnapshot);
+        } else {
           alert("Something Wrong\nContact Developers");
         }
-      })
+      });
       setstep(1);
-      setsubmitted(false)
+      setsubmitted(false);
     } else if (step == 2) {
       setstep(step + 1);
       //submit
-      onAuthStateChanged(auth_firebase,async (user)=>{
-        if(user){
+      onAuthStateChanged(auth_firebase, async (user) => {
+        if (user) {
           const docRef = await addDoc(collection(db, "shop"), {
             address: address,
             country: iso1A2Code([geometric.lng, geometric.lat]),
@@ -83,12 +71,13 @@ export default function AddBusinessModal({ isOpen, onClose, lang,reload }) {
             payment: pipay,
             privacyagree: privacy,
             type: shoptype.currentKey,
+            photo: [],
           });
-          setsubmitted(true)
-        }else{
+          setsubmitted(true);
+        } else {
           alert("Something Wrong\nContact Developers");
         }
-      })
+      });
     } else {
       setstep(step + 1);
       setcheck(false);
@@ -530,13 +519,15 @@ export default function AddBusinessModal({ isOpen, onClose, lang,reload }) {
           {step == 3 && (
             <div className="w-full h-full">
               <div className="w-full h-40 flex justify-center">
-
-                {submitted?<div className="fill-green-500 h-40 w-40" 
-                    >
-                  <Correct />
-                </div>:<div className="w-full h-full flex justify-center items-center">
-            <Spinner color="warning" size="lg" />
-          </div>}
+                {submitted ? (
+                  <div className="fill-green-500 h-40 w-40">
+                    <Correct />
+                  </div>
+                ) : (
+                  <div className="w-full h-full flex justify-center items-center">
+                    <Spinner color="warning" size="lg" />
+                  </div>
+                )}
               </div>
             </div>
           )}
