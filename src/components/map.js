@@ -10,6 +10,7 @@ import { iso1A2Code } from "@rapideditor/country-coder";
 import { db } from "./firestore";
 import AwesomeMarkers from "leaflet.awesome-markers";
 import Script from "next/script";
+import { Spinner } from "@nextui-org/react";
 
 const iconPerson = new L.Icon({
   iconUrl: "https://svgshare.com/i/12NF.svg",
@@ -102,12 +103,16 @@ export default function MapMenu({ lang, lat = null, long = null }) {
     markers();
   }, [location]);
   const searchshop = () => {};
-  if (location == null) return; //loading map
+  if (location == null) return (
+    <div className="w-full h-full flex justify-center items-center">
+      <Spinner color="warning" size="lg" />
+      <Script src="https://sdk.minepi.com/pi-sdk.js" onLoad={piload}></Script>
+    </div>
+  ); //loading map
 
   return (
     <>
       <div className="fixed w-full z-10 h-12 top-0 mt-5 ">
-        <Script src="https://sdk.minepi.com/pi-sdk.js" onLoad={piload}></Script>
         <div className="mx-5 h-full ">
           <input
             className="w-full h-full rounded bg-[#C7CEE9] ring-offset-[#C7CEE9] placeholder:text-ui-accent shadow-lg px-5 ring-offset-2 ring-2 ring-ui-accent"
