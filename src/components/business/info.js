@@ -1,17 +1,52 @@
-import { Input, Select, SelectItem } from "@nextui-org/react";
+import { Garbage } from "@/res/icon/garbage";
+import {
+  Input,
+  Select,
+  SelectItem,
+  Image,
+  Button,
+  Spinner,
+} from "@nextui-org/react";
+import { db, storage } from "../firestore";
 import { useEffect, useState } from "react";
-export default function InfoBusiness({ info }) {
+import {
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+  deleteObject,
+} from "firebase/storage";
+import { arrayRemove, arrayUnion, doc, updateDoc } from "firebase/firestore";
+import { Upload } from "@/res/icon/upload";
+
+export default function InfoBusiness({ info, setinfo, index, origin }) {
   const [shoptype, settype] = useState([info.type]);
   const [name, setname] = useState(info.name);
   const [address, setaddress] = useState(info.address);
-  const edit = () => {
-    console.log(countries);
+  const [upload, setupload] = useState(0);
+  const [remove_photo, setdelete] = useState(null);
+  useEffect(() => {
+    settype([info.type]);
+    setname(info.name);
+    setaddress(info.address);
+  }, [info]);
+
+  const fileupload = async (target) => {
+    const image = target.files ? target.files[0] : null;
+    if (!image) {
+      return;
+    }
+    const imageURL = await updateImage(info.id, image);
+    let temp = origin;
+    temp[index].photo.push(imageURL);
+    setinfo(temp);
+    setupload(0);
   };
-  useEffect(()=>{
-    settype([info.type])
-    setname(info.name)
-    setaddress(info.address)
-  },[info])
+
+const reloadphoto = (temp) =>{
+  setinfo(temp);
+  setdelete(null)
+}
+
   return (
     <div className="w-full h-full px-3">
       <div className="w-full h-full flex flex-col gap gap-4">
@@ -282,7 +317,7 @@ export default function InfoBusiness({ info }) {
           </SelectItem>
         </Select>
         <Input
-        isReadOnly
+          isReadOnly
           labelPlacement="outside"
           color="secondary"
           type="text"
@@ -300,10 +335,119 @@ export default function InfoBusiness({ info }) {
         <div className="text-accent text-md font-semibold text-center w-full">
           Photo
         </div>
-        <div className="">
-          
+        <div className=" overflow-x-auto h-72 flex">
+          <div className="justify-center flex-none  px-2">
+            <div
+              className=" w-52 h-72 flex justify-center flex-col gap-3 items-center bg-white rounded-xl p-3"
+              onClick={() => {
+                if (upload == 0) {
+                  document.querySelector(".input-field").click();
+                }
+              }}
+            >
+              <div className="stroke-secondary-200 h-24 w-24 flex justify-center items-center">
+                {upload == 0 ? (
+                  <Upload />
+                ) : (
+                  <Spinner color="warning" size="lg" />
+                )}
+              </div>
+
+              <form>
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="input-field"
+                  hidden
+                  onChange={(e) => {
+                    setupload(1);
+                    fileupload(e.target);
+                  }}
+                />
+              </form>
+            </div>
+          </div>
+          {info.photo.length != 0 &&
+            info.photo.toReversed().map((url, i) => {
+              return (
+                <div className="justify-center flex-none  px-2" key={i}>
+                  <div className=" w-52 h-72 flex justify-center flex-col gap-3 items-center bg-white rounded-xl p-3">
+                    <div className="w-48 h-48 flex justify-center items-center">
+                      {remove_photo==i+1? <Spinner color="warning" size="lg"/>:<Image
+                        className="!object-contain w-48 h-48"
+                        radius="none"
+                        src={url}
+                      />}
+                    </div>
+                    <div>
+                      <Button
+                        isIconOnly
+                        className="fill-white p-2"
+                        color="danger"
+                        aria-label="Delete Pic"
+                        onClick={async () => {
+                          setdelete(i+1)
+                          await deleteImage(info.id, url);
+                          let temp = origin;
+                          await temp[index].photo.splice(info.photo.length-1-i)
+                          reloadphoto(temp)
+                        }}
+                      >
+                        <Garbage />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
         </div>
       </div>
     </div>
   );
+}
+
+async function updateImage(Id, image) {
+  try {
+    if (!Id) throw new Error("No restaurant ID has been provided.");
+
+    if (!image || !image.name)
+      throw new Error("A valid image has not been provided.");
+
+    const publicImageUrl = await uploadImage(Id, image);
+    await updateImageReference(Id, publicImageUrl);
+
+    return publicImageUrl;
+  } catch (error) {
+    console.error("Error processing request:", error);
+  }
+}
+
+async function uploadImage(Id, image) {
+  const filePath = `${Id}/${image.name}`;
+  const newImageRef = ref(storage, filePath);
+  await uploadBytesResumable(newImageRef, image);
+
+  return await getDownloadURL(newImageRef);
+}
+
+async function updateImageReference(Id, url) {
+  const shopRef = doc(db, "shop", Id);
+  await updateDoc(shopRef, {
+    photo: arrayUnion(url),
+  });
+}
+
+async function deleteImage(Id, url) {
+  const shopRef = doc(db, "shop", Id);
+  await updateDoc(shopRef, {
+    photo: arrayRemove(url),
+  });
+  const httpsRef = ref(storage, url);
+  deleteObject(httpsRef)
+    .then(() => {
+      return 1;
+    })
+    .catch((error) => {
+      return 0;
+    });
 }
