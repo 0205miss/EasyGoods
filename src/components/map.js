@@ -22,13 +22,7 @@ const iconPerson = new L.Icon({
   shadowAnchor: null,
   iconSize: new L.Point(60, 60),
 });
-const testicon = new L.AwesomeMarkers.icon({
-  icon: "fa-university",
-  prefix: "fa",
-  markerColor: "lightblue",
-  iconColor: "white",
-  extraClasses: "fill-[#8CA0D7]",
-});
+
 export default function MapMenu({ lang, lat = null, long = null }) {
   const [location, setLocation] = useState(null);
   const [position, setPosition] = useState([]);
@@ -86,7 +80,7 @@ export default function MapMenu({ lang, lat = null, long = null }) {
             longitude,
             countrycode: iso1A2Code([longitude, latitude]),
           });
-          setcode(iso1A2Code([longitude, latitude]))
+          setcode(iso1A2Code([longitude, latitude]));
         }
       } else {
         navigator.geolocation.getCurrentPosition(({ coords }) => {
@@ -96,7 +90,7 @@ export default function MapMenu({ lang, lat = null, long = null }) {
             longitude,
             countrycode: iso1A2Code([longitude, latitude]),
           });
-          setcode(iso1A2Code([longitude, latitude]))
+          setcode(iso1A2Code([longitude, latitude]));
         });
       }
     }
@@ -119,19 +113,17 @@ export default function MapMenu({ lang, lat = null, long = null }) {
     }
   };
   function CheckCenter() {
-    
     const map = useMapEvent("moveend", async () => {
       let locate = map.getCenter();
-      console.log('new'+code);
+      console.log("new" + code);
       let c = iso1A2Code([locate.lng, locate.lat]);
       if (iso1A2Code([locate.lng, locate.lat]) != code) {
-        
         setcode(iso1A2Code([locate.lng, locate.lat]));
       } else {
       }
     });
   }
-  const updatemarker = async () =>{
+  const updatemarker = async () => {
     const shopRef = collection(db, "shop");
     const q = query(shopRef, where("country", "==", code));
     const querySnapshot = await getDocs(q);
@@ -142,19 +134,19 @@ export default function MapMenu({ lang, lat = null, long = null }) {
       querySnapshot.forEach((doc) => {
         let data = doc.data();
         temp.push(data);
-        console.log(data)
+        console.log(data);
         setPosition(temp);
       });
     }
-  }
-  useEffect(()=>{
-    updatemarker()
-  },[code])
+  };
+  useEffect(() => {
+    updatemarker();
+  }, [code]);
   useEffect(() => {
     markers(location);
   }, [location]);
   useEffect(() => {
-    console.log('update')
+    console.log("update");
   }, [position]);
   const searchshop = () => {};
   if (location == null)
@@ -168,6 +160,10 @@ export default function MapMenu({ lang, lat = null, long = null }) {
   return (
     <>
       <div className="fixed w-full z-10 h-12 top-0 mt-5 ">
+        <Script
+          src="https://kit.fontawesome.com/2b772bd246.js"
+          crossOrigin="anonymous"
+        />
         <div className="mx-5 h-full ">
           <input
             className="w-full h-full rounded bg-[#C7CEE9] ring-offset-[#C7CEE9] placeholder:text-ui-accent shadow-lg px-5 ring-offset-2 ring-2 ring-ui-accent"
@@ -196,7 +192,21 @@ export default function MapMenu({ lang, lat = null, long = null }) {
           : position.map((item) => (
               <Marker
                 key={item.name}
-                icon={testicon}
+                icon={
+                  item.type == "coffee"
+                    ? coffeeicon
+                    : item.type == "Restaurant"
+                    ? restauranticon
+                    : item.type == "Grocery"
+                    ? bookstore
+                    : item.type == "BookStore"
+                    ? bookstore
+                    : item.type == "Bakery"
+                    ? bakery
+                    : item.type == "Hotel"
+                    ? hotelicon
+                    : other
+                }
                 position={[item.latitude, item.longitude]}
               ></Marker>
             ))}
@@ -206,3 +216,52 @@ export default function MapMenu({ lang, lat = null, long = null }) {
   );
 }
 
+const coffeeicon = new L.AwesomeMarkers.icon({
+  icon: "fa-mug-saucer",
+  prefix: "fa",
+  markerColor: "lightblue",
+  iconColor: "white",
+  extraClasses: "fill-[#8CA0D7] fa-solid",
+});
+const restauranticon = new L.AwesomeMarkers.icon({
+  icon: "fa-cutlery",
+  prefix: "fa",
+  markerColor: "lightblue",
+  iconColor: "white",
+  extraClasses: "fill-[#8CA0D7]",
+});
+const grocery = new L.AwesomeMarkers.icon({
+  icon: "fa-shopping-bag",
+  prefix: "fa",
+  markerColor: "lightblue",
+  iconColor: "white",
+  extraClasses: "fill-[#8CA0D7]",
+});
+const bookstore = new L.AwesomeMarkers.icon({
+  icon: "fa-book",
+  prefix: "fa",
+  markerColor: "lightblue",
+  iconColor: "white",
+  extraClasses: "fill-[#8CA0D7]",
+});
+const bakery = new L.AwesomeMarkers.icon({
+  icon: "fa-bread-slice",
+  prefix: "fa",
+  markerColor: "lightblue",
+  iconColor: "white",
+  extraClasses: "fill-[#8CA0D7]",
+});
+const hotelicon = new L.AwesomeMarkers.icon({
+  icon: "fa-bed",
+  prefix: "fa",
+  markerColor: "lightblue",
+  iconColor: "white",
+  extraClasses: "fill-[#8CA0D7] fa-solid",
+});
+const other = new L.AwesomeMarkers.icon({
+  icon: "fa-university",
+  prefix: "fa",
+  markerColor: "lightblue",
+  iconColor: "white",
+  extraClasses: "fill-[#8CA0D7]",
+});
