@@ -9,7 +9,7 @@ import { auth_firebase } from "@/components/firestore";
 
 export const PiContext = createContext();
 
-export default function PiUser({ children }) {
+export default function PiUser({ children,transcript }) {
   const [pi, setpi] = useState(null);
   const [ispi, setispi] = useState(null);
   const [firebase, setfirebase] = useState(null);
@@ -61,7 +61,7 @@ export default function PiUser({ children }) {
     }
   }, []);
   if (ispi == false && ispi != null) {
-    return <UnAuth />;
+    return <UnAuth transcript={transcript}/>;
   } else if (ispi == null || pi == null || firebase == null) {
     return (
       <>
