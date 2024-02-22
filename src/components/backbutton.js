@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 
-export default function BackButton() {
+export default function BackButton({lang}) {
   const router = useRouter();
   return (
     <button
@@ -9,7 +9,7 @@ export default function BackButton() {
       type="button"
       onClick={() => router.back()}
     >
-      Back
+      {lang.Back}
     </button>
   );
 }

@@ -1,6 +1,6 @@
 import BackButton from "./backbutton";
 
-export default function UnAuth() {
+export default function UnAuth({transcript}) {
   return (
     <div className="w-screen h-screen flex justify-center items-center">
       <div className="w-full text-center">
@@ -23,8 +23,8 @@ export default function UnAuth() {
             </g>
           </svg>
         </div>
-        <h1 className="text-xl">You need to use PiBrowser for the feature</h1>
-        <BackButton />
+        <h1 className="text-xl">{transcript["You need to use PiBrowser for the feature"]}</h1>
+        <BackButton lang={transcript} />
       </div>
     </div>
   );
