@@ -177,7 +177,7 @@ export default function MapMenu({ lang, lat = null, long = null }) {
         zoomControl={false}
         attributionControl={false}
         className="w-full h-full !z-0"
-        center={[21.0387898, 105.8131353]}
+        center={[location.latitude, location.longitude]}
         zoom={16}
         ref={setMap}
         scrollWheelZoom={false}
