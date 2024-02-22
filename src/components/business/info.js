@@ -6,6 +6,7 @@ import {
   Image,
   Button,
   Spinner,
+  Checkbox,
 } from "@nextui-org/react";
 import { db, storage } from "../firestore";
 import { useEffect, useState } from "react";
@@ -25,6 +26,9 @@ export default function InfoBusiness({ info, setinfo, index, origin }) {
   const [address, setaddress] = useState(info.address);
   const [upload, setupload] = useState(0);
   const [remove_photo, setdelete] = useState(null);
+  const [opencheck, set247] = useState(info.opening == "00:00~23:59" && true);
+  const [opentime, setopentime] = useState(info.opening.substring(0, 5));
+  const [closetime, setclosetime] = useState(info.opening.substring(6, 11));
   useEffect(() => {
     settype([info.type]);
     setname(info.name);
@@ -49,8 +53,8 @@ export default function InfoBusiness({ info, setinfo, index, origin }) {
   };
 
   return (
-    <div className="w-full h-full px-3">
-      <div className="w-full h-full flex flex-col gap gap-4">
+    <div className="w-full h-full px-3 overflow-y-scroll pb-5">
+      <div className="w-full h-auto flex flex-col gap gap-4">
         <Input
           labelPlacement="outside"
           color="secondary"
@@ -328,6 +332,52 @@ export default function InfoBusiness({ info, setinfo, index, origin }) {
             Other
           </SelectItem>
         </Select>
+
+        <Checkbox
+          isSelected={opencheck}
+          onValueChange={set247}
+          color="secondary"
+          size="lg"
+        >
+          Open 24/7
+        </Checkbox>
+        {!opencheck && (
+          <>
+            <Input
+              labelPlacement="outside"
+              color="secondary"
+              type="time"
+              label="Start Time"
+              placeholder="Your Business Address"
+              variant="bordered"
+              value={opentime}
+              onValueChange={setopentime}
+              className="w-full"
+              classNames={{
+                inputWrapper: ["bg-primary", "h-12"],
+                input: ["text-white placeholder:text-white"],
+                label: "text-accent text-md font-semibold text-center w-full",
+              }}
+            />
+            <Input
+              labelPlacement="outside"
+              color="secondary"
+              type="time"
+              label="Close Time"
+              placeholder="Your Business Address"
+              variant="bordered"
+              value={closetime}
+              onValueChange={setclosetime}
+              className="w-full"
+              classNames={{
+                inputWrapper: ["bg-primary", "h-12"],
+                input: ["text-white placeholder:text-white"],
+                label: "text-accent text-md font-semibold text-center w-full",
+              }}
+            />
+          </>
+        )}
+
         <Input
           isReadOnly
           labelPlacement="outside"
