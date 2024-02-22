@@ -20,7 +20,13 @@ import { arrayRemove, arrayUnion, doc, updateDoc } from "firebase/firestore";
 import { Upload } from "@/res/icon/upload";
 import { Bed } from "@/res/icon/bed";
 
-export default function InfoBusiness({ info, setinfo, index, origin }) {
+export default function InfoBusiness({
+  transcript,
+  info,
+  setinfo,
+  index,
+  origin,
+}) {
   const [shoptype, settype] = useState([info.type]);
   const [name, setname] = useState(info.name);
   const [address, setaddress] = useState(info.address);
@@ -59,7 +65,7 @@ export default function InfoBusiness({ info, setinfo, index, origin }) {
           labelPlacement="outside"
           color="secondary"
           type="text"
-          label="Business Name"
+          label={transcript["Business Name"]}
           variant="bordered"
           value={name}
           onValueChange={setname}
@@ -72,8 +78,8 @@ export default function InfoBusiness({ info, setinfo, index, origin }) {
         />
         <Select
           labelPlacement="outside"
-          label="Category"
-          placeholder="Select Category"
+          label={transcript["Category"]}
+          placeholder={transcript["Select Category"]}
           fullWidth
           selectedKeys={shoptype}
           onSelectionChange={settype}
@@ -85,7 +91,7 @@ export default function InfoBusiness({ info, setinfo, index, origin }) {
         >
           <SelectItem
             key="coffee"
-            value="Coffee Shop"
+            value={transcript["Coffee Shop"]}
             startContent={
               <svg
                 width="1.5rem"
@@ -115,7 +121,7 @@ export default function InfoBusiness({ info, setinfo, index, origin }) {
               </svg>
             }
           >
-            Coffee Shop
+            {transcript["Coffee Shop"]}
           </SelectItem>
           <SelectItem
             key="Restaurant"
@@ -173,7 +179,7 @@ export default function InfoBusiness({ info, setinfo, index, origin }) {
               </svg>
             }
           >
-            Restaurant
+            {transcript["Restaurant"]}
           </SelectItem>
           <SelectItem
             key="Grocery"
@@ -205,7 +211,7 @@ export default function InfoBusiness({ info, setinfo, index, origin }) {
               </svg>
             }
           >
-            Grocery
+            {transcript["Grocery"]}
           </SelectItem>
           <SelectItem
             key="BookStore"
@@ -233,7 +239,7 @@ export default function InfoBusiness({ info, setinfo, index, origin }) {
               </svg>
             }
           >
-            BookStore
+            {transcript["BookStore"]}
           </SelectItem>
           <SelectItem
             key="Bakery"
@@ -271,7 +277,7 @@ export default function InfoBusiness({ info, setinfo, index, origin }) {
               </svg>
             }
           >
-            Bakery
+            {transcript["Bakery"]}
           </SelectItem>
           <SelectItem
             key="Hotel"
@@ -282,7 +288,7 @@ export default function InfoBusiness({ info, setinfo, index, origin }) {
               </div>
             }
           >
-            Hotel
+            {transcript["Hotel"]}
           </SelectItem>
           <SelectItem
             key="Other"
@@ -329,7 +335,7 @@ export default function InfoBusiness({ info, setinfo, index, origin }) {
               </svg>
             }
           >
-            Other
+            {transcript["Other"]}
           </SelectItem>
         </Select>
 
@@ -339,7 +345,7 @@ export default function InfoBusiness({ info, setinfo, index, origin }) {
           color="secondary"
           size="lg"
         >
-          Open 24/7
+          {transcript["Open 24 / 7"]}
         </Checkbox>
         {!opencheck && (
           <>
@@ -347,7 +353,7 @@ export default function InfoBusiness({ info, setinfo, index, origin }) {
               labelPlacement="outside"
               color="secondary"
               type="time"
-              label="Start Time"
+              label={transcript["Start Time"]}
               placeholder="Your Business Address"
               variant="bordered"
               value={opentime}
@@ -363,7 +369,7 @@ export default function InfoBusiness({ info, setinfo, index, origin }) {
               labelPlacement="outside"
               color="secondary"
               type="time"
-              label="Close Time"
+              label={transcript["Close Time"]}
               placeholder="Your Business Address"
               variant="bordered"
               value={closetime}
@@ -383,7 +389,7 @@ export default function InfoBusiness({ info, setinfo, index, origin }) {
           labelPlacement="outside"
           color="secondary"
           type="text"
-          label="Location"
+          label={transcript["Location"]}
           variant="bordered"
           value={address}
           onValueChange={setaddress}
@@ -395,7 +401,7 @@ export default function InfoBusiness({ info, setinfo, index, origin }) {
           }}
         />
         <div className="text-accent text-md font-semibold text-center w-full">
-          Photo
+          {transcript["Photo"]}
         </div>
         <div className=" overflow-x-auto h-72 flex">
           <div className="justify-center flex-none  px-2">
