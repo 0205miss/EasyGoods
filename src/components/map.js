@@ -198,7 +198,7 @@ export default function MapMenu({ lang, lat = null, long = null }) {
                     : item.type == "Restaurant"
                     ? restauranticon
                     : item.type == "Grocery"
-                    ? bookstore
+                    ? grocery
                     : item.type == "BookStore"
                     ? bookstore
                     : item.type == "Bakery"
