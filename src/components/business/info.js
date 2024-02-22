@@ -6,6 +6,7 @@ import {
   Image,
   Button,
   Spinner,
+  Checkbox,
 } from "@nextui-org/react";
 import { db, storage } from "../firestore";
 import { useEffect, useState } from "react";
@@ -17,6 +18,7 @@ import {
 } from "firebase/storage";
 import { arrayRemove, arrayUnion, doc, updateDoc } from "firebase/firestore";
 import { Upload } from "@/res/icon/upload";
+import { Bed } from "@/res/icon/bed";
 
 export default function InfoBusiness({ info, setinfo, index, origin }) {
   const [shoptype, settype] = useState([info.type]);
@@ -24,6 +26,9 @@ export default function InfoBusiness({ info, setinfo, index, origin }) {
   const [address, setaddress] = useState(info.address);
   const [upload, setupload] = useState(0);
   const [remove_photo, setdelete] = useState(null);
+  const [opencheck, set247] = useState(info.opening == "00:00~23:59" && true);
+  const [opentime, setopentime] = useState(info.opening.substring(0, 5));
+  const [closetime, setclosetime] = useState(info.opening.substring(6, 11));
   useEffect(() => {
     settype([info.type]);
     setname(info.name);
@@ -42,14 +47,14 @@ export default function InfoBusiness({ info, setinfo, index, origin }) {
     setupload(0);
   };
 
-const reloadphoto = (temp) =>{
-  setinfo(temp);
-  setdelete(null)
-}
+  const reloadphoto = (temp) => {
+    setinfo(temp);
+    setdelete(null);
+  };
 
   return (
-    <div className="w-full h-full px-3">
-      <div className="w-full h-full flex flex-col gap gap-4">
+    <div className="w-full h-full px-3 overflow-y-scroll pb-5">
+      <div className="w-full h-auto flex flex-col gap gap-4">
         <Input
           labelPlacement="outside"
           color="secondary"
@@ -269,6 +274,17 @@ const reloadphoto = (temp) =>{
             Bakery
           </SelectItem>
           <SelectItem
+            key="Hotel"
+            value="Hotel"
+            startContent={
+              <div className=" w-6 h-6 fill-black">
+                <Bed />
+              </div>
+            }
+          >
+            Hotel
+          </SelectItem>
+          <SelectItem
             key="Other"
             value="Other"
             startContent={
@@ -316,6 +332,52 @@ const reloadphoto = (temp) =>{
             Other
           </SelectItem>
         </Select>
+
+        <Checkbox
+          isSelected={opencheck}
+          onValueChange={set247}
+          color="secondary"
+          size="lg"
+        >
+          Open 24/7
+        </Checkbox>
+        {!opencheck && (
+          <>
+            <Input
+              labelPlacement="outside"
+              color="secondary"
+              type="time"
+              label="Start Time"
+              placeholder="Your Business Address"
+              variant="bordered"
+              value={opentime}
+              onValueChange={setopentime}
+              className="w-full"
+              classNames={{
+                inputWrapper: ["bg-primary", "h-12"],
+                input: ["text-white placeholder:text-white"],
+                label: "text-accent text-md font-semibold text-center w-full",
+              }}
+            />
+            <Input
+              labelPlacement="outside"
+              color="secondary"
+              type="time"
+              label="Close Time"
+              placeholder="Your Business Address"
+              variant="bordered"
+              value={closetime}
+              onValueChange={setclosetime}
+              className="w-full"
+              classNames={{
+                inputWrapper: ["bg-primary", "h-12"],
+                input: ["text-white placeholder:text-white"],
+                label: "text-accent text-md font-semibold text-center w-full",
+              }}
+            />
+          </>
+        )}
+
         <Input
           isReadOnly
           labelPlacement="outside"
@@ -373,11 +435,15 @@ const reloadphoto = (temp) =>{
                 <div className="justify-center flex-none  px-2" key={i}>
                   <div className=" w-52 h-72 flex justify-center flex-col gap-3 items-center bg-white rounded-xl p-3">
                     <div className="w-48 h-48 flex justify-center items-center">
-                      {remove_photo==i+1? <Spinner color="warning" size="lg"/>:<Image
-                        className="!object-contain w-48 h-48"
-                        radius="none"
-                        src={url}
-                      />}
+                      {remove_photo == i + 1 ? (
+                        <Spinner color="warning" size="lg" />
+                      ) : (
+                        <Image
+                          className="!object-contain w-48 h-48"
+                          radius="none"
+                          src={url}
+                        />
+                      )}
                     </div>
                     <div>
                       <Button
@@ -386,11 +452,13 @@ const reloadphoto = (temp) =>{
                         color="danger"
                         aria-label="Delete Pic"
                         onClick={async () => {
-                          setdelete(i+1)
+                          setdelete(i + 1);
                           await deleteImage(info.id, url);
                           let temp = origin;
-                          await temp[index].photo.splice(info.photo.length-1-i)
-                          reloadphoto(temp)
+                          await temp[index].photo.splice(
+                            info.photo.length - 1 - i
+                          );
+                          reloadphoto(temp);
                         }}
                       >
                         <Garbage />

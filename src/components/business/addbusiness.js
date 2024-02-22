@@ -21,6 +21,7 @@ import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
 import { auth_firebase, db } from "../firestore";
 import { iso1A2Code } from "@rapideditor/country-coder";
 import { onAuthStateChanged } from "firebase/auth";
+import { Bed } from "@/res/icon/bed";
 
 export default function AddBusinessModal({ isOpen, onClose, lang, reload }) {
   const [step, setstep] = useState(1);
@@ -33,7 +34,9 @@ export default function AddBusinessModal({ isOpen, onClose, lang, reload }) {
   const [address_valid, setaddress_valid] = useState(false);
   const [geometric, setgeometric] = useState({});
   const [submitted, setsubmitted] = useState(false);
-
+  const [opencheck, set247] = useState(false);
+  const [opentime, setopentime] = useState("00:00");
+  const [closetime, setclosetime] = useState("23:59");
   const prepage = () => {
     if (step == 1) {
       onClose();
@@ -72,6 +75,7 @@ export default function AddBusinessModal({ isOpen, onClose, lang, reload }) {
             privacyagree: privacy,
             type: shoptype.currentKey,
             photo: [],
+            opening: opencheck ? '00:00~23:59' : opentime+'~'+closetime
           });
           setsubmitted(true);
         } else {
@@ -389,6 +393,17 @@ export default function AddBusinessModal({ isOpen, onClose, lang, reload }) {
                   Bakery
                 </SelectItem>
                 <SelectItem
+                  key="Hotel"
+                  value="Hotel"
+                  startContent={
+                    <div className=" w-6 h-6 fill-black">
+                      <Bed />
+                    </div>
+                  }
+                >
+                  Hotel
+                </SelectItem>
+                <SelectItem
                   key="Other"
                   value="Other"
                   startContent={
@@ -436,6 +451,53 @@ export default function AddBusinessModal({ isOpen, onClose, lang, reload }) {
                   Other
                 </SelectItem>
               </Select>
+              <Checkbox
+                isSelected={opencheck}
+                onValueChange={set247}
+                color="secondary"
+                size="lg"
+              >
+                Open 24/7
+              </Checkbox>
+              {!opencheck && (
+                <>
+                  <Input
+                    labelPlacement="outside"
+                    color="secondary"
+                    type="time"
+                    label="Start Time"
+                    placeholder="Your Business Address"
+                    variant="bordered"
+                    value={opentime}
+                    onValueChange={setopentime}
+                    className="w-full"
+                    classNames={{
+                      inputWrapper: ["bg-primary", "h-12"],
+                      input: ["text-white placeholder:text-white"],
+                      label:
+                        "text-accent text-md font-semibold text-center w-full",
+                    }}
+                  />
+                  <Input
+                    labelPlacement="outside"
+                    color="secondary"
+                    type="time"
+                    label="Close Time"
+                    placeholder="Your Business Address"
+                    variant="bordered"
+                    value={closetime}
+                    onValueChange={setclosetime}
+                    className="w-full"
+                    classNames={{
+                      inputWrapper: ["bg-primary", "h-12"],
+                      input: ["text-white placeholder:text-white"],
+                      label:
+                        "text-accent text-md font-semibold text-center w-full",
+                    }}
+                  />
+                </>
+              )}
+
               <Input
                 labelPlacement="outside"
                 color="secondary"
