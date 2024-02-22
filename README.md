@@ -106,4 +106,4 @@ You can find some Jobs below
 
 ## Jobs 
 
-- [Translate](https://github.com/0205miss/EasyGoods/job/TRANSLATE.md)
+- [Translate](https://github.com/0205miss/EasyGoods/blob/main/job/TRANSLATE.md)
