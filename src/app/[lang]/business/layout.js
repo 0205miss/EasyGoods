@@ -1,11 +1,9 @@
 import BusinessSelector from "./business";
 import PiUser from "./pi";
-import { getDictionary } from "@/lib/dictionary";
 
-export default async function BusinessLayout({ children,params:{lang} }) {
-  const dict = await getDictionary(lang)
+export default function BusinessLayout({ children }) {
   return (
-    <PiUser transcript={dict}>
+    <PiUser>
       <div className="w-screen h-screen">
         <BusinessSelector>{children}</BusinessSelector>
       </div>

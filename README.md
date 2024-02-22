@@ -28,7 +28,7 @@
 - [Technology Stack](#tech_stack)
 - [Contributing](/CONTRIBUTING.md)
 - [Authors](#authors)
-- [Support](#support)
+- [Acknowledgments](#acknowledgments)
 
 ## ⛓️ Dependencies / Limitations <a name = "limitations"></a>
 
@@ -96,14 +96,8 @@ TBD
 See also the list of [contributors](https://github.com/0205miss/EasyGoods/contributors)
 who participated in this project.
 
-## 🎉 Support <a name = "support"></a>
+## 🎉 Acknowledgments <a name = "acknowledgments"></a>
 
-EasyGoods need support
-
-By helping us, you will be a contributor in our project.
-
-You can find some Jobs below
-
-## Jobs 
-
-- [Translate](https://github.com/0205miss/EasyGoods/job/TRANSLATE.md)
+- Hat tip to anyone whose code was used
+- Inspiration
+- References

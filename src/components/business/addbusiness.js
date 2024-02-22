@@ -23,7 +23,7 @@ import { iso1A2Code } from "@rapideditor/country-coder";
 import { onAuthStateChanged } from "firebase/auth";
 import { Bed } from "@/res/icon/bed";
 
-export default function AddBusinessModal({ transcript,isOpen, onClose, lang, reload }) {
+export default function AddBusinessModal({ isOpen, onClose, lang, reload }) {
   const [step, setstep] = useState(1);
   const [shoptype, settype] = useState(new Set([]));
   const [name, setname] = useState("");
@@ -176,8 +176,8 @@ export default function AddBusinessModal({ transcript,isOpen, onClose, lang, rel
                 labelPlacement="outside"
                 color="secondary"
                 type="text"
-                label={transcript["Business Name"]}
-                placeholder={transcript["Give Your Business A Name"]}
+                label="Business Name"
+                placeholder="Give Your Business A Name"
                 variant="bordered"
                 value={name}
                 onValueChange={setname}
@@ -190,8 +190,8 @@ export default function AddBusinessModal({ transcript,isOpen, onClose, lang, rel
               />
               <Select
                 labelPlacement="outside"
-                label={transcript["Category"]}
-                placeholder={transcript["Select Category"]}
+                label="Category"
+                placeholder="Select Category"
                 fullWidth
                 selectedKeys={shoptype}
                 onSelectionChange={settype}
@@ -234,7 +234,7 @@ export default function AddBusinessModal({ transcript,isOpen, onClose, lang, rel
                     </svg>
                   }
                 >
-                  {transcript["Coffee Shop"]}
+                  Coffee Shop
                 </SelectItem>
                 <SelectItem
                   key="Restaurant"
@@ -292,7 +292,7 @@ export default function AddBusinessModal({ transcript,isOpen, onClose, lang, rel
                     </svg>
                   }
                 >
-                  {transcript["Restaurant"]}
+                  Restaurant
                 </SelectItem>
                 <SelectItem
                   key="Grocery"
@@ -324,7 +324,7 @@ export default function AddBusinessModal({ transcript,isOpen, onClose, lang, rel
                     </svg>
                   }
                 >
-                  {transcript["Grocery"]}
+                  Grocery
                 </SelectItem>
                 <SelectItem
                   key="BookStore"
@@ -352,7 +352,7 @@ export default function AddBusinessModal({ transcript,isOpen, onClose, lang, rel
                     </svg>
                   }
                 >
-                  {transcript["BookStore"]}
+                  BookStore
                 </SelectItem>
                 <SelectItem
                   key="Bakery"
@@ -390,7 +390,7 @@ export default function AddBusinessModal({ transcript,isOpen, onClose, lang, rel
                     </svg>
                   }
                 >
-                  {transcript["Bakery"]}
+                  Bakery
                 </SelectItem>
                 <SelectItem
                   key="Hotel"
@@ -401,7 +401,7 @@ export default function AddBusinessModal({ transcript,isOpen, onClose, lang, rel
                     </div>
                   }
                 >
-                  {transcript["Hotel"]}
+                  Hotel
                 </SelectItem>
                 <SelectItem
                   key="Other"
@@ -448,7 +448,7 @@ export default function AddBusinessModal({ transcript,isOpen, onClose, lang, rel
                     </svg>
                   }
                 >
-                  {transcript["Other"]}
+                  Other
                 </SelectItem>
               </Select>
               <Checkbox
@@ -457,7 +457,7 @@ export default function AddBusinessModal({ transcript,isOpen, onClose, lang, rel
                 color="secondary"
                 size="lg"
               >
-                {transcript["Open 24 / 7"]}
+                Open 24/7
               </Checkbox>
               {!opencheck && (
                 <>
@@ -465,7 +465,7 @@ export default function AddBusinessModal({ transcript,isOpen, onClose, lang, rel
                     labelPlacement="outside"
                     color="secondary"
                     type="time"
-                    label={transcript["Start Time"]}
+                    label="Start Time"
                     placeholder="Your Business Address"
                     variant="bordered"
                     value={opentime}
@@ -482,7 +482,7 @@ export default function AddBusinessModal({ transcript,isOpen, onClose, lang, rel
                     labelPlacement="outside"
                     color="secondary"
                     type="time"
-                    label={transcript["Close Time"]}
+                    label="Close Time"
                     placeholder="Your Business Address"
                     variant="bordered"
                     value={closetime}
@@ -502,8 +502,8 @@ export default function AddBusinessModal({ transcript,isOpen, onClose, lang, rel
                 labelPlacement="outside"
                 color="secondary"
                 type="text"
-                label={transcript["Address"]}
-                placeholder={transcript["Your Business Address"]}
+                label="Address"
+                placeholder="Your Business Address"
                 variant="bordered"
                 value={address}
                 onValueChange={address_change}
@@ -529,14 +529,14 @@ export default function AddBusinessModal({ transcript,isOpen, onClose, lang, rel
                   </div>
                 }
               />
-              <Button onClick={checkaddress}>{transcript["Check Address"]}</Button>
+              <Button onClick={checkaddress}>Check Address</Button>
               <Checkbox
                 isSelected={pipay}
                 onValueChange={setpipay}
                 color="secondary"
                 size="lg"
               >
-               {transcript["Pi Payment Online Support (Optional)"]}
+                Pi Payment Online Support (Optional)
               </Checkbox>
               <Checkbox
                 isSelected={privacy}
@@ -544,7 +544,7 @@ export default function AddBusinessModal({ transcript,isOpen, onClose, lang, rel
                 color="secondary"
                 size="lg"
               >
-                {transcript["I Agree Privacy Policy"]}
+                I Agree Privacy Policy
               </Checkbox>
             </div>
           )}
@@ -552,7 +552,7 @@ export default function AddBusinessModal({ transcript,isOpen, onClose, lang, rel
           {step == 2 && (
             <div className="w-full h-full">
               <h1 className="text-center text-3xl mb-5">
-                {transcript["Address Confirmation"]}
+                Address Confirmation
               </h1>
               <div className="w-full !h-96">
                 <MapCheck lat={geometric.lat} long={geometric.lng} />
@@ -573,7 +573,7 @@ export default function AddBusinessModal({ transcript,isOpen, onClose, lang, rel
                   }}
                   className={checkdata ? "bg-success-500" : "bg-warning-500"}
                 >
-                  {transcript["Confirm"]}
+                  Confirm
                 </Button>
               </div>
             </div>
@@ -597,11 +597,11 @@ export default function AddBusinessModal({ transcript,isOpen, onClose, lang, rel
         <ModalFooter>
           {step == 3 ? null : (
             <Button color="danger" variant="light" onPress={prepage}>
-              {step == 1 ? transcript["Close"] : transcript["Previous"]}
+              {step == 1 ? "Close" : "Previous"}
             </Button>
           )}
           <Button color="primary" onPress={nextpage} isDisabled={!checkdata}>
-            {step == 1 ? transcript["Next"] : step == 2 ? transcript["Submit"] : transcript["Finish"]}
+            {step == 1 ? "Next" : step == 2 ? "Submit" : "Finish"}
           </Button>
         </ModalFooter>
       </ModalContent>
