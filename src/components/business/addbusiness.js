@@ -78,7 +78,8 @@ export default function AddBusinessModal({ transcript,isOpen, onClose, lang, rel
             type: shoptype.currentKey,
             photo: [],
             opening: opencheck ? '00:00~23:59' : opentime+'~'+closetime,
-            openday: opencheck ? ['1','2','3','4','5','6','7'] : Array.from(weekday)
+            openday: opencheck ? ['1','2','3','4','5','6','7'] : Array.from(weekday),
+            apporder: false
           });
           setsubmitted(true);
         } else {
