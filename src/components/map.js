@@ -1,8 +1,13 @@
 "use client";
-import { MapContainer, Marker, TileLayer, useMapEvent } from "react-leaflet";
+import {
+  MapContainer,
+  Marker,
+  TileLayer,
+  useMapEvents,
+} from "react-leaflet";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import "leaflet/dist/leaflet.css";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "leaflet-defaulticon-compatibility";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
 import L from "leaflet";
@@ -10,26 +15,27 @@ import { iso1A2Code } from "@rapideditor/country-coder";
 import { db } from "./firestore";
 import AwesomeMarkers from "leaflet.awesome-markers";
 import Script from "next/script";
-import { Spinner } from "@nextui-org/react";
+import { Spinner, useDisclosure } from "@nextui-org/react";
+import ShopModal from "./shop/shopmodal";
 
 const iconPerson = new L.Icon({
   iconUrl: "https://svgshare.com/i/12NF.svg",
   iconRetinaUrl: "https://svgshare.com/i/12NF.svg",
-  iconAnchor: null,
-  popupAnchor: null,
-  shadowUrl: null,
-  shadowSize: null,
-  shadowAnchor: null,
-  iconSize: new L.Point(60, 60),
+  iconAnchor: [17, 42],
+  popupAnchor: [1, -32],
+  shadowSize: [36, 16],
+  shadowAnchor: [10, 12],
+  iconSize: new L.Point(40, 40),
 });
 
 export default function MapMenu({ lang, lat = null, long = null }) {
+  const {isOpen,onOpen,onOpenChange} = useDisclosure();
   const [location, setLocation] = useState(null);
   const [position, setPosition] = useState([]);
   const [pi, setpi] = useState(null);
-  const [map, setMap] = useState(null);
   const [code, setcode] = useState(null);
-
+  const [loadcode,setloadcode] = useState([])
+  const [shopdata,setshopdata] = useState(null)
   const piload = () => {
     window.Pi.init({
       version: "2.0",
@@ -80,6 +86,7 @@ export default function MapMenu({ lang, lat = null, long = null }) {
             longitude,
             countrycode: iso1A2Code([longitude, latitude]),
           });
+          setloadcode([...loadcode,iso1A2Code([longitude, latitude])])
           setcode(iso1A2Code([longitude, latitude]));
         }
       } else {
@@ -90,6 +97,7 @@ export default function MapMenu({ lang, lat = null, long = null }) {
             longitude,
             countrycode: iso1A2Code([longitude, latitude]),
           });
+          setloadcode([...loadcode,iso1A2Code([longitude, latitude])])
           setcode(iso1A2Code([longitude, latitude]));
         });
       }
@@ -99,55 +107,59 @@ export default function MapMenu({ lang, lat = null, long = null }) {
     if (locate == null) return;
     const shopRef = collection(db, "shop");
     const country = iso1A2Code([locate.longitude, locate.latitude]);
+    console.log(country);
     const q = query(shopRef, where("country", "==", country));
     const querySnapshot = await getDocs(q);
     if (querySnapshot.empty) {
       console.log("No matching documents.");
     } else {
-      let temp = [];
-      querySnapshot.forEach((doc) => {
-        let data = doc.data();
-        temp.push(data);
-      });
-      setPosition(temp);
+      let allshop = querySnapshot.docs.map((doc)=>{
+        return { ...doc.data(), id: doc.id }
+      })
+      setPosition([...position,...allshop]);
     }
   };
   function CheckCenter() {
-    const map = useMapEvent("moveend", async () => {
-      let locate = map.getCenter();
-      console.log("new" + code);
-      let c = iso1A2Code([locate.lng, locate.lat]);
-      if (iso1A2Code([locate.lng, locate.lat]) != code) {
-        setcode(iso1A2Code([locate.lng, locate.lat]));
-      } else {
-      }
+    const map = useMapEvents({
+      moveend: async () => {
+        let locate = map.getCenter();
+        let c = iso1A2Code([locate.lng, locate.lat]);
+        if(!loadcode.includes(c)) {
+          
+          setcode(iso1A2Code([locate.lng, locate.lat]));
+          
+        } 
+      },
     });
+
   }
+
   const updatemarker = async () => {
+    if(code==null) return
     const shopRef = collection(db, "shop");
     const q = query(shopRef, where("country", "==", code));
     const querySnapshot = await getDocs(q);
     if (querySnapshot.empty) {
       console.log("No matching documents.");
     } else {
-      let temp = [];
-      querySnapshot.forEach((doc) => {
-        let data = doc.data();
-        temp.push(data);
-        console.log(data);
-        setPosition(temp);
-      });
+      let allshop = querySnapshot.docs.map((doc)=>{
+        return { ...doc.data(), id: doc.id }
+      })
+      setPosition([...position,...allshop]);
+      setloadcode([...loadcode,code])
     }
   };
+
   useEffect(() => {
+    if(!loadcode.includes(code))
     updatemarker();
   }, [code]);
   useEffect(() => {
     markers(location);
   }, [location]);
-  useEffect(() => {
-    console.log("update");
-  }, [position]);
+  useEffect(()=>{
+    console.log(position)
+  },[position])
   const searchshop = () => {};
   if (location == null)
     return (
@@ -160,10 +172,6 @@ export default function MapMenu({ lang, lat = null, long = null }) {
   return (
     <>
       <div className="fixed w-full z-10 h-12 top-0 mt-5 ">
-        <Script
-          src="https://kit.fontawesome.com/2b772bd246.js"
-          crossOrigin="anonymous"
-        />
         <div className="mx-5 h-full ">
           <input
             className="w-full h-full rounded bg-[#C7CEE9] ring-offset-[#C7CEE9] placeholder:text-ui-accent shadow-lg px-5 ring-offset-2 ring-2 ring-ui-accent"
@@ -178,9 +186,9 @@ export default function MapMenu({ lang, lat = null, long = null }) {
         attributionControl={false}
         className="w-full h-full !z-0"
         center={[location.latitude, location.longitude]}
-        zoom={16}
-        ref={setMap}
+        zoom={5}
         scrollWheelZoom={false}
+        minZoom={5}
       >
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
         <Marker
@@ -207,11 +215,18 @@ export default function MapMenu({ lang, lat = null, long = null }) {
                     ? hotelicon
                     : other
                 }
+                eventHandlers={{ click:()=>{
+                  setshopdata(item)
+                  onOpen()
+                } }}
                 position={[item.latitude, item.longitude]}
-              ></Marker>
+              >
+                
+              </Marker>
             ))}
         <CheckCenter />
       </MapContainer>
+      {shopdata!=null &&<ShopModal isOpen={isOpen} onOpenChange={onOpenChange} data={shopdata} />}
     </>
   );
 }
@@ -219,49 +234,49 @@ export default function MapMenu({ lang, lat = null, long = null }) {
 const coffeeicon = new L.AwesomeMarkers.icon({
   icon: "fa-mug-saucer",
   prefix: "fa",
-  markerColor: "lightblue",
+  markerColor: "purple",
   iconColor: "white",
   extraClasses: "fill-[#8CA0D7] fa-solid",
 });
 const restauranticon = new L.AwesomeMarkers.icon({
   icon: "fa-cutlery",
   prefix: "fa",
-  markerColor: "lightblue",
+  markerColor: "purple",
   iconColor: "white",
   extraClasses: "fill-[#8CA0D7]",
 });
 const grocery = new L.AwesomeMarkers.icon({
   icon: "fa-shopping-bag",
   prefix: "fa",
-  markerColor: "lightblue",
+  markerColor: "purple",
   iconColor: "white",
   extraClasses: "fill-[#8CA0D7]",
 });
 const bookstore = new L.AwesomeMarkers.icon({
   icon: "fa-book",
   prefix: "fa",
-  markerColor: "lightblue",
+  markerColor: "purple",
   iconColor: "white",
   extraClasses: "fill-[#8CA0D7]",
 });
 const bakery = new L.AwesomeMarkers.icon({
   icon: "fa-bread-slice",
   prefix: "fa",
-  markerColor: "lightblue",
+  markerColor: "purple",
   iconColor: "white",
   extraClasses: "fill-[#8CA0D7]",
 });
 const hotelicon = new L.AwesomeMarkers.icon({
   icon: "fa-bed",
   prefix: "fa",
-  markerColor: "lightblue",
+  markerColor: "purple",
   iconColor: "white",
   extraClasses: "fill-[#8CA0D7] fa-solid",
 });
 const other = new L.AwesomeMarkers.icon({
   icon: "fa-university",
   prefix: "fa",
-  markerColor: "lightblue",
+  markerColor: "purple",
   iconColor: "white",
   extraClasses: "fill-[#8CA0D7]",
 });

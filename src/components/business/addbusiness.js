@@ -22,8 +22,16 @@ import { auth_firebase, db } from "../firestore";
 import { iso1A2Code } from "@rapideditor/country-coder";
 import { onAuthStateChanged } from "firebase/auth";
 import { Bed } from "@/res/icon/bed";
+import WeekSelect from "./weekselect";
 
-export default function AddBusinessModal({ transcript,isOpen, onClose, lang, reload }) {
+export default function AddBusinessModal({
+  transcript,
+  isOpen,
+  onClose,
+  lang,
+  reload,
+}) {
+
   const [step, setstep] = useState(1);
   const [shoptype, settype] = useState(new Set([]));
   const [name, setname] = useState("");
@@ -37,6 +45,9 @@ export default function AddBusinessModal({ transcript,isOpen, onClose, lang, rel
   const [opencheck, set247] = useState(false);
   const [opentime, setopentime] = useState("00:00");
   const [closetime, setclosetime] = useState("23:59");
+  const [weekday, setweekday] = useState(
+    new Set(["1", "2", "3", "4", "5", "6", "0"])
+  );
   const prepage = () => {
     if (step == 1) {
       onClose();
@@ -75,7 +86,11 @@ export default function AddBusinessModal({ transcript,isOpen, onClose, lang, rel
             privacyagree: privacy,
             type: shoptype.currentKey,
             photo: [],
-            opening: opencheck ? '00:00~23:59' : opentime+'~'+closetime
+            opening: opencheck ? "00:00~23:59" : opentime + "~" + closetime,
+            openday: opencheck
+              ? ["1", "2", "3", "4", "5", "6", "0"]
+              : Array.from(weekday),
+            apporder: false,
           });
           setsubmitted(true);
         } else {
@@ -124,12 +139,12 @@ export default function AddBusinessModal({ transcript,isOpen, onClose, lang, rel
   );
 
   useEffect(() => {
-    if (shoptype.size != 0 && name != "" && address_valid) {
+    if (shoptype.size != 0 && name != "" && address_valid && privacy) {
       setcheck(true);
     } else {
       setcheck(false);
     }
-  }, [address_valid, shoptype, name]);
+  }, [address_valid, shoptype, name, privacy, weekday]);
 
   return (
     <Modal size="full" isOpen={isOpen} onClose={onClose} hideCloseButton={true}>
@@ -495,6 +510,7 @@ export default function AddBusinessModal({ transcript,isOpen, onClose, lang, rel
                         "text-accent text-md font-semibold text-center w-full",
                     }}
                   />
+                  <WeekSelect values={weekday} setValues={setweekday} />
                 </>
               )}
 
@@ -529,14 +545,19 @@ export default function AddBusinessModal({ transcript,isOpen, onClose, lang, rel
                   </div>
                 }
               />
-              <Button onClick={checkaddress}>{transcript["Check Address"]}</Button>
+              <Button onClick={checkaddress}>
+                {transcript["Check Address"]}
+              </Button>
+
               <Checkbox
                 isSelected={pipay}
                 onValueChange={setpipay}
                 color="secondary"
                 size="lg"
               >
-               {transcript["Pi Payment Online Support (Optional)"]}
+
+                {transcript["Pi Payment Online Support (Optional)"]}
+
               </Checkbox>
               <Checkbox
                 isSelected={privacy}
@@ -601,7 +622,12 @@ export default function AddBusinessModal({ transcript,isOpen, onClose, lang, rel
             </Button>
           )}
           <Button color="primary" onPress={nextpage} isDisabled={!checkdata}>
-            {step == 1 ? transcript["Next"] : step == 2 ? transcript["Submit"] : transcript["Finish"]}
+
+            {step == 1
+              ? transcript["Next"]
+              : step == 2
+              ? transcript["Submit"]
+              : transcript["Finish"]}
           </Button>
         </ModalFooter>
       </ModalContent>

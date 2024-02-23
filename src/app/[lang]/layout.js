@@ -39,6 +39,7 @@ export default function RootLayout({ children, params }) {
           href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"
         />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+        <script src="https://kit.fontawesome.com/2b772bd246.js" crossOrigin="anonymous"/>
       </head>
       <body className={hind_siliguri.className}>
         <NextUi>{children}</NextUi>
