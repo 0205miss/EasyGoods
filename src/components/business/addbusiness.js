@@ -31,6 +31,7 @@ export default function AddBusinessModal({
   lang,
   reload,
 }) {
+
   const [step, setstep] = useState(1);
   const [shoptype, settype] = useState(new Set([]));
   const [name, setname] = useState("");
@@ -547,13 +548,16 @@ export default function AddBusinessModal({
               <Button onClick={checkaddress}>
                 {transcript["Check Address"]}
               </Button>
+
               <Checkbox
                 isSelected={pipay}
                 onValueChange={setpipay}
                 color="secondary"
                 size="lg"
               >
+
                 {transcript["Pi Payment Online Support (Optional)"]}
+
               </Checkbox>
               <Checkbox
                 isSelected={privacy}
@@ -618,6 +622,7 @@ export default function AddBusinessModal({
             </Button>
           )}
           <Button color="primary" onPress={nextpage} isDisabled={!checkdata}>
+
             {step == 1
               ? transcript["Next"]
               : step == 2
