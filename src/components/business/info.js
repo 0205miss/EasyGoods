@@ -36,7 +36,7 @@ export default function InfoBusiness({
   const [opencheck, set247] = useState(info.opening == "00:00~23:59" && true);
   const [opentime, setopentime] = useState(info.opening.substring(0, 5));
   const [closetime, setclosetime] = useState(info.opening.substring(6, 11));
-  const [weekday,setweekday] = useState(new Set(info.openday))
+  const [weekday, setweekday] = useState(new Set(info.openday));
 
   useEffect(() => {
     settype([info.type]);

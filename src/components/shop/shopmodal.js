@@ -9,7 +9,7 @@ export default function ShopModal({isOpen,onOpenChange,data}){
                         <div >
                             {data.name}
                         </div>
-                        <div className=" !text-sm">
+                        <div className={data.opening=='00:00~23:59' ? "!text-sm" : checkopen ? "!text-sm" : "!text-sm"}>
                             {data.opening=='00:00~23:59' ? '24hr' : checkopen ? 'opening': 'close'}
                         </div>
                     </div>
