@@ -19,6 +19,7 @@ import {
 import { arrayRemove, arrayUnion, doc, updateDoc } from "firebase/firestore";
 import { Upload } from "@/res/icon/upload";
 import { Bed } from "@/res/icon/bed";
+import WeekSelect from "./weekselect";
 
 export default function InfoBusiness({
   transcript,
@@ -35,6 +36,8 @@ export default function InfoBusiness({
   const [opencheck, set247] = useState(info.opening == "00:00~23:59" && true);
   const [opentime, setopentime] = useState(info.opening.substring(0, 5));
   const [closetime, setclosetime] = useState(info.opening.substring(6, 11));
+  const [weekday,setweekday] = useState(new Set(info.openday))
+
   useEffect(() => {
     settype([info.type]);
     setname(info.name);
@@ -381,6 +384,7 @@ export default function InfoBusiness({
                 label: "text-accent text-md font-semibold text-center w-full",
               }}
             />
+            <WeekSelect values={weekday} setValues={setweekday} />
           </>
         )}
 

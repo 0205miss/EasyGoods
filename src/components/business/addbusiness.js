@@ -22,6 +22,7 @@ import { auth_firebase, db } from "../firestore";
 import { iso1A2Code } from "@rapideditor/country-coder";
 import { onAuthStateChanged } from "firebase/auth";
 import { Bed } from "@/res/icon/bed";
+import WeekSelect from "./weekselect";
 
 export default function AddBusinessModal({ transcript,isOpen, onClose, lang, reload }) {
   const [step, setstep] = useState(1);
@@ -37,6 +38,7 @@ export default function AddBusinessModal({ transcript,isOpen, onClose, lang, rel
   const [opencheck, set247] = useState(false);
   const [opentime, setopentime] = useState("00:00");
   const [closetime, setclosetime] = useState("23:59");
+  const [weekday,setweekday] = useState(new Set(['1','2','3','4','5','6','7']))
   const prepage = () => {
     if (step == 1) {
       onClose();
@@ -75,7 +77,8 @@ export default function AddBusinessModal({ transcript,isOpen, onClose, lang, rel
             privacyagree: privacy,
             type: shoptype.currentKey,
             photo: [],
-            opening: opencheck ? '00:00~23:59' : opentime+'~'+closetime
+            opening: opencheck ? '00:00~23:59' : opentime+'~'+closetime,
+            openday: opencheck ? ['1','2','3','4','5','6','7'] : Array.from(weekday)
           });
           setsubmitted(true);
         } else {
@@ -124,12 +127,13 @@ export default function AddBusinessModal({ transcript,isOpen, onClose, lang, rel
   );
 
   useEffect(() => {
-    if (shoptype.size != 0 && name != "" && address_valid) {
+    console.log(Array.from(weekday))
+    if (shoptype.size != 0 && name != "" && address_valid && privacy) {
       setcheck(true);
     } else {
       setcheck(false);
     }
-  }, [address_valid, shoptype, name]);
+  }, [address_valid, shoptype, name,privacy,weekday]);
 
   return (
     <Modal size="full" isOpen={isOpen} onClose={onClose} hideCloseButton={true}>
@@ -495,6 +499,7 @@ export default function AddBusinessModal({ transcript,isOpen, onClose, lang, rel
                         "text-accent text-md font-semibold text-center w-full",
                     }}
                   />
+                  <WeekSelect values={weekday} setValues={setweekday}/>
                 </>
               )}
 

@@ -4,7 +4,17 @@ export default function ShopModal({isOpen,onOpenChange,data}){
     return (
         <Modal isOpen={isOpen} placement="bottom-center" onOpenChange={onOpenChange}>
             <ModalContent>
-                <ModalHeader>{data.name}</ModalHeader>
+                <ModalHeader>
+                    <div className="block">
+                        <div >
+                            {data.name}
+                        </div>
+                        <div className=" !text-sm">
+                            {data.opening=='00:00~23:59' ? '24hr' : checkopen ? 'opening': 'close'}
+                        </div>
+                    </div>
+                    
+                </ModalHeader>
                 <ModalBody>
                     f
                 </ModalBody>
