@@ -45,7 +45,7 @@ export default function AddBusinessModal({
   const [opentime, setopentime] = useState("00:00");
   const [closetime, setclosetime] = useState("23:59");
   const [weekday, setweekday] = useState(
-    new Set(["1", "2", "3", "4", "5", "6", "7"])
+    new Set(["1", "2", "3", "4", "5", "6", "0"])
   );
   const prepage = () => {
     if (step == 1) {
@@ -87,7 +87,7 @@ export default function AddBusinessModal({
             photo: [],
             opening: opencheck ? "00:00~23:59" : opentime + "~" + closetime,
             openday: opencheck
-              ? ["1", "2", "3", "4", "5", "6", "7"]
+              ? ["1", "2", "3", "4", "5", "6", "0"]
               : Array.from(weekday),
             apporder: false,
           });

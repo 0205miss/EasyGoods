@@ -27,7 +27,7 @@ export default function WeekSelect({ values, setValues }) {
       <SelectItem key={6} value={6}>
         Saturday
       </SelectItem>
-      <SelectItem key={7} value={7}>
+      <SelectItem key={0} value={0}>
         Sunday
       </SelectItem>
     </Select>
