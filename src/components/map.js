@@ -186,7 +186,7 @@ export default function MapMenu({ lang, lat = null, long = null }) {
         attributionControl={false}
         className="w-full h-full !z-0"
         center={[location.latitude, location.longitude]}
-        zoom={5}
+        zoom={16}
         scrollWheelZoom={false}
         minZoom={5}
       >
