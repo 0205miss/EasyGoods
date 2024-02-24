@@ -15,6 +15,11 @@ export default function GetUserPage({ params }) {
         setlocation({
           latitude,longitude
         })
+      },()=>{
+        alert('EasyGoods suggest user to access the location permission for user experience')
+        setlocation({
+          latitude:0,longitude:0
+        })
       });
     }
   }, []);
