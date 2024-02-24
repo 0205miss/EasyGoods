@@ -16,25 +16,42 @@ import {
 import { Upload } from "@/res/icon/upload";
 import { useEffect, useState } from "react";
 import { Garbage } from "@/res/icon/garbage";
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { addDoc, collection, doc } from "firebase/firestore";
+import {
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+  deleteObject,
+} from "firebase/storage";
+import { deleteDoc, doc, setDoc } from "firebase/firestore";
 import { db, storage } from "../firestore";
+import { v4 as uuidv4 } from "uuid";
 
-export default function MenuModal({
+export default function UpdateProductModal({
   isOpen,
+  shopId,
   onOpenChange,
   data,
   onClose,
-  setmenu,
+  setproduct,
+  index,
 }) {
   const [submit, setsubmit] = useState(false);
-  const [imageurl, setimageurl] = useState(0);
-  const [upload, setupload] = useState(0);
-  const [cost, setcost] = useState("1.0000000");
-  const [description, setdescription] = useState("");
-  const [name, setname] = useState("");
-  const [time, settime] = useState("0");
+  const [imageurl, setimageurl] = useState(data.picture);
+  const [upload, setupload] = useState(1);
+  const [cost, setcost] = useState(data.cost.toString());
+  const [description, setdescription] = useState(data.description);
+  const [name, setname] = useState(data.name);
+  const [time, settime] = useState(data.time.toString());
   const [checkvalid, setvalid] = useState(false);
+
+  useEffect(() => {
+    setimageurl(data.picture);
+    setcost(data.cost.toString());
+    setdescription(data.description);
+    setname(data.name);
+    settime(data.time.toString());
+  }, []);
+
   const fileupload = async (target) => {
     const image = target.files ? target.files[0] : null;
     if (!image) {
@@ -45,32 +62,61 @@ export default function MenuModal({
   };
 
   useEffect(() => {
-    if (cost != "" && name != "" && time != "" && upload != 0) {
-      setvalid(true);
-    } else {
+    if (
+      imageurl == data.picture &&
+      cost == data.cost.toString() &&
+      description == data.description &&
+      name == data.name &&
+      time == data.time.toString()
+    ) {
       setvalid(false);
+    } else {
+      if (cost != "" && name != "" && time != "" && upload != 0) {
+        setvalid(true);
+      } else {
+        setvalid(false);
+      }
     }
-  }, [cost, time, description, name, upload]);
+  }, [cost, time, description, name, upload, description]);
 
   const onsubmit = async () => {
     setsubmit(true);
-    const product = {
+    const newproduct = {
       cost: parseFloat(cost),
       description: description,
       name: name,
       time: parseInt(time),
     };
-    const url = await updateImage(data.id, upload);
-    const res = await createproduct(data, url, product);
-    onClose();
-    setmenu((old) => [...old, res]);
-    setimageurl(0);
-    setupload(0);
-    setcost("1.0000000");
-    setdescription("");
-    setname("");
-    settime("0");
+
+    let url;
+    if (imageurl == data.picture) {
+      url = imageurl;
+    } else {
+      await deleteImage(data.picture);
+      url = await updateImage(shopId, upload);
+    }
+    const res = await createproduct(shopId, url, newproduct, data.id);
+    setvalid(false);
     setsubmit(false);
+    onClose();
+    setproduct((old) => {
+      let a = [...old];
+      a[index] = res;
+      return a;
+    });
+  };
+
+  const ondelete = async () => {
+    setsubmit(true);
+    await deleteproduct(shopId, data.id);
+    await deleteImage(data.picture);
+    setsubmit(false);
+    onClose();
+    setproduct((old) => {
+      let a = [...old];
+      a[index] = 0;
+      return a;
+    });
   };
 
   return (
@@ -84,7 +130,7 @@ export default function MenuModal({
       backdrop="blur"
     >
       <ModalContent>
-        <ModalHeader>Product Creation</ModalHeader>
+        <ModalHeader>Product Edit</ModalHeader>
         <ModalBody>
           <div
             className=" w-full h-40 flex justify-center items-center bg-white p-3"
@@ -186,8 +232,11 @@ export default function MenuModal({
           />
         </ModalBody>
         <ModalFooter className="!justify-center">
+          <Button color="danger" onClick={ondelete}>
+            Delete
+          </Button>
           <Button color="warning" onClick={onsubmit} isDisabled={!checkvalid}>
-            Create
+            Update
           </Button>
         </ModalFooter>
         {submit && (
@@ -216,17 +265,18 @@ async function updateImage(Id, image) {
 }
 
 async function uploadImage(Id, image) {
-  const filePath = `${Id}/menu/${image.name}`;
+  const uid = uuidv4();
+  const filePath = `${Id}/menu/${uid}/${image.name}`;
   const newImageRef = ref(storage, filePath);
   await uploadBytesResumable(newImageRef, image);
 
   return await getDownloadURL(newImageRef);
 }
 
-async function createproduct(data, url, product) {
-  const shopRef = doc(db, "shop", data.id);
-  const menuRef = collection(shopRef, "menu");
-  const newdoc = await addDoc(menuRef, {
+async function createproduct(Id, url, product, menuId) {
+  console.log(Id + "///" + menuId);
+  const menuRef = doc(db, "shop", Id, "menu", menuId);
+  const id = await setDoc(menuRef, {
     cost: product.cost,
     description: product.description,
     name: product.name,
@@ -234,11 +284,27 @@ async function createproduct(data, url, product) {
     time: product.time,
   });
   return {
-    id: newdoc.id,
+    id: menuId,
     cost: product.cost,
     description: product.description,
     name: product.name,
     picture: url,
     time: product.time,
   };
+}
+
+async function deleteImage(url) {
+  const httpsRef = ref(storage, url);
+  deleteObject(httpsRef)
+    .then(() => {
+      return 1;
+    })
+    .catch((error) => {
+      return 0;
+    });
+}
+
+async function deleteproduct(Id, menuId) {
+  await deleteDoc(doc(db, "shop", Id, "menu", menuId));
+  return true;
 }

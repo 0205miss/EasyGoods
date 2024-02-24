@@ -21,7 +21,7 @@ export default function MenuBusiness({ data }) {
       collection(db, "shop", data.id, "menu")
     );
     if (querySnapshot.empty){
-console.log(0)
+
     }else{
       let allmenu = querySnapshot.docs.map((doc) => {
         return { ...doc.data(), id: doc.id };
@@ -110,8 +110,11 @@ console.log(0)
       <div className="mt-3 overflow-y-scroll h-[calc(100%_-_9rem)]">
         <div className="pb-2 flex flex-col gap gap-3 ">
           {menu.length != 0 &&
-            menu.map((item) => {
-              return <MenuCard data={item} key={item.id}/>;
+            menu.map((item,i) => {
+              if(item == 0){
+                return null
+              }
+              return <MenuCard shopId={data.id} data={item} key={i} index={i} setmenu={setmenu} menu={menu}/>;
             })}
         </div>
       </div>
