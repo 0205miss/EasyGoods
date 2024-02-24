@@ -20,15 +20,21 @@ import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { addDoc, collection, doc } from "firebase/firestore";
 import { db, storage } from "../firestore";
 
-export default function MenuModal({ isOpen, onOpenChange, data,onClose,setmenu }) {
+export default function MenuModal({
+  isOpen,
+  onOpenChange,
+  data,
+  onClose,
+  setmenu,
+}) {
   const [submit, setsubmit] = useState(false);
   const [imageurl, setimageurl] = useState(0);
   const [upload, setupload] = useState(0);
-  const [cost, setcost] = useState('1.0000000');
+  const [cost, setcost] = useState("1.0000000");
   const [description, setdescription] = useState("");
-  const [name, setname] = useState('');
-  const [time, settime] = useState('0');
-    const [checkvalid,setvalid] = useState(false)
+  const [name, setname] = useState("");
+  const [time, settime] = useState("0");
+  const [checkvalid, setvalid] = useState(false);
   const fileupload = async (target) => {
     const image = target.files ? target.files[0] : null;
     if (!image) {
@@ -38,33 +44,33 @@ export default function MenuModal({ isOpen, onOpenChange, data,onClose,setmenu }
     setimageurl(URL.createObjectURL(image));
   };
 
-  useEffect(()=>{
-    if(cost!=''&&name!=''&&time!=''&&upload!=0){
-        setvalid(true)
-    }else{
-        setvalid(false)
+  useEffect(() => {
+    if (cost != "" && name != "" && time != "" && upload != 0) {
+      setvalid(true);
+    } else {
+      setvalid(false);
     }
-  },[cost,time,description,name,upload])
+  }, [cost, time, description, name, upload]);
 
   const onsubmit = async () => {
-    setsubmit(true)
+    setsubmit(true);
     const product = {
       cost: parseFloat(cost),
       description: description,
       name: name,
       time: parseInt(time),
     };
-    const url = await updateImage(data.id,upload)
-    const res = await createproduct(data,url,product)
-    onClose()
-    setmenu(old => [...old,res])
-    setimageurl(0)
-    setupload(0)
-    setcost('1.0000000')
-    setdescription('')
-    setname('')
-    settime('0')
-    setsubmit(false)
+    const url = await updateImage(data.id, upload);
+    const res = await createproduct(data, url, product);
+    onClose();
+    setmenu((old) => [...old, res]);
+    setimageurl(0);
+    setupload(0);
+    setcost("1.0000000");
+    setdescription("");
+    setname("");
+    settime("0");
+    setsubmit(false);
   };
 
   return (
@@ -108,9 +114,9 @@ export default function MenuModal({ isOpen, onOpenChange, data,onClose,setmenu }
                   <div className="absolute right-2 top-2 !z-30">
                     <Button
                       onClick={() => {
-                        setimageurl(0)
-                        setupload(0)
-                    }}
+                        setimageurl(0);
+                        setupload(0);
+                      }}
                       isIconOnly
                       className="text-white fill-white p-1"
                       color="danger"
@@ -224,15 +230,15 @@ async function createproduct(data, url, product) {
     cost: product.cost,
     description: product.description,
     name: product.name,
-    pricture: url,
+    picture: url,
     time: product.time,
   });
   return {
-    id:newdoc.id,
+    id: newdoc.id,
     cost: product.cost,
     description: product.description,
     name: product.name,
-    pricture: url,
+    picture: url,
     time: product.time,
-  }
+  };
 }

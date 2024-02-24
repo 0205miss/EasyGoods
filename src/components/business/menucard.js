@@ -20,7 +20,7 @@ export default function MenuCard({ data, index, setmenu, menu, shopId }) {
               <Image
                 alt="Card background "
                 className="!object-contain h-44"
-                src={data.pricture}
+                src={data.picture}
               />
             </div>
             <div className="w-1/2 p-1 flex flex-col">

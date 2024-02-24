@@ -16,10 +16,15 @@ import {
 import { Upload } from "@/res/icon/upload";
 import { useEffect, useState } from "react";
 import { Garbage } from "@/res/icon/garbage";
-import { ref, uploadBytesResumable, getDownloadURL,deleteObject, } from "firebase/storage";
+import {
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+  deleteObject,
+} from "firebase/storage";
 import { deleteDoc, doc, setDoc } from "firebase/firestore";
 import { db, storage } from "../firestore";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
 export default function UpdateProductModal({
   isOpen,
@@ -31,7 +36,7 @@ export default function UpdateProductModal({
   index,
 }) {
   const [submit, setsubmit] = useState(false);
-  const [imageurl, setimageurl] = useState(data.pricture);
+  const [imageurl, setimageurl] = useState(data.picture);
   const [upload, setupload] = useState(1);
   const [cost, setcost] = useState(data.cost.toString());
   const [description, setdescription] = useState(data.description);
@@ -39,14 +44,13 @@ export default function UpdateProductModal({
   const [time, settime] = useState(data.time.toString());
   const [checkvalid, setvalid] = useState(false);
 
-useEffect(()=>{
-    setimageurl(data.pricture)
-    setcost(data.cost.toString())
-    setdescription(data.description)
-    setname(data.name)
-    settime(data.time.toString())
-},[])
-
+  useEffect(() => {
+    setimageurl(data.picture);
+    setcost(data.cost.toString());
+    setdescription(data.description);
+    setname(data.name);
+    settime(data.time.toString());
+  }, []);
 
   const fileupload = async (target) => {
     const image = target.files ? target.files[0] : null;
@@ -59,7 +63,7 @@ useEffect(()=>{
 
   useEffect(() => {
     if (
-      imageurl == data.pricture &&
+      imageurl == data.picture &&
       cost == data.cost.toString() &&
       description == data.description &&
       name == data.name &&
@@ -73,7 +77,7 @@ useEffect(()=>{
         setvalid(false);
       }
     }
-  }, [cost, time, description, name, upload,description]);
+  }, [cost, time, description, name, upload, description]);
 
   const onsubmit = async () => {
     setsubmit(true);
@@ -83,36 +87,36 @@ useEffect(()=>{
       name: name,
       time: parseInt(time),
     };
-    
-    let url 
-    if(imageurl == data.pricture){
-        url = imageurl
-    }else{
-        await deleteImage(data.pricture);
-        url = await updateImage(shopId, upload);
+
+    let url;
+    if (imageurl == data.picture) {
+      url = imageurl;
+    } else {
+      await deleteImage(data.picture);
+      url = await updateImage(shopId, upload);
     }
-    const res = await createproduct(shopId, url, newproduct,data.id);
+    const res = await createproduct(shopId, url, newproduct, data.id);
     setvalid(false);
     setsubmit(false);
     onClose();
-    setproduct(old =>{
-        let a = [...old]
-        a[index] = res
-        return a
+    setproduct((old) => {
+      let a = [...old];
+      a[index] = res;
+      return a;
     });
   };
 
   const ondelete = async () => {
     setsubmit(true);
     await deleteproduct(shopId, data.id);
-    await deleteImage(data.pricture);
+    await deleteImage(data.picture);
     setsubmit(false);
     onClose();
-    setproduct(old =>{
-        let a = [...old]
-        a[index] = 0
-        return a
-    });    
+    setproduct((old) => {
+      let a = [...old];
+      a[index] = 0;
+      return a;
+    });
   };
 
   return (
@@ -261,7 +265,7 @@ async function updateImage(Id, image) {
 }
 
 async function uploadImage(Id, image) {
-    const uid = uuidv4()
+  const uid = uuidv4();
   const filePath = `${Id}/menu/${uid}/${image.name}`;
   const newImageRef = ref(storage, filePath);
   await uploadBytesResumable(newImageRef, image);
@@ -269,14 +273,14 @@ async function uploadImage(Id, image) {
   return await getDownloadURL(newImageRef);
 }
 
-async function createproduct(Id, url, product,menuId) {
-    console.log(Id+'///'+menuId)
-  const menuRef = doc(db, "shop", Id,'menu',menuId);
+async function createproduct(Id, url, product, menuId) {
+  console.log(Id + "///" + menuId);
+  const menuRef = doc(db, "shop", Id, "menu", menuId);
   const id = await setDoc(menuRef, {
     cost: product.cost,
     description: product.description,
     name: product.name,
-    pricture: url,
+    picture: url,
     time: product.time,
   });
   return {
@@ -284,7 +288,7 @@ async function createproduct(Id, url, product,menuId) {
     cost: product.cost,
     description: product.description,
     name: product.name,
-    pricture: url,
+    picture: url,
     time: product.time,
   };
 }
