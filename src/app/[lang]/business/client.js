@@ -157,13 +157,15 @@ export default function BusinessClientPage({ dict, lang }) {
 
       <div className=" pb-16 h-[calc(100%-64px)]">
         {shoplist.length == 0 ? (
-          <AddCard transcript={dict}/>
+          <AddCard transcript={dict} />
         ) : selected == "order" ? (
-          <OrderCard transcript={dict}/>
+          <OrderCard transcript={dict} />
         ) : selected == "stamp" ? (
           "stamp"
         ) : selected == "menu" ? (
-          <MenuBusiness data={shoplist[currentshop]} />
+          <MenuBusiness
+            data={shoplist[currentshop]}
+          />
         ) : (
           <InfoBusiness
             transcript={dict}

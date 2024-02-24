@@ -11,8 +11,13 @@ export async function auth(token) {
     throw new Error("Failed to fetch data");
   } else {
     let auth = await res.json();
-    let uid = auth.username;
-    let customtoken = await admin.auth().createCustomToken(uid);
-    return customtoken;
+    if(auth.roles.includes("kyc_accepted")){
+      let uid = auth.username;
+      let customtoken = await admin.auth().createCustomToken(uid);
+      return customtoken;
+    }else{
+      return 'unkyc';
+    }
+    
   }
 }

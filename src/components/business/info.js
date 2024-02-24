@@ -33,7 +33,7 @@ export default function InfoBusiness({
   const [address, setaddress] = useState(info.address);
   const [upload, setupload] = useState(0);
   const [remove_photo, setdelete] = useState(null);
-  const [opencheck, set247] = useState(info.opening == "00:00~23:59" && true);
+  const [opencheck, set247] = useState(info.opening == "00:00~23:59" && info.openday.length==7 ? true :false);
   const [opentime, setopentime] = useState(info.opening.substring(0, 5));
   const [closetime, setclosetime] = useState(info.opening.substring(6, 11));
   const [weekday, setweekday] = useState(new Set(info.openday));
