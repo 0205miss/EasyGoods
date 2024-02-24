@@ -29,7 +29,8 @@
   "Check Address": "確認地址",
   "Pi Payment Online Support (Optional)": "支援Pi線上付款 (選項)",
   "I Agree Privacy Policy": "我同意隱私權政策",
-  "Address Confirmation": "確認",
+  "Address Confirmation": "地址確認",
+  "Confirm":"確認",
   "Close": "關閉",
   "Previous": "上一步",
   "Next": "下一步",
@@ -37,5 +38,6 @@
   "Finish": "完成",
   "Address": "地址",
   "Give Your Business A Name": "給商家取名稱",
-  "Your Business Address":"你的商家地址"
+  "Your Business Address":"你的商家地址",
+  "You need to success KYC first":"你要先通過KYC"
 }

@@ -29,7 +29,8 @@
   "Check Address": "Check Address",
   "Pi Payment Online Support (Optional)": "Pi Payment Online Support (Optional)",
   "I Agree Privacy Policy": "I Agree Privacy Policy",
-  "Address Confirmation": "Confirm",
+  "Address Confirmation": "Address Confirmation",
+  "Confirm":"Confirm",
   "Close": "Close",
   "Previous": "Previous",
   "Next": "Next",
@@ -37,5 +38,6 @@
   "Finish": "Finish",
   "Address": "Address",
   "Give Your Business A Name": "Give Your Business A Name",
-  "Your Business Address": "Your Business Address"
+  "Your Business Address": "Your Business Address",
+  "You need to success KYC first":"You need to success KYC first"
 }

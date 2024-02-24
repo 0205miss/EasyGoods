@@ -1,10 +1,36 @@
 import AddIcon from "@/res/icon/add";
-import { Button, Divider, Switch, cn } from "@nextui-org/react";
-import { useState } from "react";
+import { Button, Divider, Switch, cn, useDisclosure } from "@nextui-org/react";
+import { useEffect, useState } from "react";
+import MenuCard from "./menucard";
+import MenuModal from "./addmenu";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../firestore";
 
 export default function MenuBusiness({ data }) {
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const [piaccept, setpiaccept] = useState(data.payment);
   const [orderaccept, setorderaccept] = useState(data.apporder);
+  const [menu, setmenu] = useState([]);
+
+  useEffect(() => {
+    getmenu();
+  }, []);
+
+  const getmenu = async () => {
+    const querySnapshot = await getDocs(
+      collection(db, "shop", data.id, "menu")
+    );
+    if (querySnapshot.empty){
+console.log(0)
+    }else{
+      let allmenu = querySnapshot.docs.map((doc) => {
+        return { ...doc.data(), id: doc.id };
+      });
+      setmenu([...menu, ...allmenu]);
+    }
+    
+  };
+
   return (
     <div className="w-full h-full px-4 py-2">
       <Switch
@@ -72,6 +98,7 @@ export default function MenuBusiness({ data }) {
 
       <div className="w-full flex h-10 stroke-accent-500 justify-center">
         <Button
+          onClick={onOpen}
           isIconOnly
           className="flex justify-center py-1 items-center bg-gradient-to-tr from-primary-500 to-secondary shadow-lg w-full h-full"
         >
@@ -80,6 +107,21 @@ export default function MenuBusiness({ data }) {
           </div>
         </Button>
       </div>
+      <div className="mt-3 overflow-y-scroll h-[calc(100%_-_9rem)]">
+        <div className="pb-2 flex flex-col gap gap-3 ">
+          {menu.length != 0 &&
+            menu.map((item) => {
+              return <MenuCard data={item} key={item.id}/>;
+            })}
+        </div>
+      </div>
+      <MenuModal
+        isOpen={isOpen}
+        onClose={onClose}
+        onOpenChange={onOpenChange}
+        data={data}
+        setmenu={setmenu}
+      />
     </div>
   );
 }

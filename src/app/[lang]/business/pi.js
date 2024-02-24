@@ -15,7 +15,10 @@ export default function PiUser({ children,transcript }) {
   const [firebase, setfirebase] = useState(null);
   const firebase_auth = async (token) => {
     const data_token = await auth(token);
-    signInWithCustomToken(auth_firebase, data_token)
+    if(data_token=='unkyc'){
+      setfirebase(false);
+    }else{
+      signInWithCustomToken(auth_firebase, data_token)
       .then((userCredential) => {
         setfirebase(true);
         console.log(userCredential.user);
@@ -26,6 +29,8 @@ export default function PiUser({ children,transcript }) {
         const errorMessage = error.message;
         console.log(errorMessage);
       });
+    }
+    
   };
   const loadpi = () => {
     window.Pi.init({
@@ -70,6 +75,13 @@ export default function PiUser({ children,transcript }) {
           onReady={loadpi}
         ></Script>
         <LoadingPage />
+      </>
+    );
+  } else if (ispi == true && firebase == false) {
+    return (
+      <>
+        <Script src="https://sdk.minepi.com/pi-sdk.js" onLoad={loadpi}></Script>
+        <PiContext.Provider value={pi}>{children}</PiContext.Provider>
       </>
     );
   } else if (ispi == true && firebase == true) {

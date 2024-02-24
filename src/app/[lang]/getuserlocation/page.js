@@ -1,26 +1,34 @@
 "use client";
 
-import { useEffect } from "react";
-import { Spinner } from "@nextui-org/react";
+import { useEffect, useState } from "react";
+import { Button, Spinner } from "@nextui-org/react";
+import Link from 'next/link'
 
 export default function GetUserPage({ params }) {
+  const [location,setlocation] = useState(null)
   useEffect(() => {
     if ("geolocation" in navigator) {
       // Retrieve latitude & longitude coordinates from `navigator.geolocation` Web API
 
       navigator.geolocation.getCurrentPosition(({ coords }) => {
         const { latitude, longitude } = coords;
-        location.assign(
-          process.env.NEXT_PUBLIC_APP_DOMAIN +
-            params.lang +
-            `/map/${latitude}/${longitude}`
-        );
+        setlocation({
+          latitude,longitude
+        })
+      },()=>{
+        alert('EasyGoods suggest user to access the location permission for user experience')
+        setlocation({
+          latitude:0,longitude:0
+        })
       });
     }
   }, []);
   return (
     <div className="w-screen h-screen flex justify-center items-center">
-      <Spinner color="warning" size="lg" />
+      {location==null && <Spinner color="warning" size="lg" />}
+      {location!=null && <Link href={`pi://testnet.easygoods.app/map/${location.latitude}/${location.longitude}`}>
+        <Button color="secondary">Go Back Pi Browser</Button>
+        </Link>}
     </div>
   );
 }
