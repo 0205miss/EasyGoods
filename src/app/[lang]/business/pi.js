@@ -6,6 +6,7 @@ import Script from "next/script";
 import { createContext, useEffect, useState } from "react";
 import { signInWithCustomToken } from "firebase/auth";
 import { auth_firebase } from "@/components/firestore";
+import UnKYC from "@/components/unkyc";
 
 export const PiContext = createContext();
 
@@ -78,12 +79,7 @@ export default function PiUser({ children,transcript }) {
       </>
     );
   } else if (ispi == true && firebase == false) {
-    return (
-      <>
-        <Script src="https://sdk.minepi.com/pi-sdk.js" onLoad={loadpi}></Script>
-        <PiContext.Provider value={pi}>{children}</PiContext.Provider>
-      </>
-    );
+    return <UnKYC transcript={transcript}/>
   } else if (ispi == true && firebase == true) {
     return (
       <>

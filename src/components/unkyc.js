@@ -1,6 +1,6 @@
 import BackButton from "./backbutton";
 
-export default function UnAuth({transcript}) {
+export default function UnKYC({transcript}) {
   return (
     <div className="w-screen h-screen flex justify-center items-center">
       <div className="w-full text-center">
