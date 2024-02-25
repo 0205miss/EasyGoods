@@ -60,7 +60,18 @@ export default function UpdateProductModal({
     setupload(image);
     setimageurl(URL.createObjectURL(image));
   };
-
+  const updatetime = (e) =>{
+    const reg = /^\d+$/gm
+    if(reg.test(e)){
+      settime(e)
+    }
+  }
+  const updatecost = (e) =>{
+    const reg = /^(\d+(?:\.\d{0,7})?)$/gm    
+    if(reg.test(e)){
+      setcost(e)
+    }
+  }
   useEffect(() => {
     if (
       imageurl == data.picture &&
@@ -201,7 +212,7 @@ export default function UpdateProductModal({
             label="Prepare Time"
             placeholder="EX.10"
             value={time}
-            onValueChange={settime}
+            onValueChange={updatetime}
             endContent={
               <div className="pointer-events-none flex items-center">
                 <div className=" h-8 w-8 fill-secondary-400">min</div>
@@ -214,7 +225,7 @@ export default function UpdateProductModal({
             label="Price"
             placeholder="EX1.0000000"
             value={cost}
-            onValueChange={setcost}
+            onValueChange={updatecost}
             endContent={
               <div className="pointer-events-none flex items-center">
                 <div className=" h-8 w-8 fill-secondary-400">
