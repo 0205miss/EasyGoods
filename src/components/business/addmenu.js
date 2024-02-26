@@ -46,13 +46,23 @@ export default function MenuModal({
   const updatetime = (e) =>{
     const reg = /^\d+$/gm
     if(reg.test(e)){
-      settime(e)
+      settime(parseInt(e).toString())
+    }else if(e==''){
+      settime('0')
     }
   }
   const updatecost = (e) =>{
-    const reg = /^(\d+(?:\.\d{0,7})?)$/gm    
+    const reg = /^(\d+(?:\.\d{0,7})?)$/gm
+    const reg2 = /^(\d+(?:\.\d{1,7})?)$/gm
     if(reg.test(e)){
       setcost(e)
+      if(reg2.test(e)){
+        setcost(parseFloat(e).toString())        
+      }else{
+        setcost(e)
+      }
+    }else if(e==''){
+      setcost('0')
     }
   }
   useEffect(() => {
