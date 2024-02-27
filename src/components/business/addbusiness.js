@@ -111,6 +111,9 @@ export default function AddBusinessModal({
       if (locationcheck === 0) {
         setaddress_valid(false);
         alert("Something Wrong\nContact Developers");
+      } else if(locationcheck === 'need more detail'){
+        setaddress_valid(false);
+        alert("Your address need more detail");
       } else {
         setgeometric(locationcheck);
         setaddress_valid(true);

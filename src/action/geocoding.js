@@ -9,9 +9,14 @@ export async function geocoding(address, lang) {
   } else {
     const response = await res.json();
     if (response.status == "OK") {
-      let result = response.results[0].geometry.location;
-      result.format = response.results[0].formatted_address;
-      return result;
+      if(response.results[0].types.includes('street_address')){
+        let result = response.results[0].geometry.location;
+        result.format = response.results[0].formatted_address;
+        return result;
+      }else{
+        return 'need more detail'
+      }
+      
     } else if (response.status == "ZERO_RESULTS") {
       return 0;
     } else if (response.status == "OVER_DAILY_LIMIT") {
