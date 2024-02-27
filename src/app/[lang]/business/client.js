@@ -68,6 +68,19 @@ export default function BusinessClientPage({ dict, lang }) {
     []
   );
 
+  const Stamp = useMemo(
+    () =>
+      dynamic(() => import("@/components/business/stamp"), {
+        loading: () => (
+          <div className="w-full h-full flex justify-center items-center">
+            <Spinner color="warning" size="lg" />
+          </div>
+        ),
+        ssr: false,
+      }),
+    []
+  );
+
   const MenuBusiness = useMemo(
     () =>
       dynamic(() => import("@/components/business/menu"), {
@@ -161,9 +174,11 @@ export default function BusinessClientPage({ dict, lang }) {
         ) : selected == "order" ? (
           <OrderCard transcript={dict} />
         ) : selected == "stamp" ? (
-          "stamp"
+          <Stamp />
         ) : selected == "menu" ? (
           <MenuBusiness
+            setdata={setshoplist}
+            index={currentshop}
             data={shoplist[currentshop]}
           />
         ) : (

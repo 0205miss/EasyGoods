@@ -1,5 +1,6 @@
 import { Address } from "@/res/icon/address";
 import {
+  Badge,
   Button,
   Divider,
   Image,
@@ -8,11 +9,39 @@ import {
   ModalContent,
   ModalHeader,
 } from "@nextui-org/react";
-import { useEffect, useState } from "react";
+import { collection, getDocs } from "firebase/firestore";
+import { useContext, useEffect, useState } from "react";
+import { db } from "../firestore";
+import { Back } from "@/res/icon/back";
+import { Cart } from "@/res/icon/cart";
+import { CartContext } from "./ordercontext";
+import UserMenuCard from "./menucard";
 
-export default function ShopModal({ isOpen, onOpenChange, data }) {
+export default function ShopModal({ isOpen, onOpenChange, data, onClose }) {
   const [checkopen, setcheckopen] = useState(null);
   const [size, setsize] = useState("md");
+  const [menu, setmenu] = useState([]);
+
+  const { cartItems } = useContext(CartContext);
+
+  const getmenu = async () => {
+    const querySnapshot = await getDocs(
+      collection(db, "shop", data.id, "menu")
+    );
+    if (querySnapshot.empty) {
+      setmenu([]);
+    } else {
+      let allmenu = querySnapshot.docs.map((doc) => {
+        return { ...doc.data(), id: doc.id };
+      });
+      setmenu([...allmenu]);
+    }
+  };
+
+  useEffect(() => {
+    getmenu();
+  }, []);
+
   useEffect(() => {
     const now = new Date();
     const start =
@@ -33,6 +62,15 @@ export default function ShopModal({ isOpen, onOpenChange, data }) {
     }
     console.log(data.openday.sort());
   }, [data]);
+
+  useEffect(() => {
+    if (size != "full") return;
+  }, [size]);
+
+  useEffect(() => {
+    setsize("md");
+  }, [isOpen]);
+
   if (checkopen == null) return;
   return (
     <Modal
@@ -40,12 +78,42 @@ export default function ShopModal({ isOpen, onOpenChange, data }) {
       placement="bottom-center"
       onOpenChange={onOpenChange}
       size={size}
-      onClose={() => setsize("md")}
+      hideCloseButton={size == "full" ? true : false}
     >
       <ModalContent>
-        <ModalHeader>
+        {size == "full" && (
+          <ModalHeader>
+            <div className="w-full flex justify-around">
+              <Button
+                onClick={() => {
+                  onClose();
+                }}
+                isIconOnly
+                className="p-2 fill-white bg-gradient-to-tr from-secondary-500 to-primary-500 text-white shadow-lg"
+              >
+                <Back />
+              </Button>
+              <div className="flex justify-center items-center">EasyOrder</div>
+              <Badge
+                content={cartItems.length}
+                color="warning"
+                variant="shadow"
+                className="!border-transparent"
+              >
+                <Button
+                  isIconOnly
+                  className="p-2 stroke-white bg-gradient-to-tr from-secondary-500 to-primary-500 text-white shadow-lg"
+                >
+                  <Cart />
+                </Button>
+              </Badge>
+            </div>
+          </ModalHeader>
+        )}
+        <div className={size == "full" &&"overflow-scroll h-[calc(100vh_-_4.5rem)]"}>
+        <ModalBody>
           <div className="block w-full">
-            <div>{data.name}</div>
+            <div className="text-large font-semibold">{data.name}</div>
             <div className="!text-sm text-slate-600 font-medium">
               {data.type == "coffee"
                 ? "Coffee Shop"
@@ -67,6 +135,12 @@ export default function ShopModal({ isOpen, onOpenChange, data }) {
               }
             >
               {!checkopen ? "close" : "opening"}
+            </div>
+            <div className=" fill-secondary-500 flex justify-start items-center">
+              <div className="h-7 w-7">
+                <Address />
+              </div>
+              <div className=" text-sm leading-normal">{data.address}</div>
             </div>
             <div className=" fill-secondary-500 h-7 flex justify-start">
               <div className="h-7 w-7">
@@ -101,8 +175,49 @@ export default function ShopModal({ isOpen, onOpenChange, data }) {
               </div>
             )}
           </div>
-        </ModalHeader>
-        <ModalBody></ModalBody>
+          <Divider />
+          {data.photo.length != 0 && (
+            <>
+              <div className="flex overflow-x-scroll h-52 py-2 gap gap-2">
+                {data.photo.toReversed().map((url, i) => {
+                  return (
+                    <div className=" flex-none" key={i}>
+                      <Image
+                        className="!object-cover w-48 h-48"
+                        radius="md"
+                        src={url}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+              <Divider />
+            </>
+          )}
+
+          {size == "full" && menu.length != 0 && (
+            <>
+
+                  {menu.map((item, i) => {
+                    if (item == 0) {
+                      return null;
+                    }
+                    return (
+                      <>
+                        <UserMenuCard shopId={data.id} data={item} key={i} />
+                      </>
+                    );
+                  })}
+            </>
+          )}
+
+          {size == "md" && (
+            <div className="mt-2 w-full flex justify-center">
+              <Button onClick={() => setsize("full")}>More</Button>
+            </div>
+          )}
+        </ModalBody>
+        </div>
       </ModalContent>
     </Modal>
   );
