@@ -63,6 +63,7 @@ export default function UpdateProductModal({
   const updatetime = (e) =>{
     const reg = /^\d+$/gm
     if(reg.test(e)){
+
       settime(parseInt(e).toString())
     }else if(e==''){
       settime('0')
@@ -80,6 +81,7 @@ export default function UpdateProductModal({
       }
     }else if(e==''){
       setcost('0')
+
     }
   }
   useEffect(() => {

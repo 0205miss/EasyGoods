@@ -63,6 +63,7 @@ export default function MenuModal({
       }
     }else if(e==''){
       setcost('0')
+
     }
   }
   useEffect(() => {
