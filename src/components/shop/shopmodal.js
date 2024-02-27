@@ -40,7 +40,7 @@ export default function ShopModal({ isOpen, onOpenChange, data, onClose }) {
 
   useEffect(() => {
     getmenu();
-  }, []);
+  }, [data]);
 
   useEffect(() => {
     const now = new Date();
