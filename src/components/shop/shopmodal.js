@@ -172,11 +172,6 @@ export default function ShopModal({ isOpen, onOpenChange, data, onClose }) {
                     }
                     return (
                       <>
-                        <UserMenuCard
-                          shopId={data.id}
-                          data={item}
-                          key={i + 10}
-                        />
                         <UserMenuCard shopId={data.id} data={item} key={i} />
                       </>
                     );

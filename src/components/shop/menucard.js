@@ -19,7 +19,7 @@ export default function UserMenuCard({ data,shopId }) {
             <div className="w-1/2 p-1 flex justify-center">
               <Image
                 alt="Card background "
-                className="!object-contain h-44"
+                className="!object-contain h-44 w-44"
                 src={data.picture}
               />
             </div>
