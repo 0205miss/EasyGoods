@@ -142,12 +142,7 @@ export default function ShopModal({ isOpen, onOpenChange, data, onClose }) {
               </div>
               <div className=" text-sm leading-normal">{data.address}</div>
             </div>
-            <div className=" fill-secondary-500 h-7 flex justify-start">
-              <div className="h-7 w-7">
-                <Address />
-              </div>
-              <div className=" text-sm h-7 leading-inherit">{data.address}</div>
-            </div>
+
 
             <Divider />
 
@@ -169,31 +164,7 @@ export default function ShopModal({ isOpen, onOpenChange, data, onClose }) {
 
             <Divider />
 
-            {size == "md" && (
-              <div className="mt-2 w-full flex justify-center">
-                <Button onClick={() => setsize("full")}>More</Button>
-              </div>
-            )}
           </div>
-          <Divider />
-          {data.photo.length != 0 && (
-            <>
-              <div className="flex overflow-x-scroll h-52 py-2 gap gap-2">
-                {data.photo.toReversed().map((url, i) => {
-                  return (
-                    <div className=" flex-none" key={i}>
-                      <Image
-                        className="!object-cover w-48 h-48"
-                        radius="md"
-                        src={url}
-                      />
-                    </div>
-                  );
-                })}
-              </div>
-              <Divider />
-            </>
-          )}
 
           {size == "full" && menu.length != 0 && (
             <>
