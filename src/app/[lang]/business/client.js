@@ -174,9 +174,11 @@ export default function BusinessClientPage({ dict, lang }) {
         ) : selected == "order" ? (
           <OrderCard transcript={dict} />
         ) : selected == "stamp" ? (
-          <Stamp/>
+          <Stamp />
         ) : selected == "menu" ? (
           <MenuBusiness
+            setdata={setshoplist}
+            index={currentshop}
             data={shoplist[currentshop]}
           />
         ) : (

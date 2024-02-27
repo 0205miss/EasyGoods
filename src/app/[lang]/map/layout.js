@@ -2,7 +2,9 @@ import Link from "next/link";
 export default function UserLayout({ children, params }) {
   return (
     <div className="w-screen h-screen">
-      <div className="w-full h-full pb-16 z-0">{children}</div>
+      <div className="w-full h-full pb-16 z-0">
+        {children}
+      </div>
       <div className="fixed w-full bg-[#c3cfe2] shadow-xl bottom-0 h-16 grid grid-flow-col gap-px pt-[1px]">
         <Link href={`/${params.lang}/order`}>
           <div className="flex justify-center stroke-ui-primary bg-ui-background items-center h-full">

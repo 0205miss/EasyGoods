@@ -17,6 +17,7 @@ import AwesomeMarkers from "leaflet.awesome-markers";
 import Script from "next/script";
 import { Spinner, useDisclosure } from "@nextui-org/react";
 import ShopModal from "./shop/shopmodal";
+import { CartProvider } from "./shop/ordercontext";
 
 const iconPerson = new L.Icon({
   iconUrl: "https://svgshare.com/i/12NF.svg",
@@ -29,13 +30,14 @@ const iconPerson = new L.Icon({
 });
 
 export default function MapMenu({ lang, lat = null, long = null }) {
-  const {isOpen,onOpen,onOpenChange} = useDisclosure();
+  const {isOpen,onOpen,onOpenChange,onClose} = useDisclosure();
   const [location, setLocation] = useState(null);
   const [position, setPosition] = useState([]);
   const [pi, setpi] = useState(null);
   const [code, setcode] = useState(null);
   const [loadcode,setloadcode] = useState([])
   const [shopdata,setshopdata] = useState(null)
+
   const piload = () => {
     window.Pi.init({
       version: "2.0",
@@ -170,7 +172,7 @@ export default function MapMenu({ lang, lat = null, long = null }) {
     ); //loading map
 
   return (
-    <>
+    <CartProvider>
       <div className="fixed w-full z-10 h-12 top-0 mt-5 ">
         <div className="mx-5 h-full ">
           <input
@@ -226,8 +228,8 @@ export default function MapMenu({ lang, lat = null, long = null }) {
             ))}
         <CheckCenter />
       </MapContainer>
-      {shopdata!=null &&<ShopModal isOpen={isOpen} onOpenChange={onOpenChange} data={shopdata} />}
-    </>
+      {shopdata!=null &&<ShopModal isOpen={isOpen} onClose={onClose} onOpenChange={onOpenChange} data={shopdata} />}
+    </CartProvider>
   );
 }
 

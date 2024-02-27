@@ -3,10 +3,10 @@ import { Button, Divider, Switch, cn, useDisclosure } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import MenuCard from "./menucard";
 import MenuModal from "./addmenu";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, doc, getDocs, updateDoc } from "firebase/firestore";
 import { db } from "../firestore";
 
-export default function MenuBusiness({ data }) {
+export default function MenuBusiness({ data,setdata,index }) {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const [piaccept, setpiaccept] = useState(data.payment);
   const [orderaccept, setorderaccept] = useState(data.apporder);
@@ -26,10 +26,22 @@ export default function MenuBusiness({ data }) {
       let allmenu = querySnapshot.docs.map((doc) => {
         return { ...doc.data(), id: doc.id };
       });
-      setmenu([...menu, ...allmenu]);
+      setmenu([...allmenu]);
     }
     
   };
+  
+  const updateshop = async (pi,order) =>{
+    const ref = doc(db,'shop',data.id)
+    await updateDoc(ref,{
+      payment:pi,
+      apporder:order
+    })
+  }
+
+  useEffect(()=>{
+    updateshop(piaccept,orderaccept)
+  },[piaccept,orderaccept])
 
   return (
     <div className="w-full h-full px-4 py-2">
