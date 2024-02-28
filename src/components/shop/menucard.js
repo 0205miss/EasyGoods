@@ -14,17 +14,17 @@ import 'react-toastify/dist/ReactToastify.css';
 
 export default function UserMenuCard({ data,shopId }) {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
-  const [pi,setispi] = useState(true)
+  const [pi,setispi] = useState(null)
   const [notice,setnotice] = useState(false)
   useEffect(() => {
-   /* if (
+   if (
       window.location.ancestorOrigins[0] == "https://sandbox.minepi.com" ||
       window.location.ancestorOrigins[0] == "https://app-cdn.minepi.com"
     ) {
       setispi(true);
     } else {
       setispi(false);
-    }*/
+    }
   }, []);
 
   const notify = () => {
@@ -45,14 +45,14 @@ export default function UserMenuCard({ data,shopId }) {
       <Card>
         <CardBody onClick={checkorder} className="overflow-visible py-2 w-full">
           <div className="flex w-full flex-row">
-            <div className="w-1/2 p-1 flex justify-center">
+            <div className="w-44 p-1 flex justify-center">
               <Image
                 alt="Card background "
                 className="!object-contain h-44 w-44"
                 src={data.picture}
               />
             </div>
-            <div className="w-1/2 p-1 flex flex-col">
+            <div className="grow p-1 flex flex-col">
               <h1 className="text-center font-semibold text-lg">{data.name}</h1>
               <Divider />
               <div className=" flex-auto">

@@ -18,13 +18,14 @@ import { Cart } from "@/res/icon/cart";
 import { CartContext } from "./ordercontext";
 import UserMenuCard from "./menucard";
 import CreateOrder from "./createorder";
+import { ToastContainer, toast } from "react-toastify";
 
 export default function ShopModal({ isOpen, onOpenChange, data, onClose }) {
   const createorder = useDisclosure()
   const [checkopen, setcheckopen] = useState(null);
   const [size, setsize] = useState("md");
   const [menu, setmenu] = useState([]);
-
+  const [pi,setispi] = useState(null)
   const { cartItems } = useContext(CartContext);
 
   const getmenu = async () => {
@@ -40,6 +41,25 @@ export default function ShopModal({ isOpen, onOpenChange, data, onClose }) {
       setmenu([...allmenu]);
     }
   };
+  const checkpi = () =>{
+    if(pi){
+      createorder.onOpen()
+    }else{
+      toast("Order need to be on Pi Browser !");
+    }
+  }
+
+  
+  useEffect(() => {
+    if (
+       window.location.ancestorOrigins[0] == "https://sandbox.minepi.com" ||
+       window.location.ancestorOrigins[0] == "https://app-cdn.minepi.com"
+     ) {
+       setispi(true);
+     } else {
+       setispi(false);
+     }
+   }, []);
 
   useEffect(() => {
     getmenu();
@@ -103,7 +123,7 @@ export default function ShopModal({ isOpen, onOpenChange, data, onClose }) {
               >
                 <Button
                   isIconOnly
-                  onClick={()=>createorder.onOpen()}
+                  onClick={checkpi}
                   className="p-2 stroke-white bg-gradient-to-tr from-secondary-500 to-primary-500 text-white shadow-lg"
                 >
                   <Cart />
@@ -198,6 +218,7 @@ export default function ShopModal({ isOpen, onOpenChange, data, onClose }) {
       </ModalContent>
     </Modal>
     <CreateOrder isOpen={createorder.isOpen} onOpenChange={createorder.onOpenChange} onClose={createorder.onClose}/>
+    <ToastContainer containerId={data.id}/>
     </>
   );
 }
