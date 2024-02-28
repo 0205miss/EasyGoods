@@ -91,6 +91,7 @@ export default function CreateOrder({ isOpen, onOpenChange,onClose }) {
           </div>
         </ModalBody>
         <ModalFooter>
+            <Button color="danger" onClick={onClose}>Cancel</Button>
             <Button color="warning" onClick={createpay}>Create</Button>
         </ModalFooter>
       </ModalContent>
