@@ -12,7 +12,7 @@ export const CartProvider = ({ children }) => {
 
   const checkshop = (shopid) => {
     console.log(cartItems);
-    if (cartItems.length==0) {
+    if (cartItems.length == 0) {
       return true;
     } else {
       if (cartItems[0].shop == shopid) {
@@ -23,36 +23,55 @@ export const CartProvider = ({ children }) => {
     }
   };
 
-  const addToCart = (item) => {
-    const isItemInCart = cartItems.find((cartItem) => cartItem.id === item.id && cartItem.memo === item.memo);
-
-    if (isItemInCart) {
+  const addToCart = (item,amount) => {
+    const isItemInCart = cartItems.find(
+      (cartItem) => cartItem.id === item.id && cartItem.memo === item.memo
+    );
+    if (!checkshop(item.shop)) {
+      setCartItems([item]);
+    } else if (isItemInCart) {
+      console.log('add')
+      console.log(cartItems)
       setCartItems(
         cartItems.map((cartItem) =>
-          cartItem.id === item.id
-            ? { ...cartItem, amount: cartItem.amount + item.amount }
+          cartItem.id === item.id && cartItem.memo === item.memo
+            ? { ...cartItem, amount: cartItem.amount + amount }
             : cartItem
         )
       );
     } else {
-        setCartItems([...cartItems, item ]);
+      setCartItems([...cartItems, item]);
     }
+  };
+
+  const getCartTotal = () => {
+    return cartItems.reduce((total, item) => parseFloat((total+item.cost * item.amount).toFixed(7)), 0);
+  };
+
+  const getCartTotalPrepare = () => {
+    return cartItems.reduce((total, item) => total+item.spend * item.amount, 0);
   };
 
   const clearCart = () => {
     setCartItems([]);
   };
 
-  const removeFromCart = (item) => {
-    const isItemInCart = cartItems.find((cartItem) => cartItem.id === item.id);
+  const removeFromCart = (item, amount) => {
+    const isItemInCart = cartItems.find(
+      (cartItem) => cartItem.id === item.id && cartItem.memo === item.memo
+    );
 
-    if (isItemInCart.quantity === 1) {
-      setCartItems(cartItems.filter((cartItem) => cartItem.id !== item.id));
+    if (isItemInCart.amount === 1) {
+      setCartItems(
+        cartItems.filter(
+          (cartItem) => cartItem.id !== item.id || cartItem.memo !== item.memo
+        )
+      );
     } else {
       setCartItems(
         cartItems.map((cartItem) =>
-          cartItem.id === item.id
-            ? { ...cartItem, quantity: cartItem.quantity - 1 }
+          cartItem.id === item.id && cartItem.memo === item.memo
+            ? { ...cartItem, amount: cartItem.amount - amount }
             : cartItem
         )
       );
@@ -68,13 +87,14 @@ export const CartProvider = ({ children }) => {
     if (cartItems) {
       setCartItems(JSON.parse(cartItems));
     }
+    console.log(cartItems)
   }, []);
 
   return (
     <CartContext.Provider
-      value={{ cartItems, addToCart, removeFromCart, clearCart, checkshop }}
+      value={{ cartItems, addToCart, removeFromCart, clearCart, checkshop,getCartTotal,getCartTotalPrepare }}
     >
-      {children}
+      {children}      
     </CartContext.Provider>
   );
 };

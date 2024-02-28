@@ -16,33 +16,32 @@ import {
 import { useContext, useEffect, useState } from "react";
 import { CartContext } from "./ordercontext";
 
-export default function AddOrder({ isOpen, onOpenChange, shopId, data }) {
+export default function AddOrder({ isOpen, onOpenChange, shopId, data, onClose }) {
   const [memo, setmemo] = useState("");
   const [amount, setamount] = useState(1);
   const [spend, setspend] = useState(1 * data.time);
-  const [cost, setcost] = useState(1 * 0.03);
-  const {addToCart,checkshop,clearCart} = useContext(CartContext)
+  const [cost, setcost] = useState(1 * data.cost);
+  const {addToCart} = useContext(CartContext)
     useEffect(()=>{
         setspend(amount*data.time)
-        setcost(parseFloat((amount*0.03).toFixed(7)))
+        setcost(parseFloat((amount*data.cost).toFixed(7)))
     },[amount])
 
     const addproduct = () =>{
-        if(!checkshop(shopId)){
-            clearCart()
-            
-        }
         const order = {
             id : data.id,
+            picture:data.picture,
             amount : amount,
             name : data.name,
             memo : memo,
-            spend : spend,
-            cost : cost,
+            spend : data.time,
+            cost : data.cost,
             shop:shopId
         }
-        addToCart(order)        
+        addToCart(order,0)
+        onClose()
     }
+
   return (
     <Modal
       isOpen={isOpen}
@@ -111,6 +110,9 @@ export default function AddOrder({ isOpen, onOpenChange, shopId, data }) {
           </div>
         </ModalBody>
         <ModalFooter className="flex justify-center">
+          <Button color="warning" className=" uppercase" onClick={onClose}>
+                cancel
+            </Button>
             <Button color="primary" className=" uppercase" onClick={addproduct}>
                 Add
             </Button>

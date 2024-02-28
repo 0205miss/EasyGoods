@@ -8,6 +8,7 @@ import {
   ModalBody,
   ModalContent,
   ModalHeader,
+  useDisclosure,
 } from "@nextui-org/react";
 import { collection, getDocs } from "firebase/firestore";
 import { useContext, useEffect, useState } from "react";
@@ -16,8 +17,10 @@ import { Back } from "@/res/icon/back";
 import { Cart } from "@/res/icon/cart";
 import { CartContext } from "./ordercontext";
 import UserMenuCard from "./menucard";
+import CreateOrder from "./createorder";
 
 export default function ShopModal({ isOpen, onOpenChange, data, onClose }) {
+  const createorder = useDisclosure()
   const [checkopen, setcheckopen] = useState(null);
   const [size, setsize] = useState("md");
   const [menu, setmenu] = useState([]);
@@ -51,8 +54,6 @@ export default function ShopModal({ isOpen, onOpenChange, data, onClose }) {
       parseInt(data.opening.substring(6, 8)) * 60 +
       parseInt(data.opening.substring(9, 11));
     const current = now.getHours() * 60 + now.getMinutes();
-    console.log(now.getDay().toString());
-    console.log(data.openday);
     if (!data.openday.includes(now.getDay().toString())) {
       setcheckopen(false);
     } else if (start > current && current > end) {
@@ -60,7 +61,6 @@ export default function ShopModal({ isOpen, onOpenChange, data, onClose }) {
     } else {
       setcheckopen(true);
     }
-    console.log(data.openday.sort());
   }, [data]);
 
   useEffect(() => {
@@ -73,6 +73,7 @@ export default function ShopModal({ isOpen, onOpenChange, data, onClose }) {
 
   if (checkopen == null) return;
   return (
+    <>
     <Modal
       isOpen={isOpen}
       placement="bottom-center"
@@ -102,6 +103,7 @@ export default function ShopModal({ isOpen, onOpenChange, data, onClose }) {
               >
                 <Button
                   isIconOnly
+                  onClick={()=>createorder.onOpen()}
                   className="p-2 stroke-white bg-gradient-to-tr from-secondary-500 to-primary-500 text-white shadow-lg"
                 >
                   <Cart />
@@ -110,86 +112,92 @@ export default function ShopModal({ isOpen, onOpenChange, data, onClose }) {
             </div>
           </ModalHeader>
         )}
-        <div className={size == "full" &&"overflow-scroll h-[calc(100vh_-_4.5rem)]"}>
-        <ModalBody>
-          <div className="block w-full">
-            <div className="text-large font-semibold">{data.name}</div>
-            <div className="!text-sm text-slate-600 font-medium">
-              {data.type == "coffee"
-                ? "Coffee Shop"
-                : data.type == "Restaurant"
-                ? "Restaurant"
-                : data.type == "Grocery"
-                ? "Grocery"
-                : data.type == "BookStore"
-                ? "BookStore"
-                : data.type == "Bakery"
-                ? "Bakery"
-                : data.type == "Hotel"
-                ? "Hotel"
-                : "Other"}
-            </div>
-            <div
-              className={
-                !checkopen ? "!text-sm text-red-500" : "text-green-500 !text-sm"
-              }
-            >
-              {!checkopen ? "close" : "opening"}
-            </div>
-            <div className=" fill-secondary-500 flex justify-start items-center">
-              <div className="h-7 w-7">
-                <Address />
+        <div
+          className={
+            size == "full"
+              ? "overflow-scroll h-[calc(100vh_-_4.5rem)]"
+              : undefined
+          }
+          key={'body-full-key'}
+        >
+          <ModalBody>
+            <div className="block w-full">
+              <div className="text-large font-semibold">{data.name}</div>
+              <div className="!text-sm text-slate-600 font-medium">
+                {data.type == "coffee"
+                  ? "Coffee Shop"
+                  : data.type == "Restaurant"
+                  ? "Restaurant"
+                  : data.type == "Grocery"
+                  ? "Grocery"
+                  : data.type == "BookStore"
+                  ? "BookStore"
+                  : data.type == "Bakery"
+                  ? "Bakery"
+                  : data.type == "Hotel"
+                  ? "Hotel"
+                  : "Other"}
               </div>
-              <div className=" text-sm leading-normal">{data.address}</div>
-            </div>
-
-
-            <Divider />
-
-            {data.photo.length != 0 && (
-              <div className="flex overflow-x-scroll h-52 py-2 gap gap-2">
-                {data.photo.toReversed().map((url, i) => {
-                  return (
-                    <div className=" flex-none" key={i}>
-                      <Image
-                        className="!object-cover w-48 h-48"
-                        radius="md"
-                        src={url}
-                      />
-                    </div>
-                  );
-                })}
+              <div
+                className={
+                  !checkopen
+                    ? "!text-sm text-red-500"
+                    : "text-green-500 !text-sm"
+                }
+              >
+                {!checkopen ? "close" : "opening"}
               </div>
-            )}
+              <div className=" fill-secondary-500 flex justify-start items-center">
+                <div className="h-7 w-7">
+                  <Address />
+                </div>
+                <div className=" text-sm leading-normal">{data.address}</div>
+              </div>
 
-            <Divider />
+              <Divider />
 
-          </div>
-
-          {size == "full" && menu.length != 0 && (
-            <>
-
-                  {menu.map((item, i) => {
-                    if (item == 0) {
-                      return null;
-                    }
+              {data.photo.length != 0 && (
+                <div className="flex overflow-x-scroll h-52 py-2 gap gap-2">
+                  {data.photo.toReversed().map((url, i) => {
                     return (
-                      <>
-                        <UserMenuCard shopId={data.id} data={item} key={i} />
-                      </>
+                      <div className=" flex-none" key={url}>
+                        <Image
+                          className="!object-cover w-48 h-48"
+                          radius="md"
+                          src={url}
+                        />
+                      </div>
                     );
                   })}
-            </>
-          )}
+                </div>
+              )}
 
-          {size == "md" && (
-            <div className="mt-2 w-full flex justify-center">
-              <Button onClick={() => setsize("full")}>More</Button>
+              <Divider />
             </div>
-          )}
-        </ModalBody>
+
+            {size == "full" &&
+              menu.length != 0 &&
+              menu.map((item, i) => {
+                if (item == 0) {
+                  return null;
+                }
+                return (
+                    <UserMenuCard shopId={data.id} data={item} key={item.id} />
+                );
+              })}
+
+            {size == "md" && (
+              <div className="mt-2 w-full flex justify-center">
+                <Button onClick={() => setsize("full")} color="secondary">
+                  More
+                </Button>
+              </div>
+            )}
+          </ModalBody>
         </div>
       </ModalContent>
     </Modal>
+    <CreateOrder isOpen={createorder.isOpen} onOpenChange={createorder.onOpenChange} onClose={createorder.onClose}/>
+    </>
   );
 }
