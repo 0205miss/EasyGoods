@@ -14,7 +14,7 @@ export default function MenuBusiness({ data,setdata,index }) {
 
   useEffect(() => {
     getmenu();
-  }, []);
+  }, [data]);
 
   const getmenu = async () => {
     const querySnapshot = await getDocs(

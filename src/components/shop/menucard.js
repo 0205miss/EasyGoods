@@ -8,13 +8,42 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import AddOrder from "./addorder";
+import { useState, useEffect } from "react";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function UserMenuCard({ data,shopId }) {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+  const [pi,setispi] = useState(true)
+  const [notice,setnotice] = useState(false)
+  useEffect(() => {
+   /* if (
+      window.location.ancestorOrigins[0] == "https://sandbox.minepi.com" ||
+      window.location.ancestorOrigins[0] == "https://app-cdn.minepi.com"
+    ) {
+      setispi(true);
+    } else {
+      setispi(false);
+    }*/
+  }, []);
+
+  const notify = () => {
+    if(!notice){
+      toast("Order need to be on Pi Browser !",{containerId:data.id});
+      setnotice(true)
+    }    
+  }
+  const checkorder = () =>{
+    if(pi){
+      onOpen()
+    }else{
+      notify()
+    }
+  }
   return (
     <>
       <Card>
-        <CardBody onClick={onOpen} className="overflow-visible py-2 w-full">
+        <CardBody onClick={checkorder} className="overflow-visible py-2 w-full">
           <div className="flex w-full flex-row">
             <div className="w-1/2 p-1 flex justify-center">
               <Image
@@ -51,6 +80,7 @@ export default function UserMenuCard({ data,shopId }) {
         onOpenChange={onOpenChange}
         data={data}
       />
+      <ToastContainer containerId={data.id}/>
     </>
   );
 }
