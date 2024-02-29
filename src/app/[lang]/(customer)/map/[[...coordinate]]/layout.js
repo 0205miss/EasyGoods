@@ -1,16 +1,14 @@
 import Link from "next/link";
-import PiUser from "../pi";
+import PiUser from "@/app/[lang]/(customer)/pi";
 export default function UserLayout({ children, params }) {
-  let subpath=''
-  if(params.coordinate!=undefined){
-    subpath=`/${params.coordinate[0]}/${params.coordinate[1]}`
+  let subpath = "";
+  if (params.coordinate != undefined) {
+    subpath = `/${params.coordinate[0]}/${params.coordinate[1]}`;
   }
   return (
     <div className="w-screen h-screen">
       <div className="w-full h-full pb-16 z-0">
-        <PiUser>
-        {children}
-        </PiUser>
+        <PiUser>{children}</PiUser>
       </div>
       <div className="fixed w-full bg-[#c3cfe2] shadow-xl bottom-0 h-16 grid grid-flow-col gap-px pt-[1px]">
         <Link href={`/${params.lang}/order${subpath}`}>

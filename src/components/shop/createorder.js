@@ -1,5 +1,5 @@
 import {
-    Button,
+  Button,
   Modal,
   ModalBody,
   ModalContent,
@@ -9,46 +9,58 @@ import {
 import { useContext } from "react";
 import { CartContext } from "./ordercontext";
 import UserOrderCard from "./ordercard";
-import { PiContext } from "@/app/[lang]/map/pi";
+import { PiContext } from "@/app/[lang]/(customer)/pi";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { db } from "../firestore";
 import { paymentapprove } from "@/action/approve";
 import { paymentcomplete } from "@/action/complete";
 
-export default function CreateOrder({ isOpen, onOpenChange,onClose }) {
-  const { cartItems, getCartTotal, getCartTotalPrepare,clearCart } =
+export default function CreateOrder({ isOpen, onOpenChange, onClose }) {
+  const { cartItems, getCartTotal, getCartTotalPrepare, clearCart } =
     useContext(CartContext);
-    const {pi,piauth} = useContext(PiContext)
-    const createpay =async () =>{
-        const docRef = await addDoc(collection(db,'order'),{
-            buyer:piauth.user.username,
-            shop:cartItems[0].shop,
-            ordertime:serverTimestamp(),
-            items:cartItems,
-            paid:false,
-            status:'ongoing'
-        })
-        pi.createPayment({
-            // Amount of π to be paid:
-            amount: getCartTotal(),
-            // An explanation of the payment - will be shown to the user:
-            memo: "EasyOrder", // e.g: "Digital kitten #1234",
-            // An arbitrary developer-provided metadata object - for your own usage:
-            metadata: { order:docRef.id }, // e.g: { kittenId: 1234 }
-          }, {
-            // Callbacks you need to implement - read more about those in the detailed docs linked below:
-            onReadyForServerApproval: function(paymentId) { 
-                paymentapprove(piauth.accessToken,piauth.user.username,paymentId)
-             },
-            onReadyForServerCompletion: function(paymentId, txid) { 
-                paymentcomplete(piauth.accessToken,piauth.user.username,paymentId,txid)
-                clearCart()
-                onClose()
-             },
-            onCancel: function(paymentId) { /* ... */ },
-            onError: function(error, payment) { /* ... */ },
-          });
-    }
+  const { pi, piauth } = useContext(PiContext);
+  const createpay = async () => {
+    const docRef = await addDoc(collection(db, "order"), {
+      buyer: piauth.user.username,
+      shop: cartItems[0].shop,
+      ordertime: serverTimestamp(),
+      items: cartItems,
+      paid: false,
+      status: "ongoing",
+    });
+    pi.createPayment(
+      {
+        // Amount of π to be paid:
+        amount: getCartTotal(),
+        // An explanation of the payment - will be shown to the user:
+        memo: "EasyOrder", // e.g: "Digital kitten #1234",
+        // An arbitrary developer-provided metadata object - for your own usage:
+        metadata: { order: docRef.id }, // e.g: { kittenId: 1234 }
+      },
+      {
+        // Callbacks you need to implement - read more about those in the detailed docs linked below:
+        onReadyForServerApproval: function (paymentId) {
+          paymentapprove(piauth.accessToken, piauth.user.username, paymentId);
+        },
+        onReadyForServerCompletion: function (paymentId, txid) {
+          paymentcomplete(
+            piauth.accessToken,
+            piauth.user.username,
+            paymentId,
+            txid
+          );
+          clearCart();
+          onClose();
+        },
+        onCancel: function (paymentId) {
+          /* ... */
+        },
+        onError: function (error, payment) {
+          /* ... */
+        },
+      }
+    );
+  };
   return (
     <Modal
       isOpen={isOpen}
@@ -91,8 +103,12 @@ export default function CreateOrder({ isOpen, onOpenChange,onClose }) {
           </div>
         </ModalBody>
         <ModalFooter>
-            <Button color="danger" onClick={onClose}>Cancel</Button>
-            <Button color="warning" onClick={createpay}>Create</Button>
+          <Button color="danger" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button color="warning" onClick={createpay}>
+            Create
+          </Button>
         </ModalFooter>
       </ModalContent>
     </Modal>

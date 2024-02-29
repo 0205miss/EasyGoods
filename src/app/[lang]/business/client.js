@@ -108,7 +108,7 @@ export default function BusinessClientPage({ dict, lang }) {
   useEffect(() => {
     if (currentshop == null) return;
     const q = query(
-      collection(db, "offer"),
+      collection(db, "order"),
       where("shop", "==", shoplist[currentshop].id)
     );
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
