@@ -11,7 +11,7 @@ import {
   Tabs,
   Spinner,
 } from "@nextui-org/react";
-import { useContext, useEffect, useState, useMemo } from "react";
+import { useContext, useEffect, useState, useMemo, useRef } from "react";
 import { OwnerContext } from "./business";
 import LoadingPage from "@/components/loading";
 import { collection, query, where, onSnapshot } from "firebase/firestore";
@@ -25,6 +25,8 @@ export default function BusinessClientPage({ dict, lang }) {
   const [currentshop, setcurrentshop] = useState(null);
   const [shoplist, setshoplist] = useState([]);
   const [selected, setSelected] = useState("order");
+  const unsub = useRef()
+
   useEffect(() => {
     if (ownershops == null) return;
     if (ownershops.empty) {
@@ -105,18 +107,37 @@ export default function BusinessClientPage({ dict, lang }) {
     })
   );
 
-  useEffect(() => {
-    if (currentshop == null) return;
+  const listenorder = () => {
     const q = query(
       collection(db, "order"),
       where("shop", "==", shoplist[currentshop].id)
     );
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      const cities = [];
-      querySnapshot.forEach((doc) => {
-        cities.push(doc.data().buyer);
+      querySnapshot.docChanges().forEach((change)=>{
+        
+      })
+      querySnapshot.docChanges().forEach((change) => {
+        if (change.type === "added") {
+            console.log("New city: ", change.doc.data());
+        }
+        if (change.type === "modified") {
+            console.log("Modified city: ", change.doc.data());
+        }
+        if (change.type === "removed") {
+            console.log("Removed city: ", change.doc.data());
+        }
       });
+    },(error)=>{
+      console.log(error)
     });
+
+    unsub.current = unsubscribe
+  }
+  useEffect(() => {
+    if (currentshop == null) return;
+    unsub.current && unsub.current()
+    listenorder()
+    
   }, [currentshop]);
 
   const handledropdown = (key) => {
@@ -126,6 +147,11 @@ export default function BusinessClientPage({ dict, lang }) {
       setcurrentshop(key);
     }
   };
+  useEffect(()=>{
+    return () =>{
+      unsub.current && unsub.current()
+    }
+  },[])
 
   if (ownershops == null || shoplist == null) return <LoadingPage />;
   return (
