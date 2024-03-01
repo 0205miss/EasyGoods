@@ -14,19 +14,24 @@ import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { db } from "../firestore";
 import { paymentapprove } from "@/action/approve";
 import { paymentcomplete } from "@/action/complete";
+import { useRouter,usePathname  } from 'next/navigation'
+import { ordercancel } from "@/action/cancel";
 
 export default function CreateOrder({ isOpen, onOpenChange, onClose }) {
   const { cartItems, getCartTotal, getCartTotalPrepare, clearCart } =
     useContext(CartContext);
   const { pi, piauth } = useContext(PiContext);
+  const router = useRouter()
+  const pathname = usePathname()
   const createpay = async () => {
     const docRef = await addDoc(collection(db, "order"), {
       buyer: piauth.user.username,
       shop: cartItems[0].shop,
       ordertime: serverTimestamp(),
       items: cartItems,
+      product:false,
       paid: false,
-      status: "ongoing",
+      status: "pending",
     });
     pi.createPayment(
       {
@@ -50,10 +55,11 @@ export default function CreateOrder({ isOpen, onOpenChange, onClose }) {
             txid
           );
           clearCart();
+          router.replace(`${pathname.replace('map','order')}`)
           onClose();
         },
         onCancel: function (paymentId) {
-          /* ... */
+          ordercancel(piauth.accessToken, piauth.user.username,docRef.id)
         },
         onError: function (error, payment) {
           /* ... */

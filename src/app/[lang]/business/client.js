@@ -25,7 +25,9 @@ export default function BusinessClientPage({ dict, lang }) {
   const [currentshop, setcurrentshop] = useState(null);
   const [shoplist, setshoplist] = useState([]);
   const [selected, setSelected] = useState("order");
-  const unsub = useRef()
+  const unsub = useRef();
+  const [ongoing, setongoing] = useState([]);
+  const [history, sethistory] = useState([]);
 
   useEffect(() => {
     if (ownershops == null) return;
@@ -112,32 +114,61 @@ export default function BusinessClientPage({ dict, lang }) {
       collection(db, "order"),
       where("shop", "==", shoplist[currentshop].id)
     );
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      querySnapshot.docChanges().forEach((change)=>{
-        
-      })
-      querySnapshot.docChanges().forEach((change) => {
-        if (change.type === "added") {
-            console.log("New city: ", change.doc.data());
-        }
-        if (change.type === "modified") {
-            console.log("Modified city: ", change.doc.data());
-        }
-        if (change.type === "removed") {
-            console.log("Removed city: ", change.doc.data());
-        }
-      });
-    },(error)=>{
-      console.log(error)
-    });
+    const unsubscribe = onSnapshot(
+      q,
+      (querySnapshot) => {
+        querySnapshot.docChanges().forEach((change) => {});
+        querySnapshot.docChanges().forEach((change) => {
+          if (change.type === "added") {
+            if (change.doc.data().status == "ongoing") {
+              setongoing((old) => [
+                ...old,
+                { ...change.doc.data(), id: change.doc.id },
+              ]);
+            } else if (change.doc.data().status == "complete") {
+              sethistory((old) => [
+                ...old,
+                { ...change.doc.data(), id: change.doc.id },
+              ]);
+            }
+          }
+          if (change.type === "modified") {
+            if (change.doc.data().status == "ongoing") {
+              setongoing( (old) =>{
+                return old.map((item) =>
+                  item.id === change.doc.id ? change.doc.data() : item
+                )
+              }
+              );
+            } else if (change.doc.data().status == "complete") {
+              setongoing(ongoing.filter((item) => item.id !== change.doc.id));
+              sethistory((old) => [
+                ...old,
+                { ...change.doc.data(), id: change.doc.id },
+              ]);
+            }
 
-    unsub.current = unsubscribe
-  }
+            console.log("Modified city: ", change.doc.data());
+          }
+          if (change.type === "removed") {
+            console.log("Removed city: ", change.doc.data());
+          }
+        });
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+
+    unsub.current = unsubscribe;
+  };
+
   useEffect(() => {
     if (currentshop == null) return;
-    unsub.current && unsub.current()
-    listenorder()
-    
+    unsub.current && unsub.current();
+    sethistory([]);
+    setongoing([]);
+    listenorder();
   }, [currentshop]);
 
   const handledropdown = (key) => {
@@ -147,11 +178,11 @@ export default function BusinessClientPage({ dict, lang }) {
       setcurrentshop(key);
     }
   };
-  useEffect(()=>{
-    return () =>{
-      unsub.current && unsub.current()
-    }
-  },[])
+  useEffect(() => {
+    return () => {
+      unsub.current && unsub.current();
+    };
+  }, []);
 
   if (ownershops == null || shoplist == null) return <LoadingPage />;
   return (
@@ -198,7 +229,7 @@ export default function BusinessClientPage({ dict, lang }) {
         {shoplist.length == 0 ? (
           <AddCard transcript={dict} />
         ) : selected == "order" ? (
-          <OrderCard transcript={dict} />
+          <OrderCard transcript={dict} history={history} ongoing={ongoing} />
         ) : selected == "stamp" ? (
           <Stamp />
         ) : selected == "menu" ? (

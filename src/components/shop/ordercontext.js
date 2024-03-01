@@ -30,8 +30,6 @@ export const CartProvider = ({ children }) => {
     if (!checkshop(item.shop)) {
       setCartItems([item]);
     } else if (isItemInCart) {
-      console.log('add')
-      console.log(cartItems)
       setCartItems(
         cartItems.map((cartItem) =>
           cartItem.id === item.id && cartItem.memo === item.memo

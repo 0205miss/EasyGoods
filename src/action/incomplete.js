@@ -21,7 +21,7 @@ export async function incompletepay(payment) {
     const com = await res.json();
     const firestore = admin.firestore()
     const ref = firestore.collection('order').doc(com.metadata.order)
-    await ref.update({paid: true});
+    await ref.update({paid: true,status:'ongoing'});
     return true
   }else{
     return false
