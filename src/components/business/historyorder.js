@@ -3,7 +3,7 @@ import { Accordion, AccordionItem, Button, Divider } from "@nextui-org/react";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 
-export default function OrderAccordion({ data }) {
+export default function HistoryOrder({ data }) {
   const [time, setTime] = useState(dayjs());
 
    const finishprepare = (id) =>{
@@ -40,7 +40,7 @@ export default function OrderAccordion({ data }) {
             key={index}
             title={item.buyer}
             subtitle={
-              item.product ? 'Waiting Customer':
+                item.product ? 'Waiting Customer':
               time.isBefore(dayjs.unix(expire))
                 ? -time.diff(dayjs.unix(expire), "m") + " min"
                 : "Time's up"

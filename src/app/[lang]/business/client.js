@@ -136,7 +136,7 @@ export default function BusinessClientPage({ dict, lang }) {
             if (change.doc.data().status == "ongoing") {
               setongoing( (old) =>{
                 return old.map((item) =>
-                  item.id === change.doc.id ? change.doc.data() : item
+                  item.id === change.doc.id ? { ...change.doc.data(), id: change.doc.id } : item
                 )
               }
               );
