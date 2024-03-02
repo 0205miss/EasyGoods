@@ -18,13 +18,10 @@ export default function GetUserPage({ params }) {
             longitude,
           });
           if (
-            window.location.ancestorOrigins[0] ==
-              "https://sandbox.minepi.com" ||
-            window.location.ancestorOrigins[0] ==
-              "https://app-cdn.minepi.com" ||
-            window.location.ancestorOrigins[0] ==
-              "https://easygoods5604.pinet.com"
+            navigator.userAgent.indexOf("Android") > -1 ||
+            navigator.userAgent.indexOf("Adr") > -1
           ) {
+          } else {
             location.assign(
               "pi://testnet.easygoods.app/" +
                 params.lang +
