@@ -46,7 +46,7 @@ export default function OrderAccordion({ data }) {
                 : "Time's up"
             }
           >
-            <div className=" text-center">Order</div>
+            <div className=" text-center">OrderID : <span className='text-center uppercase'>{item.id.substring(0,5)}</span></div>
             <Divider/>
             {item.items.map((product,index) => {
               return (
