@@ -1,5 +1,9 @@
 import Link from "next/link";
 export default function UserLayout({ children, params }) {
+  let subpath = "";
+  if (params.coordinate != undefined) {
+    subpath = `/${params.coordinate[0]}/${params.coordinate[1]}`;
+  }
   return (
     <div className="w-screen h-screen">
       <div className="w-full h-full pb-16 z-0">{children}</div>
@@ -42,7 +46,7 @@ export default function UserLayout({ children, params }) {
             </g>
           </svg>
         </div>
-        <Link href={`/${params.lang}/map`}>
+        <Link href={`/${params.lang}/map${subpath}`}>
           <div className="flex bg-ui-background stroke-ui-primary justify-center items-center h-full">
             <svg
               width="35px"
@@ -69,7 +73,7 @@ export default function UserLayout({ children, params }) {
             </svg>
           </div>
         </Link>
-        <Link href={`/${params.lang}/menu`}>
+        <Link href={`/${params.lang}/menu${subpath}`}>
           <div className="flex bg-ui-background stroke-ui-primary justify-center items-center h-full">
             <svg
               width="35px"

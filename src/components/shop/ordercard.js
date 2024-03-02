@@ -1,6 +1,4 @@
-import { Clock } from "@/res/icon/clock";
 import { Minus } from "@/res/icon/minus";
-import { Pi } from "@/res/icon/pi";
 import { Plus } from "@/res/icon/plus";
 import {
   Card,

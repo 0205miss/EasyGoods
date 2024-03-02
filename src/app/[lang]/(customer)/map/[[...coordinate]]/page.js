@@ -35,7 +35,7 @@ export default function MapPage({ params }) {
   );
   return (
     <div className="w-full h-full">
-      <MapMenu lang={params.lang} lat={params.lat} long={params.long} />
+      <MapMenu lang={params.lang} lat={params.coordinate==undefined ? null:params.coordinate[0]}long={params.coordinate==undefined ? null:params.coordinate[1]} />
     </div>
   );
 }
