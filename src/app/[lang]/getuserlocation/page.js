@@ -51,7 +51,7 @@ export default function GetUserPage({ params }) {
         <Link
           href={`pi://testnet.easygoods.app/${params.lang}/map/${location.latitude}/${location.longitude}`}
         >
-          <Button color="secondary">Go Back Pi Browser</Button>
+          <Button color="secondary">Click to continue</Button>
         </Link>
       )}
     </div>
