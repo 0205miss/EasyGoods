@@ -1,16 +1,82 @@
 "use client";
 import { auth } from "@/action/auth";
 import Script from "next/script";
-import { createContext, useState } from "react";
+import { createContext, useState,useRef, useEffect } from "react";
 import { signInWithCustomToken } from "firebase/auth";
 import { auth_firebase } from "@/components/firestore";
 import { incompletepay } from "@/action/incomplete";
+import { db } from "@/components/firestore";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
 
 export const PiContext = createContext();
 
-export default function PiUser({ children,transcript }) {
+export default function PiUser({ children }) {
+  const unsub = useRef()
   const [pi, setpi] = useState(null);
   const [piauth, setauth] = useState(null);
+  const [history, sethistory] = useState([]);
+  const [ongoing, setongoing] = useState([]);
+  const [firebase,setfirebase] = useState(false)
+  const listenorder = () => {
+    const q = query(
+      collection(db,'order'),
+      where('buyer','==',piauth.user.username)
+    )
+    const unsubscribe = onSnapshot(
+      q,
+      (querySnapshot) =>{
+        querySnapshot.docChanges().forEach((change)=>{
+          if(change.type === 'added'){
+            if(change.doc.data().pickup){
+              sethistory((old)=>[
+                ...old,{...change.doc.data(),id:change.doc.id}
+              ])
+            }else{
+              setongoing((old)=>[
+                ...old,{...change.doc.data(),id:change.doc.id}
+              ])
+            }
+          }
+
+          if(change.type === 'modified'){
+            if (change.doc.data().pickup) {
+              setongoing((old) => old.filter((item) => item.id !== change.doc.id));
+              sethistory((old) => [
+                ...old,
+                { ...change.doc.data(), id: change.doc.id },
+              ]);
+            }else{
+              setongoing( (old) =>{
+                return old.map((item) =>
+                  item.id === change.doc.id ? { ...change.doc.data(), id: change.doc.id } : item
+                )
+              }
+              );
+            }
+          }
+        })
+      }
+    )
+
+      unsub.current = unsubscribe;
+  }
+
+useEffect(()=>{
+  return () =>{
+    unsub.current && unsub.current()
+  }
+},[])
+
+useEffect(()=>{
+  if(firebase){
+    listenorder()
+  }
+},[firebase])
+
+useEffect(()=>{
+  console.log(ongoing)
+},[ongoing])
+
   const firebase_auth = async (token) => {
 
     const data_token = await auth(token);
@@ -19,8 +85,7 @@ export default function PiUser({ children,transcript }) {
     }else{
       signInWithCustomToken(auth_firebase, data_token)
       .then((userCredential) => {
-        console.log(userCredential.user);
-        // ...
+        setfirebase(true)
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -60,7 +125,7 @@ export default function PiUser({ children,transcript }) {
     return (
       <>
         <Script src="https://sdk.minepi.com/pi-sdk.js" onLoad={loadpi}></Script>
-        <PiContext.Provider value={{pi,piauth}}>{children}</PiContext.Provider>
+        <PiContext.Provider value={{pi,piauth,ongoing,history}}>{children}</PiContext.Provider>
       </>
     );
   

@@ -1,5 +1,5 @@
 import { Tabs, Tab } from "@nextui-org/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import OrderAccordion from "./orderaccordion";
 
 export default function OrderCard({ ongoing, history, transcript }) {

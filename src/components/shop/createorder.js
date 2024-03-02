@@ -31,7 +31,9 @@ export default function CreateOrder({ isOpen, onOpenChange, onClose }) {
       items: cartItems,
       product:false,
       paid: false,
+      pickup: false,
       status: "pending",
+      method: 'onlinepay'
     });
     pi.createPayment(
       {

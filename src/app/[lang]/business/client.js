@@ -117,7 +117,6 @@ export default function BusinessClientPage({ dict, lang }) {
     const unsubscribe = onSnapshot(
       q,
       (querySnapshot) => {
-        querySnapshot.docChanges().forEach((change) => {});
         querySnapshot.docChanges().forEach((change) => {
           if (change.type === "added") {
             if (change.doc.data().status == "ongoing") {
