@@ -13,7 +13,7 @@ export default async function Home({ params: { lang } }) {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center px-10">
       <Image src={logo} alt="Logo for the EasyGoods project" priority />
-      <Link href={`/${lang}/map/22.7704832/121.1334656`}>
+      <Link href={`/${lang}/map`}>
         <button className="mt-2 rounded-md text-white bg-[#485696] px-10 py-3 w-40">
           {dict.Customer}
         </button>

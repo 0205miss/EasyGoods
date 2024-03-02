@@ -1,6 +1,6 @@
-'use client'
+"use client";
 
-import { useContext,useState } from "react";
+import { useContext, useState } from "react";
 import { PiContext } from "@/app/[lang]/(customer)/pi";
 import { Tab, Tabs } from "@nextui-org/react";
 import OrderOnGoingAccordion from "./ongoingcard";
@@ -21,9 +21,7 @@ export default function OrderUserPage({ transcript }) {
           onSelectionChange={settab}
         >
           <Tab key="progress" title={transcript["Progress"]}></Tab>
-          <Tab key="history" title={transcript["History"]}>
-            456
-          </Tab>
+          <Tab key="history" title={transcript["History"]}></Tab>
         </Tabs>
       </div>
       {tab == "progress" && (
