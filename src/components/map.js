@@ -62,7 +62,16 @@ export default function MapMenu({ lang, lat = null, long = null }) {
   };
 
   useEffect(() => {
-    if ("geolocation" in navigator) {
+    const latitude = parseFloat(lat);
+          const longitude = parseFloat(long);
+          setLocation({
+            latitude,
+            longitude,
+            countrycode: iso1A2Code([longitude, latitude]),
+          });
+          setloadcode([...loadcode,iso1A2Code([longitude, latitude])])
+          setcode(iso1A2Code([longitude, latitude]));
+    /*if ("geolocation" in navigator) {
       // Retrieve latitude & longitude coordinates from `navigator.geolocation` Web API
       if (
         window.location.ancestorOrigins[0] == "https://sandbox.minepi.com" ||
@@ -103,7 +112,7 @@ export default function MapMenu({ lang, lat = null, long = null }) {
           setcode(iso1A2Code([longitude, latitude]));
         });
       }
-    }
+    }*/
   }, []);
   const markers = async (locate) => {
     if (locate == null) return;
