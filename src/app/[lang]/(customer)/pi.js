@@ -7,6 +7,7 @@ import { auth_firebase } from "@/components/firestore";
 import { incompletepay } from "@/action/incomplete";
 import { db } from "@/components/firestore";
 import { collection, onSnapshot, query, where } from "firebase/firestore";
+import LoadingPage from "@/components/loading";
 
 export const PiContext = createContext();
 
@@ -17,6 +18,7 @@ export default function PiUser({ children }) {
   const [history, sethistory] = useState([]);
   const [ongoing, setongoing] = useState([]);
   const [firebase,setfirebase] = useState(false)
+  const [ispi,setispi] = useState(null)
   const listenorder = () => {
     const q = query(
       collection(db,'order'),
@@ -62,6 +64,14 @@ export default function PiUser({ children }) {
   }
 
 useEffect(()=>{
+  if (
+    window.location.ancestorOrigins[0] == "https://sandbox.minepi.com" ||
+    window.location.ancestorOrigins[0] == "https://app-cdn.minepi.com"
+  ) {
+    setispi(true);
+  } else {
+    setispi(false);
+  }
   return () =>{
     unsub.current && unsub.current()
   }
@@ -120,13 +130,30 @@ useEffect(()=>{
       });
     setpi(window.Pi);
   };
-
-
+  
+    if(ispi==false && ispi != null){
+      return (
+        <>
+          <Script src="https://sdk.minepi.com/pi-sdk.js" onLoad={loadpi}></Script>
+          {children}
+        </>
+      );
+    }else if (ispi == null || pi == null || firebase == null) {
+      return (
+        <>
+          <Script
+            src="https://sdk.minepi.com/pi-sdk.js"
+            onReady={loadpi}
+          ></Script>
+          <LoadingPage/>
+        </>
+      );
+    }else if (ispi == true && firebase == true){
     return (
       <>
         <Script src="https://sdk.minepi.com/pi-sdk.js" onLoad={loadpi}></Script>
         <PiContext.Provider value={{pi,piauth,ongoing,history}}>{children}</PiContext.Provider>
       </>
     );
-  
+    }
 }
