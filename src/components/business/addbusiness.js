@@ -188,6 +188,7 @@ export default function AddBusinessModal({
           </div>
         </ModalHeader>
         <ModalBody>
+        <div className="h-[calc(100vh_-_10rem)] overflow-scroll">
           {step == 1 && (
             <div className="w-full h-full flex flex-col gap gap-4">
               <Input
@@ -617,6 +618,7 @@ export default function AddBusinessModal({
               </div>
             </div>
           )}
+          </div>
         </ModalBody>
         <ModalFooter>
           {step == 3 ? null : (
