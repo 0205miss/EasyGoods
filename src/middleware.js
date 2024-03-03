@@ -25,10 +25,7 @@ function getLocale(request) {
 
 export function middleware(request) {
   let pathname = request.nextUrl.pathname;
-  console.log(pathname)
-  if (pathname.endsWith("/map")) {
-    pathname = pathname + `/${request.geo.latitude}/${request.geo.longitude}`;
-  }
+  
 
   // // `/_next/` and `/api/` are ignored by the watcher, but we need to ignore files in `public` manually.
   // // If you have one
@@ -64,6 +61,6 @@ export function middleware(request) {
 export const config = {
   // Matcher ignoring `/_next/` and `/api/`
   matcher: [
-    "/((?!api|_next/static|_next/image|favicon.ico|validation-key.txt|privacy.html).*)",
+    "/((?!api|_next/static|getuserlocation|_next/image|favicon.ico|zh-TW|zh-CN|validation-key.txt|privacy.html).*)",
   ],
 };

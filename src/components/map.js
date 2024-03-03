@@ -18,6 +18,7 @@ import Script from "next/script";
 import { Spinner, useDisclosure } from "@nextui-org/react";
 import ShopModal from "./shop/shopmodal";
 import { CartProvider } from "./shop/ordercontext";
+import { useRouter } from "next/navigation";
 
 const iconPerson = new L.Icon({
   iconUrl: "https://svgshare.com/i/12NF.svg",
@@ -30,6 +31,7 @@ const iconPerson = new L.Icon({
 });
 
 export default function MapMenu({ lang, lat = null, long = null }) {
+  const router = useRouter()
   const {isOpen,onOpen,onOpenChange,onClose} = useDisclosure();
   const [location, setLocation] = useState(null);
   const [position, setPosition] = useState([]);
@@ -62,34 +64,37 @@ export default function MapMenu({ lang, lat = null, long = null }) {
   };
 
   useEffect(() => {
-    const latitude = parseFloat(lat);
-          const longitude = parseFloat(long);
-          setLocation({
-            latitude,
-            longitude,
-            countrycode: iso1A2Code([longitude, latitude]),
-          });
-          setloadcode([...loadcode,iso1A2Code([longitude, latitude])])
-          setcode(iso1A2Code([longitude, latitude]));
-    /*if ("geolocation" in navigator) {
+    fetch('/getuserlocation').then(
+      (res) =>{
+        return res.json()
+      }
+    ).then(
+      (resjson)=>{
+        console.log(resjson)
+      }
+    )
+    if ("geolocation" in navigator) {
       // Retrieve latitude & longitude coordinates from `navigator.geolocation` Web API
       if (
         window.location.ancestorOrigins[0] == "https://sandbox.minepi.com" ||
         window.location.ancestorOrigins[0] == "https://app-cdn.minepi.com" ||
         window.location.ancestorOrigins[0] == "https://easygoods5604.pinet.com"
       ) {
+
         if (lat == null || long == null) {
-          if (
-            navigator.userAgent.indexOf("Android") > -1 ||
-            navigator.userAgent.indexOf("Adr") > -1
-          ) {
-          } else {
-            parent.window.location =
-              process.env.NEXT_PUBLIC_USER_LOCATION_DOMAIN +
-              lang +
-              "/getuserlocation";
-          }
+
+          fetch('/getuserlocation').then(
+            (res) =>{
+              return res.json()
+            }
+          ).then(
+            (resjson)=>{
+              console.log(resjson)
+            }
+          )
+
         } else {
+
           const latitude = parseFloat(lat);
           const longitude = parseFloat(long);
           setLocation({
@@ -99,7 +104,9 @@ export default function MapMenu({ lang, lat = null, long = null }) {
           });
           setloadcode([...loadcode,iso1A2Code([longitude, latitude])])
           setcode(iso1A2Code([longitude, latitude]));
+
         }
+
       } else {
         navigator.geolocation.getCurrentPosition(({ coords }) => {
           const { latitude, longitude } = coords;
@@ -112,7 +119,7 @@ export default function MapMenu({ lang, lat = null, long = null }) {
           setcode(iso1A2Code([longitude, latitude]));
         });
       }
-    }*/
+    }
   }, []);
   const markers = async (locate) => {
     if (locate == null) return;
