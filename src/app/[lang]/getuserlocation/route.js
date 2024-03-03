@@ -1,5 +1,7 @@
+import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 
 export async function GET(request) {
-   return NextResponse.json({ lat:request.geo.latitude,long:request.geo.longitude });
+    let lat = headers().get('x-vercel-ip-latitude'),long = headers().get('x-vercel-ip-longitude')
+   return NextResponse.json({ lat:lat,long:long });
   }
