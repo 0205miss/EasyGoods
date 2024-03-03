@@ -1,3 +1,4 @@
+import { claimearn } from "@/action/claimearn";
 import { productprepared } from "@/action/productprepared";
 import { Accordion, AccordionItem, Button, Divider } from "@nextui-org/react";
 import dayjs from "dayjs";
