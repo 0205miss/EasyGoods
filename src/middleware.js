@@ -25,8 +25,6 @@ function getLocale(request) {
 
 export function middleware(request) {
   let pathname = request.nextUrl.pathname;
-  console.log(request.geo.latitude);
-  console.log(pathname);
   if (pathname.startsWith("/map")) {
     pathname = pathname + `/${request.geo.latitude}/${request.geo.longitude}`;
   }
@@ -65,6 +63,6 @@ export function middleware(request) {
 export const config = {
   // Matcher ignoring `/_next/` and `/api/`
   matcher: [
-    "/((?!api|_next/static|_next/image|favicon.ico|zh-TW|zh-CN|validation-key.txt|privacy.html).*)",
+    "/((?!api|_next/static|_next/image|favicon.ico|validation-key.txt|privacy.html).*)",
   ],
 };
