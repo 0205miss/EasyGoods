@@ -8,6 +8,7 @@ export const OwnerContext = createContext();
 
 export default function BusinessSelector({ children }) {
   const [ownershops, setshops] = useState(null);
+  const [ownerauth, setownerauth] = useState(null);
   let Pi = useContext(PiContext);
   useEffect(() => {
     const scopes = ["payments", "username", "wallet_address", "roles"];
@@ -16,6 +17,7 @@ export default function BusinessSelector({ children }) {
     }
     Pi.authenticate(scopes, onIncompletePaymentFound)
       .then(async function (auth) {
+        setownerauth(auth)
         const shopRef = collection(db, "shop");
         const q = query(
           shopRef,
@@ -31,7 +33,7 @@ export default function BusinessSelector({ children }) {
   }, []);
 
   return (
-    <OwnerContext.Provider value={{ ownershops, setshops }}>
+    <OwnerContext.Provider value={{ ownershops, setshops,ownerauth }}>
       {children}
     </OwnerContext.Provider>
   );
