@@ -25,7 +25,7 @@ function getLocale(request) {
 
 export function middleware(request) {
   let pathname = request.nextUrl.pathname;
-  if (pathname.startsWith("/map")) {
+  if (pathname.endsWith("/map")) {
     pathname = pathname + `/${request.geo.latitude}/${request.geo.longitude}`;
   }
 
