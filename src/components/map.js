@@ -3,6 +3,7 @@ import {
   MapContainer,
   Marker,
   TileLayer,
+  useMap,
   useMapEvents,
 } from "react-leaflet";
 import { collection, query, where, getDocs } from "firebase/firestore";
@@ -15,10 +16,16 @@ import { iso1A2Code } from "@rapideditor/country-coder";
 import { db } from "./firestore";
 import AwesomeMarkers from "leaflet.awesome-markers";
 import Script from "next/script";
-import { Spinner, useDisclosure } from "@nextui-org/react";
+import {
+  Autocomplete,
+  AutocompleteItem,
+  Spinner,
+  useDisclosure,
+} from "@nextui-org/react";
 import ShopModal from "./shop/shopmodal";
 import { CartProvider } from "./shop/ordercontext";
 import { useRouter } from "next/navigation";
+import { Search } from "@/res/icon/search";
 
 const iconPerson = new L.Icon({
   iconUrl: "https://svgshare.com/i/12NF.svg",
@@ -31,14 +38,16 @@ const iconPerson = new L.Icon({
 });
 
 export default function MapMenu({ lang, lat = null, long = null }) {
-  const router = useRouter()
-  const {isOpen,onOpen,onOpenChange,onClose} = useDisclosure();
+  const router = useRouter();
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const [location, setLocation] = useState(null);
   const [position, setPosition] = useState([]);
   const [pi, setpi] = useState(null);
   const [code, setcode] = useState(null);
-  const [loadcode,setloadcode] = useState([])
-  const [shopdata,setshopdata] = useState(null)
+  const [loadcode, setloadcode] = useState([]);
+  const [shopdata, setshopdata] = useState(null);
+  const [search, setsearch] = useState("");
+  const [fly, setMapfly] = useState(null);
 
   const piload = () => {
     window.Pi.init({
@@ -64,7 +73,6 @@ export default function MapMenu({ lang, lat = null, long = null }) {
   };
 
   useEffect(() => {
-
     if ("geolocation" in navigator) {
       // Retrieve latitude & longitude coordinates from `navigator.geolocation` Web API
       if (
@@ -72,21 +80,15 @@ export default function MapMenu({ lang, lat = null, long = null }) {
         window.location.ancestorOrigins[0] == "https://app-cdn.minepi.com" ||
         window.location.ancestorOrigins[0] == "https://easygoods5604.pinet.com"
       ) {
-
         if (lat == null || long == null) {
-
-          fetch('/getuserlocation').then(
-            (res) =>{
-              return res.json()
-            }
-          ).then(
-            (resjson)=>{
-              router.replace(`/${lang}/map/${resjson.lat}/${resjson.long}`)
-            }
-          )
-
+          fetch("/getuserlocation")
+            .then((res) => {
+              return res.json();
+            })
+            .then((resjson) => {
+              router.replace(`/${lang}/map/${resjson.lat}/${resjson.long}`);
+            });
         } else {
-
           const latitude = parseFloat(lat);
           const longitude = parseFloat(long);
           setLocation({
@@ -94,11 +96,9 @@ export default function MapMenu({ lang, lat = null, long = null }) {
             longitude,
             countrycode: iso1A2Code([longitude, latitude]),
           });
-          setloadcode([...loadcode,iso1A2Code([longitude, latitude])])
+          setloadcode([...loadcode, iso1A2Code([longitude, latitude])]);
           setcode(iso1A2Code([longitude, latitude]));
-
         }
-
       } else {
         navigator.geolocation.getCurrentPosition(({ coords }) => {
           const { latitude, longitude } = coords;
@@ -107,7 +107,7 @@ export default function MapMenu({ lang, lat = null, long = null }) {
             longitude,
             countrycode: iso1A2Code([longitude, latitude]),
           });
-          setloadcode([...loadcode,iso1A2Code([longitude, latitude])])
+          setloadcode([...loadcode, iso1A2Code([longitude, latitude])]);
           setcode(iso1A2Code([longitude, latitude]));
         });
       }
@@ -123,10 +123,10 @@ export default function MapMenu({ lang, lat = null, long = null }) {
     if (querySnapshot.empty) {
       console.log("No matching documents.");
     } else {
-      let allshop = querySnapshot.docs.map((doc)=>{
-        return { ...doc.data(), id: doc.id }
-      })
-      setPosition([...position,...allshop]);
+      let allshop = querySnapshot.docs.map((doc) => {
+        return { ...doc.data(), id: doc.id };
+      });
+      setPosition([...position, ...allshop]);
     }
   };
   function CheckCenter() {
@@ -134,43 +134,52 @@ export default function MapMenu({ lang, lat = null, long = null }) {
       moveend: async () => {
         let locate = map.getCenter();
         let c = iso1A2Code([locate.lng, locate.lat]);
-        if(!loadcode.includes(c)) {
-          
+        if (!loadcode.includes(c)) {
           setcode(iso1A2Code([locate.lng, locate.lat]));
-          
-        } 
+        }
       },
     });
-
   }
 
+
   const updatemarker = async () => {
-    if(code==null) return
+    if (code == null) return;
     const shopRef = collection(db, "shop");
     const q = query(shopRef, where("country", "==", code));
     const querySnapshot = await getDocs(q);
     if (querySnapshot.empty) {
       console.log("No matching documents.");
     } else {
-      let allshop = querySnapshot.docs.map((doc)=>{
-        return { ...doc.data(), id: doc.id }
-      })
-      setPosition([...position,...allshop]);
-      setloadcode([...loadcode,code])
+      let allshop = querySnapshot.docs.map((doc) => {
+        return { ...doc.data(), id: doc.id };
+      });
+      setPosition([...position, ...allshop]);
+      setloadcode([...loadcode, code]);
     }
   };
 
   useEffect(() => {
-    if(!loadcode.includes(code))
-    updatemarker();
+    if (!loadcode.includes(code)) updatemarker();
   }, [code]);
   useEffect(() => {
     markers(location);
   }, [location]);
-  useEffect(()=>{
-    console.log(position)
-  },[position])
-  const searchshop = () => {};
+  useEffect(() => {
+    console.log(position);
+  }, [position]);
+
+  useEffect(() => {
+    if(search=='') return
+    const found = position.find((element) => element.id == search);
+    searchshop(found);
+  }, [search]);
+  const searchshop = (shop) => {
+    if(shop==undefined) return
+    fly.flyTo([shop.latitude, shop.longitude], 16, {
+      animate: true,
+      duration: 1.5,
+    });
+  };
   if (location == null)
     return (
       <div className="w-full h-full flex justify-center items-center">
@@ -183,12 +192,25 @@ export default function MapMenu({ lang, lat = null, long = null }) {
     <CartProvider>
       <div className="fixed w-full z-10 h-12 top-0 mt-5 ">
         <div className="mx-5 h-full ">
-          <input
-            className="w-full h-full rounded bg-[#C7CEE9] ring-offset-[#C7CEE9] placeholder:text-ui-accent shadow-lg px-5 ring-offset-2 ring-2 ring-ui-accent"
-            placeholder="Search"
-            autoComplete="on"
-            onSubmit={searchshop}
-          />
+          <Autocomplete
+          disableSelectorIconRotation
+          selectorIcon={<Search className={' fill-primary-500'}/>}
+            selectedKey={search}
+            onSelectionChange={setsearch}
+            aria-label="Search"
+            inputProps={{
+              classNames: {
+                inputWrapper:
+                  "w-full h-full focus:!bg-[#C7CEE9] rounded bg-[#C7CEE9] ring-offset-[#C7CEE9] !border-none placeholder:text-ui-accent shadow-lg px-5 ring-offset-2 ring-2 ring-ui-accent",
+              },
+            }}
+            classNames={{}}
+            variant="bordered"
+          >
+            {position.map((shop) => (
+              <AutocompleteItem key={shop.id}>{shop.name}</AutocompleteItem>
+            ))}
+          </Autocomplete>
         </div>
       </div>
       <MapContainer
@@ -199,6 +221,7 @@ export default function MapMenu({ lang, lat = null, long = null }) {
         zoom={16}
         scrollWheelZoom={false}
         minZoom={5}
+        ref={setMapfly}
       >
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
         <Marker
@@ -225,18 +248,25 @@ export default function MapMenu({ lang, lat = null, long = null }) {
                     ? hotelicon
                     : other
                 }
-                eventHandlers={{ click:()=>{
-                  setshopdata(item)
-                  onOpen()
-                } }}
+                eventHandlers={{
+                  click: () => {
+                    setshopdata(item);
+                    onOpen();
+                  },
+                }}
                 position={[item.latitude, item.longitude]}
-              >
-                
-              </Marker>
+              ></Marker>
             ))}
         <CheckCenter />
       </MapContainer>
-      {shopdata!=null &&<ShopModal isOpen={isOpen} onClose={onClose} onOpenChange={onOpenChange} data={shopdata} />}
+      {shopdata != null && (
+        <ShopModal
+          isOpen={isOpen}
+          onClose={onClose}
+          onOpenChange={onOpenChange}
+          data={shopdata}
+        />
+      )}
     </CartProvider>
   );
 }
