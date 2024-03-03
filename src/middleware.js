@@ -24,11 +24,11 @@ function getLocale(request) {
 }
 
 export function middleware(request) {
-  const {geo} = request
   let pathname = request.nextUrl.pathname;
-
-  if(pathname.endsWith('map')){
-    pathname = pathname + `/${geo.latitude}/${geo.longitude}`
+  console.log(request.geo.latitude);
+  console.log(pathname);
+  if (pathname.startsWith("/map")) {
+    pathname = pathname + `/${request.geo.latitude}/${request.geo.longitude}`;
   }
 
   // // `/_next/` and `/api/` are ignored by the watcher, but we need to ignore files in `public` manually.
