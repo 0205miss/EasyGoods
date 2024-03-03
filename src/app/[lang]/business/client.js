@@ -133,14 +133,31 @@ export default function BusinessClientPage({ dict, lang }) {
           }
           if (change.type === "modified") {
             if (change.doc.data().status == "ongoing") {
-              setongoing( (old) =>{
-                return old.map((item) =>
-                  item.id === change.doc.id ? { ...change.doc.data(), id: change.doc.id } : item
-                )
-              }
+              const isItemInCart = ongoing.find(
+                (cartItem) => cartItem.id === change.doc.id
               );
+
+              setongoing((old) => {
+                const isItemInCart = old.find(
+                  (cartItem) => cartItem.id === change.doc.id
+                );
+                if (isItemInCart) {
+                  return old.map((item) =>
+                    item.id === change.doc.id
+                      ? { ...change.doc.data(), id: change.doc.id }
+                      : item
+                  );
+                } else {
+                  setongoing((old) => [
+                    ...old,
+                    { ...change.doc.data(), id: change.doc.id },
+                  ]);
+                }
+              });
             } else if (change.doc.data().status == "complete") {
-              setongoing(ongoing.filter((item) => item.id !== change.doc.id));
+              setongoing((old) =>
+                old.filter((item) => item.id !== change.doc.id)
+              );
               sethistory((old) => [
                 ...old,
                 { ...change.doc.data(), id: change.doc.id },

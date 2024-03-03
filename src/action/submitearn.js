@@ -3,9 +3,9 @@
 import admin from "@/lib/firebase";
 import PiNetwork from "pi-backend";
 
-export async function claimearn(
+export async function submitearn(
   item,
-  uid
+  paymentId
 ) {
 
     const firestore = admin.firestore()
@@ -19,20 +19,11 @@ export async function claimearn(
         if(data.pickup && data.product && data.paid && data.method=='onlinepay'){
             //give away
             const pi = new PiNetwork(process.env.PI_API_KEY,process.env.PI_PRIVATE_SEED)
-            let amount = await data.items.reduce((total, item) => parseFloat((total+item.cost * item.amount).toFixed(7)), 0)
-
-            amount =  parseFloat((amount-0.01).toFixed(7))
-            const paymentData = {
-                amount: amount,
-                memo: "EasyOrder A2B", // this is just an example
-                metadata: {productId: item},
-                uid: uid
-              }
               // It is critical that you store paymentId in your database
               // so that you don't double-pay the same user, by keeping track of the payment.
-              const paymentId = await pi.createPayment(paymentData);
-              await ref.set({pi_payment_id:paymentId},{merge:true})
-              return paymentId
+              const txid = await pi.submitPayment(paymentId);
+              await ref.set({pi_tx_id:txid,status:'complete'},{merge:true})              
+              return txid
         }else{
             return false
         }

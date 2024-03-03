@@ -38,7 +38,7 @@ export default function AddOrder({ isOpen, onOpenChange, shopId, data, onClose }
             cost : data.cost,
             shop:shopId
         }
-        addToCart(order,0)
+        addToCart(order,amount)
         onClose()
     }
 

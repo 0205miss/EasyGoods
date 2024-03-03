@@ -1,9 +1,12 @@
 import { claimearn } from "@/action/claimearn";
+import { completeearn } from "@/action/completeearn";
 import { productprepared } from "@/action/productprepared";
+import { submitearn } from "@/action/submitearn";
 import { OwnerContext } from "@/app/[lang]/business/business";
-import { Accordion, AccordionItem, Button, Divider } from "@nextui-org/react";
+import { Accordion, AccordionItem, Button, Divider, Spinner } from "@nextui-org/react";
 import dayjs from "dayjs";
 import { useContext, useEffect, useState } from "react";
+import ClaimEarnButton from "./claimearn";
 
 export default function OrderAccordion({ data }) {
   const {ownerauth} = useContext(OwnerContext)
@@ -70,7 +73,7 @@ export default function OrderAccordion({ data }) {
                 <div>Status</div>
                 <div>{item.paid ?'Paid' : 'unPaid'}</div>
             </div>
-            {item.product && item.pickup && <Button className="w-full mt-4" color="primary" onClick={()=>claimearn(item.id,ownerauth.user.uid)}>Claim Earn</Button>}
+            {item.product && item.pickup && <ClaimEarnButton item={item}/>}
             {!item.product && <Button className="w-full mt-4" color="primary" onClick={()=>finishprepare(item.id)}>Prepared</Button>}
           </AccordionItem>
         );
