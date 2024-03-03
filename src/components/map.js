@@ -64,15 +64,7 @@ export default function MapMenu({ lang, lat = null, long = null }) {
   };
 
   useEffect(() => {
-    fetch('/getuserlocation').then(
-      (res) =>{
-        return res.json()
-      }
-    ).then(
-      (resjson)=>{
-        console.log(resjson)
-      }
-    )
+
     if ("geolocation" in navigator) {
       // Retrieve latitude & longitude coordinates from `navigator.geolocation` Web API
       if (
@@ -89,7 +81,7 @@ export default function MapMenu({ lang, lat = null, long = null }) {
             }
           ).then(
             (resjson)=>{
-              console.log(resjson)
+              router.replace(`/${lang}/map/${resjson.lat}/${resjson.long}`)
             }
           )
 
