@@ -1,10 +1,12 @@
 import { claimearn } from "@/action/claimearn";
 import { productprepared } from "@/action/productprepared";
+import { OwnerContext } from "@/app/[lang]/business/business";
 import { Accordion, AccordionItem, Button, Divider } from "@nextui-org/react";
 import dayjs from "dayjs";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 export default function OrderAccordion({ data }) {
+  const {ownerauth} = useContext(OwnerContext)
   const [time, setTime] = useState(dayjs());
 
    const finishprepare = (id) =>{
@@ -41,6 +43,7 @@ export default function OrderAccordion({ data }) {
             key={index}
             title={item.buyer}
             subtitle={
+              item.pickup && item.product ?'Claimable Order':
               item.product ? 'Waiting Customer':
               time.isBefore(dayjs.unix(expire))
                 ? -time.diff(dayjs.unix(expire), "m") + " min"
@@ -67,6 +70,7 @@ export default function OrderAccordion({ data }) {
                 <div>Status</div>
                 <div>{item.paid ?'Paid' : 'unPaid'}</div>
             </div>
+            {item.product && item.pickup && <Button className="w-full mt-4" color="primary" onClick={()=>claimearn(item.id,ownerauth.user.uid)}>Claim Earn</Button>}
             {!item.product && <Button className="w-full mt-4" color="primary" onClick={()=>finishprepare(item.id)}>Prepared</Button>}
           </AccordionItem>
         );
