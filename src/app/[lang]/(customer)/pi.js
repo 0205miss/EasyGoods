@@ -1,5 +1,4 @@
 "use client";
-import { auth } from "@/action/auth";
 import Script from "next/script";
 import { createContext, useState,useRef, useEffect } from "react";
 import { signInWithCustomToken } from "firebase/auth";
@@ -8,6 +7,7 @@ import { incompletepay } from "@/action/incomplete";
 import { db } from "@/components/firestore";
 import { collection, onSnapshot, query, where } from "firebase/firestore";
 import LoadingPage from "@/components/loading";
+import { mapauth } from "@/action/mapauth";
 
 export const PiContext = createContext();
 
@@ -89,7 +89,7 @@ useEffect(()=>{
 
   const firebase_auth = async (token) => {
 
-    const data_token = await auth(token);
+    const data_token = await mapauth(token);
     if(data_token=='unkyc'){
       setfirebase(false);
     }else{
@@ -138,6 +138,16 @@ useEffect(()=>{
           {children}
         </>
       );
+    }else if (ispi == null || pi == null || firebase == null) {
+      return (
+        <>
+          <Script
+            src="https://sdk.minepi.com/pi-sdk.js"
+            onReady={loadpi}
+          ></Script>
+          <LoadingPage />
+        </>
+      );
     }else if (ispi == true && firebase == true){
     return (
       <>
@@ -145,15 +155,5 @@ useEffect(()=>{
         <PiContext.Provider value={{pi,piauth,ongoing,history}}>{children}</PiContext.Provider>
       </>
     );
-    }else {
-      return (
-        <>
-          <Script
-            src="https://sdk.minepi.com/pi-sdk.js"
-            onReady={loadpi}
-          ></Script>
-          <LoadingPage/>
-        </>
-      );
     }
 }
