@@ -6,7 +6,7 @@ import MenuModal from "./addmenu";
 import { collection, doc, getDocs, updateDoc } from "firebase/firestore";
 import { db } from "../firestore";
 
-export default function MenuBusiness({ data,transcript }) {
+export default function MenuBusiness({ data, transcript, setdata }) {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const [piaccept, setpiaccept] = useState(data.payment);
   const [orderaccept, setorderaccept] = useState(data.apporder);
@@ -20,28 +20,33 @@ export default function MenuBusiness({ data,transcript }) {
     const querySnapshot = await getDocs(
       collection(db, "shop", data.id, "menu")
     );
-    if (querySnapshot.empty){
-
-    }else{
+    if (querySnapshot.empty) {
+    } else {
       let allmenu = querySnapshot.docs.map((doc) => {
         return { ...doc.data(), id: doc.id };
       });
       setmenu([...allmenu]);
     }
-    
   };
-  
-  const updateshop = async (pi,order) =>{
-    const ref = doc(db,'shop',data.id)
-    await updateDoc(ref,{
-      payment:pi,
-      apporder:order
-    })
-  }
 
-  useEffect(()=>{
-    updateshop(piaccept,orderaccept)
-  },[piaccept,orderaccept])
+  const updateshop = async (pi, order) => {
+    const ref = doc(db, "shop", data.id);
+    await updateDoc(ref, {
+      payment: pi,
+      apporder: order,
+    });
+    setdata((old) => {
+      return old.map((item) =>
+                    item.id === data.id
+                      ? { ...data,payment: pi, apporder: order }
+                      : item
+                  );
+    });
+  };
+
+  useEffect(() => {
+    updateshop(piaccept, orderaccept);
+  }, [piaccept, orderaccept]);
 
   return (
     <div className="w-full h-full px-4 py-2">
@@ -67,9 +72,9 @@ export default function MenuBusiness({ data,transcript }) {
         }}
       >
         <div className="flex flex-col gap-1">
-          <p className="text-medium">{transcript['EasyGoods Order']}</p>
+          <p className="text-medium">{transcript["EasyGoods Order"]}</p>
           <p className="text-tiny text-default-400">
-            {transcript['Customer can make order on this app']}
+            {transcript["Customer can make order on this app"]}
           </p>
         </div>
       </Switch>
@@ -98,9 +103,9 @@ export default function MenuBusiness({ data,transcript }) {
             }}
           >
             <div className="flex flex-col gap-1">
-              <p className="text-medium">{transcript['Pi Payment']}</p>
+              <p className="text-medium">{transcript["Pi Payment"]}</p>
               <p className="text-tiny text-default-400">
-                {transcript['Customer can pay on this app']}
+                {transcript["Customer can pay on this app"]}
               </p>
             </div>
           </Switch>
@@ -122,16 +127,26 @@ export default function MenuBusiness({ data,transcript }) {
       <div className="mt-3 overflow-y-scroll h-[calc(100%_-_9rem)]">
         <div className="pb-2 flex flex-col gap gap-3 ">
           {menu.length != 0 &&
-            menu.map((item,i) => {
-              if(item == 0){
-                return null
+            menu.map((item, i) => {
+              if (item == 0) {
+                return null;
               }
-              return <MenuCard shopId={data.id} transcript={transcript} data={item} key={i} index={i} setmenu={setmenu} menu={menu}/>;
+              return (
+                <MenuCard
+                  shopId={data.id}
+                  transcript={transcript}
+                  data={item}
+                  key={i}
+                  index={i}
+                  setmenu={setmenu}
+                  menu={menu}
+                />
+              );
             })}
         </div>
       </div>
       <MenuModal
-      transcript={transcript}
+        transcript={transcript}
         isOpen={isOpen}
         onClose={onClose}
         onOpenChange={onOpenChange}
