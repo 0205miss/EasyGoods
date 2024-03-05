@@ -1,15 +1,10 @@
-import { claimearn } from "@/action/claimearn";
-import { completeearn } from "@/action/completeearn";
 import { productprepared } from "@/action/productprepared";
-import { submitearn } from "@/action/submitearn";
-import { OwnerContext } from "@/app/[lang]/business/business";
-import { Accordion, AccordionItem, Button, Divider, Spinner } from "@nextui-org/react";
+import { Accordion, AccordionItem, Button, Divider } from "@nextui-org/react";
 import dayjs from "dayjs";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import ClaimEarnButton from "./claimearn";
 
-export default function OrderAccordion({ data }) {
-  const {ownerauth} = useContext(OwnerContext)
+export default function OrderAccordion({ data,transcript }) {
   const [time, setTime] = useState(dayjs());
 
    const finishprepare = (id) =>{
@@ -46,14 +41,14 @@ export default function OrderAccordion({ data }) {
             key={index}
             title={item.buyer}
             subtitle={
-              item.pickup && item.product ?'Claimable Order':
-              item.product ? 'Waiting Customer':
+              item.pickup && item.product ? transcript['Claimable Order']:
+              item.product ? transcript['Waiting Customer']:
               time.isBefore(dayjs.unix(expire))
-                ? -time.diff(dayjs.unix(expire), "m") + " min"
-                : "Time's up"
+                ? -time.diff(dayjs.unix(expire), "m") + ` ${transcript['min']}`
+                : transcript["Time's up"]
             }
           >
-            <div className=" text-center">OrderID : <span className='text-center uppercase'>{item.id.substring(0,5)}</span></div>
+            <div className=" text-center">{transcript['OrderID : ']}<span className='text-center uppercase'>{item.id.substring(0,5)}</span></div>
             <Divider/>
             {item.items.map((product,index) => {
               return (
@@ -66,15 +61,15 @@ export default function OrderAccordion({ data }) {
             })}
             <Divider/>
             <div className="flex justify-between">
-                <div>Received</div>
+                <div>{transcript['Received']}</div>
                 <div>{parseFloat(pireceived.toFixed(7))}</div>
             </div>
             <div className="flex justify-between">
-                <div>Status</div>
-                <div>{item.paid ?'Paid' : 'unPaid'}</div>
+                <div>{transcript['Status']}</div>
+                <div>{item.paid ?transcript['Paid'] : transcript['unPaid']}</div>
             </div>
-            {item.product && item.pickup && <ClaimEarnButton item={item}/>}
-            {!item.product && <Button className="w-full mt-4" color="primary" onClick={()=>finishprepare(item.id)}>Prepared</Button>}
+            {item.product && item.pickup && <ClaimEarnButton item={item} transcript={transcript}/>}
+            {!item.product && <Button className="w-full mt-4" color="primary" onClick={()=>finishprepare(item.id)}>{transcript['Prepared']}</Button>}
           </AccordionItem>
         );
       })}

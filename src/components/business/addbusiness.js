@@ -514,7 +514,7 @@ export default function AddBusinessModal({
                         "text-accent text-md font-semibold text-center w-full",
                     }}
                   />
-                  <WeekSelect values={weekday} setValues={setweekday} />
+                  <WeekSelect transcript={transcript} values={weekday} setValues={setweekday} />
                 </>
               )}
 

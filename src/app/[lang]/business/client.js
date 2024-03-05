@@ -253,6 +253,7 @@ export default function BusinessClientPage({ dict, lang }) {
             setdata={setshoplist}
             index={currentshop}
             data={shoplist[currentshop]}
+            transcript={dict}
           />
         ) : (
           <InfoBusiness

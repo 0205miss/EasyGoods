@@ -21,6 +21,7 @@ import { addDoc, collection, doc } from "firebase/firestore";
 import { db, storage } from "../firestore";
 
 export default function MenuModal({
+  transcript,
   isOpen,
   onOpenChange,
   data,
@@ -106,7 +107,7 @@ export default function MenuModal({
       backdrop="blur"
     >
       <ModalContent>
-        <ModalHeader>Product Creation</ModalHeader>
+        <ModalHeader>{transcript['Product Creation']}</ModalHeader>
         <ModalBody>
           <div
             className=" w-full h-40 flex justify-center items-center bg-white p-3"
@@ -128,7 +129,7 @@ export default function MenuModal({
                   className="border-none h-36 w-full flex flex-row justify-center"
                 >
                   <Image
-                    alt="Woman listing to music"
+                    alt="product image"
                     className="!object-contain h-36"
                     radius="none"
                     src={imageurl}
@@ -166,7 +167,7 @@ export default function MenuModal({
           <Input
             color="secondary"
             type="text"
-            label="Product Name"
+            label={transcript["Product Name"]}
             placeholder="EX.Coffee"
             value={name}
             onValueChange={setname}
@@ -174,20 +175,20 @@ export default function MenuModal({
           <Input
             color="secondary"
             type="number"
-            label="Prepare Time"
+            label={transcript["Prepare Time"]}
             placeholder="EX.10"
             value={time}
             onValueChange={updatetime}
             endContent={
               <div className="pointer-events-none flex items-center">
-                <div className=" h-8 w-8 fill-secondary-400">min</div>
+                <div className=" h-8 w-8 fill-secondary-400">{transcript['min']}</div>
               </div>
             }
           />
           <Input
             color="secondary"
             type="number"
-            label="Price"
+            label={transcript["Price"]}
             placeholder="EX1.0000000"
             value={cost}
             onValueChange={updatecost}
@@ -200,16 +201,16 @@ export default function MenuModal({
             }
           />
           <Textarea
-            label="Description"
+            label={transcript["Description"]}
             color="secondary"
-            placeholder="Enter your description"
+            placeholder={transcript["Enter your description"]}
             value={description}
             onValueChange={setdescription}
           />
         </ModalBody>
         <ModalFooter className="!justify-center">
           <Button color="warning" onClick={onsubmit} isDisabled={!checkvalid}>
-            Create
+            {transcript['Create']}
           </Button>
         </ModalFooter>
         {submit && (

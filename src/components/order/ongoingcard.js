@@ -16,17 +16,17 @@ import {
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 
-export default function OrderOnGoingAccordion({ data }) {
+export default function OrderOnGoingAccordion({ data, transcript }) {
   const [time, setTime] = useState(dayjs());
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const [pickstatus, setpickstatus] = useState(false);
   const [select, setselect] = useState(null);
   const pickup = () => {
-    const pick = userPickUp(select.id)
-    if(pick){
-    setpickstatus(true);    
-    }else{
-        alert('something wrong')
+    const pick = userPickUp(select.id);
+    if (pick) {
+      setpickstatus(true);
+    } else {
+      alert("something wrong");
     }
   };
 
@@ -65,13 +65,14 @@ export default function OrderOnGoingAccordion({ data }) {
               title={item.buyer}
               subtitle={
                 item.product
-                  ? "Waiting PickUp"
+                  ? transcript["Waiting PickUp"]
                   : time.isBefore(dayjs.unix(expire))
-                  ? -time.diff(dayjs.unix(expire), "m") + " min"
-                  : "Delay"
+                  ? -time.diff(dayjs.unix(expire), "m") +
+                    ` ${transcript["min"]}`
+                  : transcript["Delay"]
               }
             >
-              <div className=" text-center">Order</div>
+              <div className=" text-center">{transcript["Order"]}</div>
               <Divider />
               {item.items.map((product, index) => {
                 return (
@@ -86,23 +87,25 @@ export default function OrderOnGoingAccordion({ data }) {
               })}
               <Divider />
               <div className="flex justify-between">
-                <div>Cost</div>
+                <div>{transcript["Cost"]}</div>
                 <div>{parseFloat(pireceived.toFixed(7))}</div>
               </div>
               <div className="flex justify-between">
-                <div>Status</div>
-                <div>{item.paid ? "Paid" : "unPaid"}</div>
+                <div>{transcript["Status"]}</div>
+                <div>
+                  {item.paid ? transcript["Paid"] : transcript["unPaid"]}
+                </div>
               </div>
               {item.product && (
                 <Button
                   className="w-full mt-4"
                   color="primary"
-                  onClick={()=>{
-                    setselect(item)
-                    onOpen()
+                  onClick={() => {
+                    setselect(item);
+                    onOpen();
                   }}
                 >
-                  Complete
+                  {transcript["Complete"]}
                 </Button>
               )}
             </AccordionItem>
@@ -112,53 +115,49 @@ export default function OrderOnGoingAccordion({ data }) {
       <Modal
         isOpen={isOpen}
         onOpenChange={onOpenChange}
-        onClose={() => 
-          setpickstatus(false)
-        }
+        onClose={() => setpickstatus(false)}
       >
         <ModalContent>
           <ModalBody>
             {pickstatus && (
-                <>
+              <>
                 <div className=" flex justify-center">
-                <div className=" fill-green-500 w-32 h-32 p-5">
-                    <Correct/>
-                </div>
+                  <div className=" fill-green-500 w-32 h-32 p-5">
+                    <Correct />
+                  </div>
                 </div>
                 <p className="text-center text-xl">EasyOrder</p>
-                <Divider/>
+                <Divider />
                 <div className="text-center">
-                    Order ID : 
-                    <span className='text-center uppercase'>
-                    {select != null && select.id.substring(0,5)}
-                </span>
+                  {transcript["OrderID : "]}
+                  <span className="text-center uppercase">
+                    {select != null && select.id.substring(0, 5)}
+                  </span>
                 </div>
                 <div className="text-center">
-                    Please show this page to Business
+                  {transcript["Please show this page to Business"]}
                 </div>
-                
-                </>
+              </>
             )}
             {!pickstatus && (
-                <>
+              <>
                 <div className=" flex justify-center">
-                <div className=" fill-orange-500 w-32 h-32 p-5">
-                    <Confirm/>
-                </div>
+                  <div className=" fill-orange-500 w-32 h-32 p-5">
+                    <Confirm />
+                  </div>
                 </div>
                 <p className="text-center text-xl">EasyOrder</p>
-                <Divider/>
+                <Divider />
                 <div className="text-center">
-                    Order ID : 
-                    <span className='text-center uppercase'>
-                    {select != null && select.id.substring(0,5)}
-                </span>
+                  {transcript["OrderID : "]}
+                  <span className="text-center uppercase">
+                    {select != null && select.id.substring(0, 5)}
+                  </span>
                 </div>
                 <div className="text-center">
-                    Confirm you pick up the order
+                  {transcript["Confirm you pick up the order"]}
                 </div>
-                
-                </>
+              </>
             )}
           </ModalBody>
           <ModalFooter className="justify-center">
@@ -169,23 +168,27 @@ export default function OrderOnGoingAccordion({ data }) {
                   color="danger"
                   onClick={onClose}
                 >
-                  Not yet
+                  {transcript["Not yet"]}
                 </Button>
                 <Button
                   className="w-full mt-4"
                   color="secondary"
                   onClick={pickup}
                 >
-                  Pick Up
+                  {transcript["Pick Up"]}
                 </Button>
               </>
             )}
             {pickstatus && (
-              <Button className="w-full mt-4" color="danger" onClick={()=>{
-                onClose()
-                setpickstatus(false)
-              }}>
-                Close
+              <Button
+                className="w-full mt-4"
+                color="danger"
+                onClick={() => {
+                  onClose();
+                  setpickstatus(false);
+                }}
+              >
+                {transcript["Close"]}
               </Button>
             )}
           </ModalFooter>

@@ -18,7 +18,7 @@ export default function OrderCard({ ongoing, history, transcript }) {
           <Tab key="history" title={transcript["History"]}></Tab>
         </Tabs>
       </div>
-      {tab=='progress'&&<OrderAccordion data={ongoing.sort((a, b) => {
+      {tab=='progress'&&<OrderAccordion transcript={transcript} data={ongoing.sort((a, b) => {
       return b.ordertime.seconds - a.ordertime.seconds;
     })}/>}
     </div>

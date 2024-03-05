@@ -384,7 +384,7 @@ export default function InfoBusiness({
                 label: "text-accent text-md font-semibold text-center w-full",
               }}
             />
-            <WeekSelect values={weekday} setValues={setweekday} />
+            <WeekSelect values={weekday} setValues={setweekday} transcript={transcript}/>
           </>
         )}
 

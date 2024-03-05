@@ -26,6 +26,7 @@ export default function OrderUserPage({ transcript }) {
       </div>
       {tab == "progress" && (
         <OrderOnGoingAccordion
+          transcript={transcript}
           data={ongoing.sort((a, b) => {
             return b.ordertime.seconds - a.ordertime.seconds;
           })}
