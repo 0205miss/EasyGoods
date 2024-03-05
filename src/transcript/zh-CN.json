@@ -47,7 +47,7 @@
   "OrderID : ": "订单编号 : ",
   "Received": "已领取",
   "Status": "状态",
-  "Paid": "付款",
+  "Paid": "已付款",
   "unPaid": "未付款",
   "Prepared": "已准备",
   "Claim Earn": "获取营收",
@@ -79,5 +79,14 @@
   "Please show this page to Business": "请给店家显示这个页面",
   "Confirm you pick up the order": "确认你已领取订单",
   "Not yet": "还没",
-  "Pick Up": "领取"
+  "Pick Up": "领取",
+  "Order need to be on Pi Browser !": "订单必须在Pi浏览器使用 !",
+  "close": "关闭中",
+  "opening": "营业中",
+  "Shop is not support EasyOrder !": "店家不支持 EasyOrder !",
+  "More": "更多",
+  "There has no any product in Cart": "购物车目前空空的",
+  "Total Cost": "总共消费",
+  "Cancel": "取消",
+  "Add": "增加"
 }

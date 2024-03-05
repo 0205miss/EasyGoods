@@ -10,7 +10,7 @@ import {
 import { useContext } from "react";
 import { CartContext } from "./ordercontext";
 
-export default function UserOrderCard({ data }) {
+export default function UserOrderCard({ data,transcript }) {
     const { addToCart, removeFromCart  } = useContext(CartContext);
   const addamount = () =>{
     addToCart(data,1)

@@ -9,15 +9,15 @@ import {
 } from "@nextui-org/react";
 import AddOrder from "./addorder";
 import { useState, useEffect } from "react";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-export default function UserMenuCard({ data,shopId }) {
+export default function UserMenuCard({ data, shopId, transcript }) {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
-  const [pi,setispi] = useState(null)
-  const [notice,setnotice] = useState(false)
+  const [pi, setispi] = useState(null);
+  const [notice, setnotice] = useState(false);
   useEffect(() => {
-   if (
+    if (
       window.location.ancestorOrigins[0] == "https://sandbox.minepi.com" ||
       window.location.ancestorOrigins[0] == "https://app-cdn.minepi.com"
     ) {
@@ -28,18 +28,20 @@ export default function UserMenuCard({ data,shopId }) {
   }, []);
 
   const notify = () => {
-    if(!notice){
-      toast("Order need to be on Pi Browser !",{containerId:data.id});
-      setnotice(true)
-    }    
-  }
-  const checkorder = () =>{
-    if(pi){
-      onOpen()
-    }else{
-      notify()
+    if (!notice) {
+      toast(transcript["Order need to be on Pi Browser !"], {
+        containerId: data.id,
+      });
+      setnotice(true);
     }
-  }
+  };
+  const checkorder = () => {
+    if (pi) {
+      onOpen();
+    } else {
+      notify();
+    }
+  };
   return (
     <>
       <Card>
@@ -62,7 +64,10 @@ export default function UserMenuCard({ data,shopId }) {
               <div className="h-5 w-full flex justify-between px-5">
                 <div className="h-full inline-flex">
                   <Clock className="h-5 w-5" />
-                  <span className="h-5 items-center flex">{data.time} min</span>
+                  <span className="h-5 items-center flex">
+                    {data.time}
+                    {` ${transcript["min"]}`}
+                  </span>
                 </div>
                 <div className="h-full inline-flex">
                   <span className="h-5 items-center flex">{data.cost}</span>
@@ -74,13 +79,14 @@ export default function UserMenuCard({ data,shopId }) {
         </CardBody>
       </Card>
       <AddOrder
+        transcript={transcript}
         shopId={shopId}
         isOpen={isOpen}
         onClose={onClose}
         onOpenChange={onOpenChange}
         data={data}
       />
-      <ToastContainer containerId={data.id}/>
+      <ToastContainer containerId={data.id} />
     </>
   );
 }

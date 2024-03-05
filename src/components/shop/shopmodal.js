@@ -20,7 +20,7 @@ import UserMenuCard from "./menucard";
 import CreateOrder from "./createorder";
 import { ToastContainer, toast } from "react-toastify";
 
-export default function ShopModal({ isOpen, onOpenChange, data, onClose }) {
+export default function ShopModal({ isOpen, onOpenChange, data, onClose,transcript }) {
   const createorder = useDisclosure()
   const [checkopen, setcheckopen] = useState(null);
   const [size, setsize] = useState("md");
@@ -42,10 +42,12 @@ export default function ShopModal({ isOpen, onOpenChange, data, onClose }) {
     }
   };
   const checkpi = () =>{
-    if(pi){
+    if(!data.apporder){
+      toast(transcript["Shop is not support EasyOrder !"]);
+    }else if(pi && data.apporder){
       createorder.onOpen()
     }else{
-      toast("Order need to be on Pi Browser !");
+      toast(transcript["Order need to be on Pi Browser !"]);
     }
   }
 
@@ -145,18 +147,18 @@ export default function ShopModal({ isOpen, onOpenChange, data, onClose }) {
               <div className="text-large font-semibold">{data.name}</div>
               <div className="!text-sm text-slate-600 font-medium">
                 {data.type == "coffee"
-                  ? "Coffee Shop"
+                  ? transcript["Coffee Shop"]
                   : data.type == "Restaurant"
-                  ? "Restaurant"
+                  ? transcript["Restaurant"]
                   : data.type == "Grocery"
-                  ? "Grocery"
+                  ? transcript["Grocery"]
                   : data.type == "BookStore"
-                  ? "BookStore"
+                  ? transcript["BookStore"]
                   : data.type == "Bakery"
-                  ? "Bakery"
+                  ? transcript["Bakery"]
                   : data.type == "Hotel"
-                  ? "Hotel"
-                  : "Other"}
+                  ? transcript["Hotel"]
+                  : transcript["Other"]}
               </div>
               <div
                 className={
@@ -165,7 +167,7 @@ export default function ShopModal({ isOpen, onOpenChange, data, onClose }) {
                     : "text-green-500 !text-sm"
                 }
               >
-                {!checkopen ? "close" : "opening"}
+                {!checkopen ? transcript["close"] : transcript["opening"]}
               </div>
               <div className=" fill-secondary-500 flex justify-start items-center">
                 <div className="h-7 w-7">
@@ -202,14 +204,14 @@ export default function ShopModal({ isOpen, onOpenChange, data, onClose }) {
                   return null;
                 }
                 return (
-                    <UserMenuCard shopId={data.id} data={item} key={item.id} />
+                    <UserMenuCard transcript={transcript} shopId={data.id} data={item} key={item.id} />
                 );
               })}
 
             {size == "md" && (
               <div className="mt-2 w-full flex justify-center">
                 <Button onClick={() => setsize("full")} color="secondary">
-                  More
+                  {transcript['More']}
                 </Button>
               </div>
             )}
@@ -217,7 +219,7 @@ export default function ShopModal({ isOpen, onOpenChange, data, onClose }) {
         </div>
       </ModalContent>
     </Modal>
-    <CreateOrder isOpen={createorder.isOpen} onOpenChange={createorder.onOpenChange} onClose={createorder.onClose}/>
+    <CreateOrder transcript={transcript} isOpen={createorder.isOpen} onOpenChange={createorder.onOpenChange} onClose={createorder.onClose}/>
     <ToastContainer containerId={data.id}/>
     </>
   );

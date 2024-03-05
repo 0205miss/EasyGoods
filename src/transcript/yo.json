@@ -79,5 +79,14 @@
   "Please show this page to Business": "Please show this page to Business",
   "Confirm you pick up the order": "Confirm you pick up the order",
   "Not yet": "Not yet",
-  "Pick Up": "Pick Up"
+  "Pick Up": "Pick Up",
+  "Order need to be on Pi Browser !": "Order need to be on Pi Browser !",
+  "close": "close",
+  "opening": "opening",
+  "Shop is not support EasyOrder !": "Shop is not support EasyOrder !",
+  "More": "More",
+  "There has no any product in Cart": "There has no any product in Cart",
+  "Total Cost": "Total Cost",
+  "Cancel": "Cancel",
+  "Add": "Add"
 }

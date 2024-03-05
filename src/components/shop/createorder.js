@@ -17,7 +17,7 @@ import { paymentcomplete } from "@/action/complete";
 import { useRouter,usePathname  } from 'next/navigation'
 import { ordercancel } from "@/action/cancel";
 
-export default function CreateOrder({ isOpen, onOpenChange, onClose }) {
+export default function CreateOrder({ isOpen, onOpenChange, onClose,transcript }) {
   const { cartItems, getCartTotal, getCartTotalPrepare, clearCart } =
     useContext(CartContext);
   const { pi, piauth } = useContext(PiContext);
@@ -78,31 +78,31 @@ export default function CreateOrder({ isOpen, onOpenChange, onClose }) {
     >
       <ModalContent>
         <ModalHeader className="flex justify-center text-2xl">
-          Order
+          {transcript['Order']}
         </ModalHeader>
         <ModalBody>
           <div className="overflow-scroll max-h-96 p-2">
             <div className="flex flex-col gap gap-2">
               {cartItems.map((item, index) => {
-                return <UserOrderCard data={item} key={index} />;
+                return <UserOrderCard transcript={transcript} data={item} key={index} />;
               })}
               {cartItems.length == 0 && (
                 <div className="flex justify-center items-center h-[23rem]">
-                  There has no any product in Cart
+                  {transcript['There has no any product in Cart']}
                 </div>
               )}
             </div>
           </div>
           <div className="text-right">
             <div className="flex justify-end">
-              <div className="">Prepare Time</div>
+              <div className="">{transcript['Prepare Time']}</div>
               <div className="flex-none w-28">
                 {getCartTotalPrepare()}
-                <span className="pl-1">min</span>
+                <span className="pl-1">{transcript['min']}</span>
               </div>
             </div>
             <div className="flex justify-end">
-              <div className="">Total Cost</div>
+              <div className="">{transcript['Total Cost']}</div>
               <div className="flex-none w-28">
                 {getCartTotal()}
                 <span className="pl-1">Pi</span>
@@ -112,10 +112,10 @@ export default function CreateOrder({ isOpen, onOpenChange, onClose }) {
         </ModalBody>
         <ModalFooter>
           <Button color="danger" onClick={onClose}>
-            Cancel
+            {transcript['Cancel']}
           </Button>
           <Button color="warning" onClick={createpay}>
-            Create
+            {transcript['Create']}
           </Button>
         </ModalFooter>
       </ModalContent>
