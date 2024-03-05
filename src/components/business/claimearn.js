@@ -5,7 +5,7 @@ import { OwnerContext } from "@/app/[lang]/business/business"
 import { Button, Spinner } from "@nextui-org/react"
 import { useContext, useState } from "react"
 
-export default function ClaimEarnButton({item}){
+export default function ClaimEarnButton({item,transcript}){
     const {ownerauth} = useContext(OwnerContext)
     const [state,setstate] = useState(0)
     return (
@@ -19,6 +19,6 @@ export default function ClaimEarnButton({item}){
               }
             }             
             
-            }}>{state==0 ? 'Claim Earn' : <Spinner color="warning"/>}</Button>
+            }}>{state==0 ? transcript['Claim Earn'] : <Spinner color="warning"/>}</Button>
     )
 }

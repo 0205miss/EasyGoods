@@ -138,7 +138,14 @@ useEffect(()=>{
           {children}
         </>
       );
-    }else if (ispi == null || pi == null || firebase == null) {
+    }else if (ispi == true && firebase == true){
+    return (
+      <>
+        <Script src="https://sdk.minepi.com/pi-sdk.js" onLoad={loadpi}></Script>
+        <PiContext.Provider value={{pi,piauth,ongoing,history}}>{children}</PiContext.Provider>
+      </>
+    );
+    }else {
       return (
         <>
           <Script
@@ -148,12 +155,5 @@ useEffect(()=>{
           <LoadingPage />
         </>
       );
-    }else if (ispi == true && firebase == true){
-    return (
-      <>
-        <Script src="https://sdk.minepi.com/pi-sdk.js" onLoad={loadpi}></Script>
-        <PiContext.Provider value={{pi,piauth,ongoing,history}}>{children}</PiContext.Provider>
-      </>
-    );
     }
 }

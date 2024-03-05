@@ -6,7 +6,7 @@ import MenuModal from "./addmenu";
 import { collection, doc, getDocs, updateDoc } from "firebase/firestore";
 import { db } from "../firestore";
 
-export default function MenuBusiness({ data,setdata,index }) {
+export default function MenuBusiness({ data,transcript }) {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const [piaccept, setpiaccept] = useState(data.payment);
   const [orderaccept, setorderaccept] = useState(data.apporder);
@@ -67,9 +67,9 @@ export default function MenuBusiness({ data,setdata,index }) {
         }}
       >
         <div className="flex flex-col gap-1">
-          <p className="text-medium">EasyGoods Order</p>
+          <p className="text-medium">{transcript['EasyGoods Order']}</p>
           <p className="text-tiny text-default-400">
-            Customer can make order on this app
+            {transcript['Customer can make order on this app']}
           </p>
         </div>
       </Switch>
@@ -98,9 +98,9 @@ export default function MenuBusiness({ data,setdata,index }) {
             }}
           >
             <div className="flex flex-col gap-1">
-              <p className="text-medium">Pi Payment</p>
+              <p className="text-medium">{transcript['Pi Payment']}</p>
               <p className="text-tiny text-default-400">
-                Customer can pay on this app
+                {transcript['Customer can pay on this app']}
               </p>
             </div>
           </Switch>
@@ -126,11 +126,12 @@ export default function MenuBusiness({ data,setdata,index }) {
               if(item == 0){
                 return null
               }
-              return <MenuCard shopId={data.id} data={item} key={i} index={i} setmenu={setmenu} menu={menu}/>;
+              return <MenuCard shopId={data.id} transcript={transcript} data={item} key={i} index={i} setmenu={setmenu} menu={menu}/>;
             })}
         </div>
       </div>
       <MenuModal
+      transcript={transcript}
         isOpen={isOpen}
         onClose={onClose}
         onOpenChange={onOpenChange}

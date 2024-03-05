@@ -27,6 +27,7 @@ import { db, storage } from "../firestore";
 import { v4 as uuidv4 } from "uuid";
 
 export default function UpdateProductModal({
+  transcript,
   isOpen,
   shopId,
   onOpenChange,
@@ -153,7 +154,7 @@ export default function UpdateProductModal({
       backdrop="blur"
     >
       <ModalContent>
-        <ModalHeader>Product Edit</ModalHeader>
+        <ModalHeader>{transcript['Product Edit']}</ModalHeader>
         <ModalBody>
           <div
             className=" w-full h-40 flex justify-center items-center bg-white p-3"
@@ -175,7 +176,7 @@ export default function UpdateProductModal({
                   className="border-none h-36 w-full flex flex-row justify-center"
                 >
                   <Image
-                    alt="Woman listing to music"
+                    alt="product picture"
                     className="!object-contain h-36"
                     radius="none"
                     src={imageurl}
@@ -213,7 +214,7 @@ export default function UpdateProductModal({
           <Input
             color="secondary"
             type="text"
-            label="Product Name"
+            label={transcript["Product Name"]}
             placeholder="EX.Coffee"
             value={name}
             onValueChange={setname}
@@ -221,20 +222,20 @@ export default function UpdateProductModal({
           <Input
             color="secondary"
             type="number"
-            label="Prepare Time"
+            label={transcript["Prepare Time"]}
             placeholder="EX.10"
             value={time}
             onValueChange={updatetime}
             endContent={
               <div className="pointer-events-none flex items-center">
-                <div className=" h-8 w-8 fill-secondary-400">min</div>
+                <div className=" h-8 w-8 fill-secondary-400">{transcript['min']}</div>
               </div>
             }
           />
           <Input
             color="secondary"
             type="number"
-            label="Price"
+            label={transcript["Price"]}
             placeholder="EX1.0000000"
             value={cost}
             onValueChange={updatecost}
@@ -247,19 +248,19 @@ export default function UpdateProductModal({
             }
           />
           <Textarea
-            label="Description"
+            label={transcript["Description"]}
             color="secondary"
-            placeholder="Enter your description"
+            placeholder={transcript["Enter your description"]}
             value={description}
             onValueChange={setdescription}
           />
         </ModalBody>
         <ModalFooter className="!justify-center">
           <Button color="danger" onClick={ondelete}>
-            Delete
+            {transcript['Delete']}
           </Button>
           <Button color="warning" onClick={onsubmit} isDisabled={!checkvalid}>
-            Update
+            {transcript['Update']}
           </Button>
         </ModalFooter>
         {submit && (

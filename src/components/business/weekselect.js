@@ -1,6 +1,6 @@
 import { Select, SelectItem } from "@nextui-org/react";
 
-export default function WeekSelect({ values, setValues }) {
+export default function WeekSelect({ values, setValues,transcript }) {
   return (
     <Select
       label="Opening Day"
@@ -10,25 +10,25 @@ export default function WeekSelect({ values, setValues }) {
       onSelectionChange={setValues}
     >
       <SelectItem key={1} value={1}>
-        Monday
+        {transcript['Monday']}
       </SelectItem>
       <SelectItem key={2} value={2}>
-        Tuesday
+        {transcript['Tuesday']}
       </SelectItem>
       <SelectItem key={3} value={3}>
-        Wednesday
+        {transcript['Wednesday']}
       </SelectItem>
       <SelectItem key={4} value={4}>
-        Thursday
+        {transcript['Thursday']}
       </SelectItem>
       <SelectItem key={5} value={5}>
-        Friday
+        {transcript['Friday']}
       </SelectItem>
       <SelectItem key={6} value={6}>
-        Saturday
+        {transcript['Saturday']}
       </SelectItem>
       <SelectItem key={0} value={0}>
-        Sunday
+        {transcript['Sunday']}
       </SelectItem>
     </Select>
   );

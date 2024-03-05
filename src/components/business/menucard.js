@@ -9,7 +9,7 @@ import {
 } from "@nextui-org/react";
 import UpdateProductModal from "./updateproduct";
 
-export default function MenuCard({ data, index, setmenu, menu, shopId }) {
+export default function MenuCard({ data, index, setmenu, transcript, shopId }) {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   return (
     <>
@@ -33,7 +33,7 @@ export default function MenuCard({ data, index, setmenu, menu, shopId }) {
               <div className="h-5 w-full flex justify-between px-5">
                 <div className="h-full inline-flex">
                   <Clock className="h-5 w-5" />
-                  <span className="h-5 items-center flex">{data.time} min</span>
+                  <span className="h-5 items-center flex">{data.time}{` ${transcript['min']}`}</span>
                 </div>
                 <div className="h-full inline-flex">
                   <span className="h-5 items-center flex">{data.cost}</span>
@@ -45,6 +45,7 @@ export default function MenuCard({ data, index, setmenu, menu, shopId }) {
         </CardBody>
       </Card>
       <UpdateProductModal
+      transcript={transcript}
         shopId={shopId}
         isOpen={isOpen}
         onClose={onClose}
