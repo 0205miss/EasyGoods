@@ -43,11 +43,15 @@ export default function ShopModal({ isOpen, onOpenChange, data, onClose,transcri
   };
   const checkpi = () =>{
     if(!data.apporder){
-      toast(transcript["Shop is not support EasyOrder !"]);
+      toast(transcript["Shop is not support EasyOrder !"], {
+        containerId: data.id,
+      });
     }else if(pi && data.apporder){
       createorder.onOpen()
     }else{
-      toast(transcript["Order need to be on Pi Browser !"]);
+      toast(transcript["Order need to be on Pi Browser !"], {
+        containerId: data.id,
+      });
     }
   }
 
@@ -204,7 +208,7 @@ export default function ShopModal({ isOpen, onOpenChange, data, onClose,transcri
                   return null;
                 }
                 return (
-                    <UserMenuCard transcript={transcript} shopId={data.id} data={item} key={item.id} />
+                    <UserMenuCard shopsupport={data.apporder} transcript={transcript} shopId={data.id} data={item} key={item.id} />
                 );
               })}
 

@@ -12,7 +12,7 @@ import { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-export default function UserMenuCard({ data, shopId, transcript }) {
+export default function UserMenuCard({ data, shopId, transcript,shopsupport }) {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const [pi, setispi] = useState(null);
   const [notice, setnotice] = useState(false);
@@ -29,14 +29,23 @@ export default function UserMenuCard({ data, shopId, transcript }) {
 
   const notify = () => {
     if (!notice) {
-      toast(transcript["Order need to be on Pi Browser !"], {
-        containerId: data.id,
-      });
+      if(!shopsupport){
+        toast(transcript["Shop is not support EasyOrder !"], {
+          containerId: data.id,
+        });
+      }else{
+        toast(transcript["Order need to be on Pi Browser !"], {
+          containerId: data.id,
+        });
+      }
+      
       setnotice(true);
     }
   };
   const checkorder = () => {
-    if (pi) {
+    if(!shopsupport){
+      notify();
+    }else if (pi) {
       onOpen();
     } else {
       notify();
