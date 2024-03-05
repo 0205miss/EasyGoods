@@ -16,7 +16,7 @@ import {
 import { useContext, useEffect, useState } from "react";
 import { CartContext } from "./ordercontext";
 
-export default function AddOrder({ isOpen, onOpenChange, shopId, data, onClose }) {
+export default function AddOrder({ isOpen, onOpenChange, shopId, data, onClose,transcript }) {
   const [memo, setmemo] = useState("");
   const [amount, setamount] = useState(1);
   const [spend, setspend] = useState(1 * data.time);
@@ -78,7 +78,7 @@ export default function AddOrder({ isOpen, onOpenChange, shopId, data, onClose }
             <div className="mt-2 h-5 w-full flex justify-between px-5 text-accent">
               <div className="h-full inline-flex fill-accent">
                 <Clock className="h-5 w-5" />
-                <span className="h-5 items-center flex">{spend} min</span>
+                <span className="h-5 items-center flex">{spend}{` ${transcript['min']}`}</span>
               </div>
               <div className="h-full inline-flex fill-accent">
                 <span className="h-5 items-center flex">{cost}</span>
@@ -111,10 +111,10 @@ export default function AddOrder({ isOpen, onOpenChange, shopId, data, onClose }
         </ModalBody>
         <ModalFooter className="flex justify-center">
           <Button color="warning" className=" uppercase" onClick={onClose}>
-                cancel
+                {transcript['Cancel']}
             </Button>
             <Button color="primary" className=" uppercase" onClick={addproduct}>
-                Add
+                {transcript['Add']}
             </Button>
         </ModalFooter>
       </ModalContent>

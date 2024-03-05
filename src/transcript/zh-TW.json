@@ -47,7 +47,7 @@
   "OrderID : ": "訂單編號 : ",
   "Received": "已領取",
   "Status": "狀態",
-  "Paid": "付款",
+  "Paid": "已付款",
   "unPaid": "未付款",
   "Prepared": "已準備",
   "Claim Earn": "獲取營收",
@@ -79,5 +79,14 @@
   "Please show this page to Business": "請給店家顯示這個頁面",
   "Confirm you pick up the order": "確認你已領取訂單",
   "Not yet": "還沒",
-  "Pick Up": "領取"
+  "Pick Up": "領取",
+  "Order need to be on Pi Browser !": "訂單必須在Pi瀏覽器使用 !",
+  "close": "關閉中",
+  "opening": "營業中",
+  "Shop is not support EasyOrder !": "店家不支援 EasyOrder !",
+  "More": "更多",
+  "There has no any product in Cart": "購物車目前空空的",
+  "Total Cost": "總共消費",
+  "Cancel": "取消",
+  "Add": "增加"
 }

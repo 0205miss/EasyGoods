@@ -1,11 +1,5 @@
 "use client";
-import {
-  MapContainer,
-  Marker,
-  TileLayer,
-  useMap,
-  useMapEvents,
-} from "react-leaflet";
+import { MapContainer, Marker, TileLayer, useMapEvents } from "react-leaflet";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import "leaflet/dist/leaflet.css";
 import { useEffect, useState } from "react";
@@ -37,7 +31,7 @@ const iconPerson = new L.Icon({
   iconSize: new L.Point(40, 40),
 });
 
-export default function MapMenu({ lang, lat = null, long = null }) {
+export default function MapMenu({ lang, lat = null, long = null, transcript }) {
   const router = useRouter();
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const [location, setLocation] = useState(null);
@@ -141,7 +135,6 @@ export default function MapMenu({ lang, lat = null, long = null }) {
     });
   }
 
-
   const updatemarker = async () => {
     if (code == null) return;
     const shopRef = collection(db, "shop");
@@ -169,12 +162,12 @@ export default function MapMenu({ lang, lat = null, long = null }) {
   }, [position]);
 
   useEffect(() => {
-    if(search=='') return
+    if (search == "") return;
     const found = position.find((element) => element.id == search);
     searchshop(found);
   }, [search]);
   const searchshop = (shop) => {
-    if(shop==undefined) return
+    if (shop == undefined) return;
     fly.flyTo([shop.latitude, shop.longitude], 16, {
       animate: true,
       duration: 1.5,
@@ -193,8 +186,8 @@ export default function MapMenu({ lang, lat = null, long = null }) {
       <div className="fixed w-full z-10 h-12 top-0 mt-5 ">
         <div className="mx-5 h-full ">
           <Autocomplete
-          disableSelectorIconRotation
-          selectorIcon={<Search className={' fill-primary-500'}/>}
+            disableSelectorIconRotation
+            selectorIcon={<Search className={" fill-primary-500"} />}
             selectedKey={search}
             onSelectionChange={setsearch}
             aria-label="Search"
@@ -261,6 +254,7 @@ export default function MapMenu({ lang, lat = null, long = null }) {
       </MapContainer>
       {shopdata != null && (
         <ShopModal
+          transcript={transcript}
           isOpen={isOpen}
           onClose={onClose}
           onOpenChange={onOpenChange}
