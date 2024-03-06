@@ -33,16 +33,36 @@ export default function InfoBusiness({
   const [address, setaddress] = useState(info.address);
   const [upload, setupload] = useState(0);
   const [remove_photo, setdelete] = useState(null);
-  const [opencheck, set247] = useState(info.opening == "00:00~23:59" && info.openday.length==7 ? true :false);
+  const [opencheck, set247] = useState(
+    info.opening == "00:00~23:59" && info.openday.length == 7 ? true : false
+  );
   const [opentime, setopentime] = useState(info.opening.substring(0, 5));
   const [closetime, setclosetime] = useState(info.opening.substring(6, 11));
   const [weekday, setweekday] = useState(new Set(info.openday));
-
+  const [change, setchange] = useState(false);
   useEffect(() => {
     settype([info.type]);
     setname(info.name);
     setaddress(info.address);
   }, [info]);
+
+  useEffect(() => {
+    if (
+      Array.from(shoptype)[0] != info.type ||
+      name != info.name ||
+      opencheck !=
+        (info.opening == "00:00~23:59" && info.openday.length == 7
+          ? true
+          : false) ||
+      opentime != info.opening.substring(0, 5) ||
+      closetime != info.opening.substring(6, 11) ||
+      JSON.stringify(Array.from(weekday)) != JSON.stringify(info.openday)
+    ) {
+      setchange(true);
+    } else {
+      setchange(false);
+    }
+  }, [shoptype, name, opencheck, opentime, closetime, weekday]);
 
   const fileupload = async (target) => {
     const image = target.files ? target.files[0] : null;
@@ -384,7 +404,11 @@ export default function InfoBusiness({
                 label: "text-accent text-md font-semibold text-center w-full",
               }}
             />
-            <WeekSelect values={weekday} setValues={setweekday} transcript={transcript}/>
+            <WeekSelect
+              values={weekday}
+              setValues={setweekday}
+              transcript={transcript}
+            />
           </>
         )}
 
@@ -404,6 +428,9 @@ export default function InfoBusiness({
             label: "text-accent text-md font-semibold text-center w-full",
           }}
         />
+        <Button color="secondary" isDisabled={!change}>
+          Update
+        </Button>
         <div className="text-accent text-md font-semibold text-center w-full">
           {transcript["Photo"]}
         </div>
