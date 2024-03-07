@@ -21,8 +21,7 @@ export async function submitearn(
             const pi = new PiNetwork(process.env.PI_API_KEY,process.env.PI_PRIVATE_SEED)
               // It is critical that you store paymentId in your database
               // so that you don't double-pay the same user, by keeping track of the payment.
-              const txid = await pi.submitPayment(paymentId);
-              await ref.set({pi_tx_id:txid,status:'complete'},{merge:true})              
+              const txid = await pi.submitPayment(paymentId);           
               return txid
         }else{
             return false
