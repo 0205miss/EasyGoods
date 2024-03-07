@@ -1,11 +1,11 @@
 import AddIcon from "@/res/icon/add";
 import { Card, CardBody } from "@nextui-org/react";
 
-export default function AddCard({ order,transcript }) {
+export default function AddCard({ onOpen,transcript }) {
   return (
     <div className="w-full h-full px-4 py-2">
       <Card className="w-full h-full bg-primary">
-        <CardBody>
+        <CardBody onClick={onOpen}>
           <div className="w-full h-full flex justify-center items-center flex-col">
             <div className="w-full">
               <div className="w-full flex justify-center">

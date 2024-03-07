@@ -243,7 +243,7 @@ export default function BusinessClientPage({ dict, lang }) {
 
       <div className=" pb-16 h-[calc(100%-64px)]">
         {shoplist.length == 0 ? (
-          <AddCard transcript={dict} />
+          <AddCard transcript={dict} onOpen={onOpen} />
         ) : selected == "order" ? (
           <OrderCard transcript={dict} history={history} ongoing={ongoing} />
         ) : selected == "stamp" ? (

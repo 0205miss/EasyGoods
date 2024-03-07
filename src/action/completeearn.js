@@ -21,6 +21,7 @@ export async function completeearn(
             //give away
             const pi = new PiNetwork(process.env.PI_API_KEY,process.env.PI_PRIVATE_SEED)
               const completedPayment = await pi.completePayment(paymentId, txid);
+              await ref.set({pi_tx_id:txid,status:'complete'},{merge:true})   
               return true
         }else{
             return false
