@@ -190,7 +190,7 @@ export default function AddBusinessModal({
         <ModalBody>
         <div className="h-[calc(100vh_-_10rem)] overflow-scroll">
           {step == 1 && (
-            <div className="w-full h-full flex flex-col gap gap-4">
+            <div className="w-full flex flex-col gap gap-4">
               <Input
                 labelPlacement="outside"
                 color="secondary"
